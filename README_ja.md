@@ -42,7 +42,8 @@ MIT License
 Copyright (c) 2022 KMNK
 
 ## 更新履歴
-- 2022/MM/DD v1.0.0 公開
+- 2022/07/10 v1.0.1 README の更新履歴に日付を追加
+- 2022/07/10 v1.0.0 公開
 
 ## クレジット
 - [ICOOON MONO](https://icooon-mono.com/)

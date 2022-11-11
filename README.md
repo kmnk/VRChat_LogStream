@@ -1,4 +1,4 @@
-# LogBoard
+# LogStream
 Simple system for input and share some log text in VRChat World
 
 ## Required

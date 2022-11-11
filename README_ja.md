@@ -1,4 +1,4 @@
-# MessageBoard
+# LogStream
 VRChat のワールドに設置する、任意のログテキストを流す簡単な仕組みです。
 
 ## Required

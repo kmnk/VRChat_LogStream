@@ -34,6 +34,12 @@ namespace Kmnk.LogStream.Udon
         [SerializeField]
         Text _playersCountText = null;
 
+        [SerializeField]
+        AudioSource _soundEffectAudioSource = null;
+
+        [SerializeField]
+        bool _soundEffectEnabled = false;
+
         [UdonSynced]
         private string[] _types = null;
 
@@ -89,6 +95,7 @@ namespace Kmnk.LogStream.Udon
             if (!HasAllLogLinesInitialized()) { return; }
             if (!HasAllUdonSyncedFieldInitialized()) { return; }
             DisplayAllLogLines();
+            PlaySoundEffect();
         }
 
         public int GetLogLimit()
@@ -188,6 +195,7 @@ namespace Kmnk.LogStream.Udon
 
             RequestSerialization();
             DisplayAllLogLines();
+            PlaySoundEffect();
         }
 
         private void DisplayAllLogLines()
@@ -222,6 +230,13 @@ namespace Kmnk.LogStream.Udon
                 logIndex >= 0 ? _names[logIndex] : string.Empty,
                 FormatTicks(logIndex >= 0 ? _ticks[logIndex] : 0)
             );
+        }
+
+        private void PlaySoundEffect()
+        {
+            if (!_soundEffectEnabled) { return; }
+            if (_soundEffectAudioSource == null) { return; }
+            _soundEffectAudioSource.Play();
         }
 
         public void ChangeType(string type)

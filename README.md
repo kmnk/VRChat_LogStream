@@ -35,15 +35,17 @@ I have written a brief comment (in Japanese) so that you can refer to it when yo
 
 
 ## Notes
-- I have confirmed that this works with Unity 2019.4.31f1, VRCSDK3 WORLD 2022.06.03.00.03 Public, UdonSharp v0.20.3
+- I have confirmed that this works with Unity 2019.4.31f1, VRChat SDK Base 3.1.10, VRChat SDK Worlds 3.1.10, UdonSharp 1.1.5
 
 ## License
 MIT License
 Copyright (c) 2022 KMNK
 
 ## Updates
-- 2022/07/10 v1.0.1 Add release date to Updates on README
+- 2022/11/11 v1.1.0 Play sound effect on update log
+- 2022/07/10 v1.0.1 Modify README
 - 2022/07/10 v1.0.0 Released
 
 ## Credit
 - [ICOOON MONO](https://icooon-mono.com/)
+- [効果音ラボ](https://soundeffect-lab.info/)

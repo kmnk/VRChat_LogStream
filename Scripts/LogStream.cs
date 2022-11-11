@@ -10,6 +10,23 @@ namespace Kmnk.LogStream
         int _id = 0;
 
         [SerializeField]
+        [Tooltip("ログが更新された時に流す効果音を指定します")]
+        AudioClip _soundEffectAudioClip = null;
+
+        [SerializeField]
+        [Tooltip("ログが更新された時に効果音を流す場合に ON にします")]
+        bool _soundEffectEnabled = false;
+
+        [SerializeField]
+        [Tooltip("ログが更新された時の効果音の音量を指定します")]
+        float _soundEffectGain = 10f;
+
+        [SerializeField]
+        [Tooltip("ログが更新された時の効果音が届く範囲を指定します")]
+        float _soundEffectFar = 10f;
+
+
+        [SerializeField]
         [Tooltip("ログの時間部分のフォーマットを指定します")]
         string _timeFormat = "HH:mm:ss";
 

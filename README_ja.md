@@ -35,15 +35,17 @@ Enter Log Format, Leave Log Format のメッセージが流れます。 `{0}` �
 
 
 ## その他
-- Unity 2019.4.31f1, VRCSDK3 WORLD 2022.06.03.00.03 Public, UdonSharp v0.20.3 で動作を確認しています
+- Unity 2019.4.31f1, VRChat SDK Base 3.1.10, VRChat SDK Worlds 3.1.10, UdonSharp 1.1.5 で動作を確認しています
 
 ## License
 MIT License
 Copyright (c) 2022 KMNK
 
 ## 更新履歴
-- 2022/07/10 v1.0.1 README の更新履歴に日付を追加
+- 2022/11/11 v1.1.0 ログが更新された時に効果音を流すようにしました
+- 2022/07/10 v1.0.1 README 修正
 - 2022/07/10 v1.0.0 公開
 
 ## クレジット
 - [ICOOON MONO](https://icooon-mono.com/)
+- [効果音ラボ](https://soundeffect-lab.info/)

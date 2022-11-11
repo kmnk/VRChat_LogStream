@@ -2,7 +2,7 @@
 
 namespace Kmnk.LogStream.Udon
 {
-    public abstract class LogStreamEventListener : UdonSharpBehaviour
+    public class LogStreamEventListener : UdonSharpBehaviour
     {
         public void OnDisplayAllLogLines() {}
 

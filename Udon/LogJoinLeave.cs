@@ -1,9 +1,8 @@
-﻿using System;
-using System.Globalization;
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
-using UnityEngine.UI;
 using VRC.SDKBase;
+
+using Kmnk.Core.Udon;
 
 namespace Kmnk.LogStream.Udon
 {
@@ -23,7 +22,7 @@ namespace Kmnk.LogStream.Udon
 
         public override void OnPlayerJoined(VRCPlayerApi player)  
         {
-            if (!AmIOwner()) { return; }
+            if (!Util.AmIOwner(gameObject)) { return; }
             _logStream.AddMessage(
                 _type,
                 string.Format(_joinLogFormat, player.displayName),
@@ -33,19 +32,12 @@ namespace Kmnk.LogStream.Udon
 
         public override void OnPlayerLeft(VRCPlayerApi player)  
         {
-            if (!AmIOwner()) { return; }
+            if (!Util.AmIOwner(gameObject)) { return; }
             _logStream.AddMessage(
                 _type,
                 string.Format(_leaveLogFormat, player.displayName),
                 ""
             );
         }
-
-        #region base
-        private bool AmIOwner()
-        {
-            return Networking.IsOwner(gameObject);
-        }
-        #endregion
     }
 }

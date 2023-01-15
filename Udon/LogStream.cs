@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using VRC.SDKBase;
 
+using Kmnk.Core.Udon;
+
 namespace Kmnk.LogStream.Udon
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
@@ -63,7 +65,7 @@ namespace Kmnk.LogStream.Udon
             _logLines = _logLinesParent.GetComponentsInChildren<Udon.LogLine>();
             InitializeLogLines();
 
-            if (AmIOwner())
+            if (Util.AmIOwner(gameObject))
             {
                 InitializeUdonSyncedFields();
                 RequestSerialization();
@@ -164,7 +166,6 @@ namespace Kmnk.LogStream.Udon
             }
         }
 
-
         private bool HasAllUdonSyncedFieldInitialized()
         {
             if (_types == null) { return false; }
@@ -179,7 +180,7 @@ namespace Kmnk.LogStream.Udon
             if (string.IsNullOrEmpty(message)) { return; }
             if (!HasAllUdonSyncedFieldInitialized()) { return; }
 
-            TakeOwner();
+            Util.TakeOwner(gameObject);
 
             for (var i = _logLimit-1; i > 0; i--) {
                 _types[i] = _types[i - 1];
@@ -281,17 +282,5 @@ namespace Kmnk.LogStream.Udon
                 _evnetListeners = newArray;
             }
         }
-
-        #region base
-        private bool AmIOwner()
-        {
-            return Networking.IsOwner(gameObject);
-        }
-
-        private void TakeOwner()
-        {
-            Networking.SetOwner(Networking.LocalPlayer, gameObject);
-        }
-        #endregion
     }
 }

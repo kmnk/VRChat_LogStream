@@ -2,6 +2,8 @@ using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 
+using Kmnk.Core.Udon;
+
 namespace Kmnk.LogStream.Udon
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
@@ -26,7 +28,7 @@ namespace Kmnk.LogStream.Udon
 
         public override void OnPlayerTriggerEnter(VRCPlayerApi player)
         {
-            if (!AmIOwner()) { return; }
+            if (!Util.AmIOwner(gameObject)) { return; }
             if (_logStream == null) { return; }
             _logStream.AddMessage(
                 _type,
@@ -37,7 +39,7 @@ namespace Kmnk.LogStream.Udon
 
         public override void OnPlayerTriggerExit(VRCPlayerApi player)
         {
-            if (!AmIOwner()) { return; }
+            if (!Util.AmIOwner(gameObject)) { return; }
             if (_logStream == null) { return; }
             _logStream.AddMessage(
                 _type,
@@ -45,12 +47,5 @@ namespace Kmnk.LogStream.Udon
                 ""
             );
         }
-
-        #region base
-        private bool AmIOwner()
-        {
-            return Networking.IsOwner(gameObject);
-        }
-        #endregion
     }
 }

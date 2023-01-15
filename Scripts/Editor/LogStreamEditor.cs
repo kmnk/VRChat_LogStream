@@ -88,12 +88,26 @@ namespace Kmnk.LogStream
             spatialAudioSource.Gain = _soundEffectGainProperty.floatValue;
             spatialAudioSource.Far = _soundEffectFarProperty.floatValue;
 
-            var udon = _target.GetChildUdonBehaviour<Udon.LogStream>();
-            udon.SetPublicVariable("_soundEffectEnabled", _soundEffectEnabledProperty.boolValue);
-            udon.SetPublicVariable("_timeFormat", _timeFormatProperty.stringValue);
-            udon.SetPublicVariable("_logLimit", _logLimitProperty.intValue);
-            udon.SetPublicVariable("_initialMessages", initialMessages);
-            udon.SetPublicVariable("_initialName", _initialNameProperty.stringValue);
+            var udon = _target.GetComponentInChildren<Udon.LogStream>();
+            var udonSerializedObject = new SerializedObject(udon);
+            udonSerializedObject.FindProperty("_soundEffectEnabled").boolValue
+                = _soundEffectEnabledProperty.boolValue;
+            udonSerializedObject.FindProperty("_logLimit").intValue
+                = _logLimitProperty.intValue;
+
+            {
+                var p = udonSerializedObject.FindProperty("_initialMessages");
+                p.ClearArray();
+                for (var i = 0; i < initialMessages.Length; i++)
+                {
+                    p.InsertArrayElementAtIndex(i);
+                    p.GetArrayElementAtIndex(i).stringValue = initialMessages[i];
+                }
+            }
+
+            udonSerializedObject.FindProperty("_initialName").stringValue
+                = _initialNameProperty.stringValue;
+            udonSerializedObject.ApplyModifiedProperties();
         }
     }
 }

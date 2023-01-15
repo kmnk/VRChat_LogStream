@@ -52,9 +52,13 @@ namespace Kmnk.LogStream
             var pickup = _target.GetComponentInChildren<VRCPickup>();
             pickup.pickupable = _pickupableProperty.boolValue;
 
-            var udon = _target.GetChildUdonBehaviour<Udon.LogStreamViewer>();
-            udon.SetPublicVariable("_logStream", logStream.GetChildUdonBehaviour<Udon.LogStream>());
-            udon.SetPublicVariable("_timeFormat", _timeFormatProperty.stringValue);
+            var udon = _target.GetComponentInChildren<Udon.LogStreamViewer>();
+            var udonSerializedObject = new SerializedObject(udon);
+            udonSerializedObject.FindProperty("_logStream").objectReferenceValue
+                = logStream.GetComponentInChildren<Udon.LogStream>();
+            udonSerializedObject.FindProperty("_timeFormat").stringValue
+                = _timeFormatProperty.stringValue;
+            udonSerializedObject.ApplyModifiedProperties();
         }
 
         private static LogStream GetLogStream(int id)

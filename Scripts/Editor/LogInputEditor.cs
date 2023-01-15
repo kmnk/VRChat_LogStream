@@ -72,9 +72,11 @@ namespace Kmnk.LogStream
             var pickup = _target.GetComponentInChildren<VRCPickup>();
             pickup.pickupable = _pickupableProperty.boolValue;
 
-            var udon = _target.GetChildUdonBehaviour<Udon.LogInput>();
-            udon.SetPublicVariable("_logStream", logStream.GetChildUdonBehaviour<Udon.LogStream>());
-            udon.SetPublicVariable("_templateMessages", templateMessages);
+            var udon = _target.GetComponentInChildren<Udon.LogInput>();
+            var udonSerializedObject = new SerializedObject(udon);
+            udonSerializedObject.FindProperty("_logStream").objectReferenceValue
+                = logStream.GetComponentInChildren<Udon.LogStream>();
+            udonSerializedObject.ApplyModifiedProperties();
 
             if (IsActiveInHierarchy() && !IsInPrefabMode())
             {

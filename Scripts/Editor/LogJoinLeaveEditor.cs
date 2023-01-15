@@ -48,10 +48,15 @@ namespace Kmnk.LogStream
 
             if (logStream == null) { return; }
 
-            var udon = _target.GetChildUdonBehaviour<Udon.LogJoinLeave>();
-            udon.SetPublicVariable("_logStream", logStream.GetChildUdonBehaviour<Udon.LogStream>());
-            udon.SetPublicVariable("_joinLogFormat", _joinLogFormatProperty.stringValue);
-            udon.SetPublicVariable("_leaveLogFormat", _leaveLogFormatProperty.stringValue);
+            var udon = _target.GetComponentInChildren<Udon.LogJoinLeave>();
+            var udonSerializedObject = new SerializedObject(udon);
+            udonSerializedObject.FindProperty("_logStream").objectReferenceValue
+                = logStream.GetComponentInChildren<Udon.LogStream>();
+            udonSerializedObject.FindProperty("_joinLogFormat").stringValue
+                = _joinLogFormatProperty.stringValue;
+            udonSerializedObject.FindProperty("_leaveLogFormat").stringValue
+                = _leaveLogFormatProperty.stringValue;
+            udonSerializedObject.ApplyModifiedProperties();
         }
 
         private static LogStream GetLogStream(int id)

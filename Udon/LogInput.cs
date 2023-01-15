@@ -49,17 +49,5 @@ namespace Kmnk.LogStream.Udon
         {
             _inputField.text += text;
         }
-
-        #region base
-        private bool AmIOwner()
-        {
-            return Networking.IsOwner(gameObject);
-        }
-
-        private void TakeOwner()
-        {
-            Networking.SetOwner(Networking.LocalPlayer, gameObject);
-        }
-        #endregion
     }
 }

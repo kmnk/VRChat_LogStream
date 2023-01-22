@@ -109,5 +109,13 @@ namespace Kmnk.LogStream
                 = _initialNameProperty.stringValue;
             udonSerializedObject.ApplyModifiedProperties();
         }
+
+        public static LogStream GetLogStream(int id)
+        {
+            return Resources.FindObjectsOfTypeAll<LogStream>()
+                .Where(x => AssetDatabase.GetAssetOrScenePath(x).EndsWith(".unity"))
+                .Where(x => x.GetId() == id)
+                .FirstOrDefault();
+        }
     }
 }

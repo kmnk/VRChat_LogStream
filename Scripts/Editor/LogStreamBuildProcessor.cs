@@ -19,6 +19,7 @@ namespace Kmnk.LogStream
             Reapply<LogInput, LogInputEditor>();
             Reapply<LogStreamViewer, LogStreamViewerEditor>();
             Reapply<LogTriggerEnterExit, LogTriggerEnterExitEditor>();
+            Reapply<LogPomodoro, LogPomodoroEditor>();
         }
 
         void Reapply<TBehaviour, TEditor>()

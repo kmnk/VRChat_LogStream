@@ -60,7 +60,7 @@ namespace Kmnk.LogStream
         {
             FindProperties();
 
-            var logStream = GetLogStream(_idProperty.intValue);
+            var logStream = LogStreamEditor.GetLogStream(_idProperty.intValue);
 
             if (logStream == null) { return; }
 
@@ -117,14 +117,6 @@ namespace Kmnk.LogStream
 
             // hide original button
             templateButtonOrigin.SetActive(false);
-        }
-
-        private static LogStream GetLogStream(int id)
-        {
-            return Resources.FindObjectsOfTypeAll<LogStream>()
-                .Where(x => AssetDatabase.GetAssetOrScenePath(x).EndsWith(".unity"))
-                .Where(x => x.GetId() == id)
-                .FirstOrDefault();
         }
     }
 }

@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Components;
@@ -45,7 +44,7 @@ namespace Kmnk.LogStream
         {
             FindProperties();
 
-            var logStream = GetLogStream(_idProperty.intValue);
+            var logStream = LogStreamEditor.GetLogStream(_idProperty.intValue);
 
             if (logStream == null) { return; }
 
@@ -59,14 +58,6 @@ namespace Kmnk.LogStream
             udonSerializedObject.FindProperty("_timeFormat").stringValue
                 = _timeFormatProperty.stringValue;
             udonSerializedObject.ApplyModifiedProperties();
-        }
-
-        private static LogStream GetLogStream(int id)
-        {
-            return Resources.FindObjectsOfTypeAll<LogStream>()
-                .Where(x => AssetDatabase.GetAssetOrScenePath(x).EndsWith(".unity"))
-                .Where(x => x.GetId() == id)
-                .FirstOrDefault();
         }
     }
 }

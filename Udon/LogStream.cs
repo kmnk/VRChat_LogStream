@@ -79,17 +79,19 @@ namespace Kmnk.LogStream.Udon
 
         private void UpdateHeader()
         {
-            var d = DateTime.UtcNow;
-            _dateText.text = d.ToLocalTime().ToString("yyyy/MM/dd");
-            _timeText.text = d.ToLocalTime().ToString("HH:mm:ss");
+            var now = DateTime.UtcNow;
+            _dateText.text = now.ToLocalTime().ToString("yyyy/MM/dd");
+            _timeText.text = now.ToLocalTime().ToString("HH:mm:ss");
             _playersCountText.text = VRCPlayerApi.GetPlayerCount().ToString();
         }
 
-        private void Update() {
+        private void Update()
+        {
             if (_dateTime.Second != DateTime.UtcNow.Second)
             {
                 UpdateHeader();
             }
+            _dateTime = DateTime.UtcNow;
         }
 
         public override void OnDeserialization()

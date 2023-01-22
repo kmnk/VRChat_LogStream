@@ -25,7 +25,6 @@ namespace Kmnk.LogStream
         [Tooltip("ログが更新された時の効果音が届く範囲を指定します")]
         float _soundEffectFar = 10f;
 
-
         [SerializeField]
         [Tooltip("ログの時間部分のフォーマットを指定します")]
         string _timeFormat = "HH:mm:ss";

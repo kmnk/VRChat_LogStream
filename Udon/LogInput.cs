@@ -1,10 +1,10 @@
 ﻿using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
-using VRC.SDKBase;
 
 namespace Kmnk.LogStream.Udon
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LogInput : UdonSharpBehaviour
     {
         string _type = "INPUT";

@@ -28,6 +28,13 @@ This function notifies when a player enters an arbitrary area.
 The message of `Enter Log Format`, `Leave Log Format` will be used for message. The `{0}` is replace by the name of the player.
 The `Box Collider` component attached to the `Udon` object in the prefab is used as the detection area, so you can adjust the size of the collider.
 
+### LogPomodoro
+This function executes the pomodoro timer.
+The Only Master checkbox determines whether or not only the Master can operate the timer.
+Check the Sound Effect Enabled checkbox to specify whether or not a sound effect is played when the timer expires.
+To change the message when the Pomodoro timer starts/stops, change the respective values in the Option block.
+The `{0}` and `{1}` for Start and `{0}` for End are required, so be sure to include them.
+
 ### LogSample
 This is a sample Prefab that implements the minimum functionality to stream your favorite logs.
 By default, on Use logs are implemented in `Kmnk/LogStream/Udon/LogSample.cs`.
@@ -42,6 +49,7 @@ MIT License
 Copyright (c) 2022 KMNK
 
 ## Updates
+- 2023/01/XX v1.3.0 Pomodoro timer function ( LogPomodoro ) added
 - 2023/01/15 v1.2.0 Change to UdonSharp v1.1.0 dependent
 - 2022/11/11 v1.1.0 Play sound effect on update log
 - 2022/07/10 v1.0.1 Modify README

@@ -6175,7 +6175,7 @@ MonoBehaviour:
   _logLimit: 100
   _timeFormat: HH:mm:ss
   _initialMessages:
-  - Log Stream v1.2.0
+  - <color='grey'>Log Stream v1.3.0</color>
   _initialName: 
   _logLinesParent: {fileID: 5412911108380618049}
   _dateText: {fileID: 7714657678702138927}
@@ -6233,7 +6233,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: db11a2b50655abd4894cac5f854a1c05, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -6545,7 +6545,7 @@ MonoBehaviour:
   _timeFormat: HH:mm:ss
   _logLimit: 100
   _initialMessages:
-  - Log Stream v1.2.0
+  - <color='grey'>Log Stream v1.3.0</color>
   _initialName: 
 --- !u!1 &5412911108380618049
 GameObject:

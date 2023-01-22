@@ -49,7 +49,7 @@ MIT License
 Copyright (c) 2022 KMNK
 
 ## Updates
-- 2023/01/XX v1.3.0 Pomodoro timer function ( LogPomodoro ) added
+- 2023/01/22 v1.3.0 Pomodoro timer function ( LogPomodoro ) added
 - 2023/01/15 v1.2.0 Change to UdonSharp v1.1.0 dependent
 - 2022/11/11 v1.1.0 Play sound effect on update log
 - 2022/07/10 v1.0.1 Modify README

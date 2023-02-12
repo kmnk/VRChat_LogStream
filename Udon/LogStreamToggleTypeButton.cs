@@ -11,7 +11,7 @@ namespace Kmnk.LogStream.Udon
         Udon.LogStream _logStream = null;
 
         [SerializeField]
-        string _type = "";
+        LogType _type = LogType.None;
 
         [SerializeField]
         Image _buttonImage;
@@ -38,11 +38,11 @@ namespace Kmnk.LogStream.Udon
         {
             if (_logStream == null) { return; }
             _isActive = !_isActive;
-            _logStream.ChangeType(_isActive ? _type : "");
+            _logStream.ChangeType(_isActive ? _type : LogType.None);
             ApplyColor();
         }
 
-        public void OnChangeType(string type)
+        public void OnChangeType(LogType type)
         {
             _isActive = type == _type;
             ApplyColor();

@@ -24,10 +24,9 @@ namespace Kmnk.LogStream
         SerializedProperty _onlyMasterProperty;
         SerializedProperty _pomodoroNameProperty;
         SerializedProperty _breakNameProperty;
-        SerializedProperty _startPomodoroLogFormatProperty;
-        SerializedProperty _endPomodoroLogFormatProperty;
-        SerializedProperty _startBreakLogFormatProperty;
-        SerializedProperty _endBreakLogFormatProperty;
+        SerializedProperty _startTimerLogFormatProperty;
+        SerializedProperty _endTimerLogFormatProperty;
+        SerializedProperty _skipTimerLogFormatProperty;
 
         protected override void FindProperties()
         {
@@ -46,10 +45,9 @@ namespace Kmnk.LogStream
             _soundEffectFarProperty = serializedObject.FindProperty("_soundEffectFar");
             _pomodoroNameProperty = serializedObject.FindProperty("_pomodoroName");
             _breakNameProperty = serializedObject.FindProperty("_breakName");
-            _startPomodoroLogFormatProperty = serializedObject.FindProperty("_startPomodoroLogFormat");
-            _endPomodoroLogFormatProperty = serializedObject.FindProperty("_endPomodoroLogFormat");
-            _startBreakLogFormatProperty = serializedObject.FindProperty("_startBreakLogFormat");
-            _endBreakLogFormatProperty = serializedObject.FindProperty("_endBreakLogFormat");
+            _startTimerLogFormatProperty = serializedObject.FindProperty("_startTimerLogFormat");
+            _endTimerLogFormatProperty = serializedObject.FindProperty("_endTimerLogFormat");
+            _skipTimerLogFormatProperty = serializedObject.FindProperty("_skipTimerLogFormat");
         }
 
         protected override void LayoutGUI()
@@ -92,10 +90,9 @@ namespace Kmnk.LogStream
                 EditorGUILayout.PropertyField(_onlyMasterProperty);
                 EditorGUILayout.PropertyField(_pomodoroNameProperty);
                 EditorGUILayout.PropertyField(_breakNameProperty);
-                EditorGUILayout.PropertyField(_startPomodoroLogFormatProperty);
-                EditorGUILayout.PropertyField(_endPomodoroLogFormatProperty);
-                EditorGUILayout.PropertyField(_startBreakLogFormatProperty);
-                EditorGUILayout.PropertyField(_endBreakLogFormatProperty);
+                EditorGUILayout.PropertyField(_startTimerLogFormatProperty);
+                EditorGUILayout.PropertyField(_endTimerLogFormatProperty);
+                EditorGUILayout.PropertyField(_skipTimerLogFormatProperty);
             }
         }
 
@@ -138,14 +135,13 @@ namespace Kmnk.LogStream
                 = _pomodoroNameProperty.stringValue;
             udonSerializedObject.FindProperty("_breakName").stringValue
                 = _breakNameProperty.stringValue;
-            udonSerializedObject.FindProperty("_startPomodoroLogFormat").stringValue
-                = _startPomodoroLogFormatProperty.stringValue;
-            udonSerializedObject.FindProperty("_endPomodoroLogFormat").stringValue
-                = _endPomodoroLogFormatProperty.stringValue;
-            udonSerializedObject.FindProperty("_startBreakLogFormat").stringValue
-                = _startBreakLogFormatProperty.stringValue;
-            udonSerializedObject.FindProperty("_endBreakLogFormat").stringValue
-                = _endBreakLogFormatProperty.stringValue;
+            udonSerializedObject.FindProperty("_startTimerLogFormat").stringValue
+                = _startTimerLogFormatProperty.stringValue;
+            udonSerializedObject.FindProperty("_endTimerLogFormat").stringValue
+                = _endTimerLogFormatProperty.stringValue;
+            udonSerializedObject.FindProperty("_skipTimerLogFormat").stringValue
+                = _skipTimerLogFormatProperty.stringValue;
+
             udonSerializedObject.ApplyModifiedProperties();
         }
     }

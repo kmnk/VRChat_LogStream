@@ -6,6 +6,6 @@ namespace Kmnk.LogStream.Udon
     {
         public void OnDisplayAllLogLines() {}
 
-        public void OnChangeType(string type) {}
+        public void OnChangeType(LogType type) {}
     }
 }

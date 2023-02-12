@@ -21,7 +21,7 @@ namespace Kmnk.LogStream.Udon
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class LogPomodoro : UdonSharpBehaviour
     {
-        string _type = "POMODORO";
+        LogType _type = LogType.Others;
 
         private Color _activeTextColor = new Color32(255, 255, 255, 255);
         private Color _inactiveTextColor = new Color32(128, 128, 128, 128);
@@ -63,16 +63,13 @@ namespace Kmnk.LogStream.Udon
         string _breakName;
 
         [SerializeField]
-        string _startPomodoroLogFormat;
+        string _startTimerLogFormat;
 
         [SerializeField]
-        string _endPomodoroLogFormat;
+        string _endTimerLogFormat;
 
         [SerializeField]
-        string _startBreakLogFormat;
-
-        [SerializeField]
-        string _endBreakLogFormat;
+        string _skipTimerLogFormat;
 
         [SerializeField]
         Button _toggleButton = null;
@@ -333,6 +330,7 @@ namespace Kmnk.LogStream.Udon
                 case PomodoroStatus.PausedPomodoro:
                     _currentStatus = PomodoroStatus.ToBreak;
                     ResetTimerToBreak();
+                    AddPomodoroSkipMessage();
                     break;
 
                 case PomodoroStatus.ToBreak:
@@ -341,6 +339,7 @@ namespace Kmnk.LogStream.Udon
                     _currentStatus = PomodoroStatus.ToPomodoro;
                     IncrementPomodoroCount();
                     ResetTimerToPomodoro();
+                    AddBreakSkipMessage();
                     break;
             }
 
@@ -534,9 +533,10 @@ namespace Kmnk.LogStream.Udon
             _logStream.AddMessage(
                 _type,
                 string.Format(
-                    _startPomodoroLogFormat,
-                    _pomodoroMinutes,
-                    _pomodoroCount
+                    _startTimerLogFormat,
+                    _pomodoroName,
+                    _pomodoroCount,
+                    _pomodoroMinutes
                 ),
                 ""
             );
@@ -547,9 +547,10 @@ namespace Kmnk.LogStream.Udon
             _logStream.AddMessage(
                 _type,
                 string.Format(
-                    _startBreakLogFormat,
-                    NextBreakMinutes(),
-                    _pomodoroCount
+                    _startTimerLogFormat,
+                    _breakName,
+                    _pomodoroCount,
+                    NextBreakMinutes()
                 ),
                 ""
             );
@@ -560,7 +561,8 @@ namespace Kmnk.LogStream.Udon
             _logStream.AddMessage(
                 _type,
                 string.Format(
-                    _endPomodoroLogFormat,
+                    _endTimerLogFormat,
+                    _pomodoroName,
                     _pomodoroCount
                 ),
                 ""
@@ -572,7 +574,34 @@ namespace Kmnk.LogStream.Udon
             _logStream.AddMessage(
                 _type,
                 string.Format(
-                    _endBreakLogFormat,
+                    _endTimerLogFormat,
+                    _breakName,
+                    _pomodoroCount - 1
+                ),
+                ""
+            );
+        }
+
+        private void AddPomodoroSkipMessage()
+        {
+            _logStream.AddMessage(
+                _type,
+                string.Format(
+                    _skipTimerLogFormat,
+                    _pomodoroName,
+                    _pomodoroCount
+                ),
+                ""
+            );
+        }
+
+        private void AddBreakSkipMessage()
+        {
+            _logStream.AddMessage(
+                _type,
+                string.Format(
+                    _skipTimerLogFormat,
+                    _breakName,
                     _pomodoroCount - 1
                 ),
                 ""

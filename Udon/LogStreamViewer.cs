@@ -30,7 +30,7 @@ namespace Kmnk.LogStream.Udon
 
 
         int _logLimit = 100;
-        private string[] _types = null;
+        private LogType[] _types = null;
         private long[] _ticks = null;
         private string[] _names = null;
         private string[] _messages = null;
@@ -39,7 +39,7 @@ namespace Kmnk.LogStream.Udon
 
         private DateTime _dateTime;
 
-        private string _currentType = "";
+        private LogType _currentType = LogType.None;
 
         void Start()
         {
@@ -106,7 +106,7 @@ namespace Kmnk.LogStream.Udon
             {
                 for (++logIndex; logIndex < _logLimit; logIndex++)
                 {
-                    if (_currentType == "" || _types[logIndex] == _currentType) { break; }
+                    if (_currentType == LogType.None || _types[logIndex] == _currentType) { break; }
                 }
                 DisplayLogLine(i, logIndex < _logLimit ? logIndex : -1);
             }
@@ -121,7 +121,7 @@ namespace Kmnk.LogStream.Udon
             );
         }
 
-        public void ChangeType(string type)
+        public void ChangeType(LogType type)
         {
             _currentType = type;        
             DisplayAllLogLines();

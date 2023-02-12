@@ -19,7 +19,7 @@ namespace Kmnk.LogStream
 
         [SerializeField]
         [Tooltip("長い休憩の時間を分単位で指定します")]
-        int _longBreakMinutes = 30;
+        int _longBreakMinutes = 15;
 
         [SerializeField]
         [Tooltip("長い休憩までのポモドーロ数を指定します")]
@@ -62,20 +62,16 @@ namespace Kmnk.LogStream
         string _breakName = "<color='green'>Break</color>";
 
         [SerializeField]
-        [Tooltip("ポモドーロ開始のメッセージを設定します。 {0} には 1 ポモドーロ時間の分が、 {1} にはポモドーロ数が入ります（必須）")]
-        string _startPomodoroLogFormat = "Start {0} minutes Pomodoro {1}";
+        [Tooltip("タイマー開始のメッセージを設定します。 {0} にはポモドーロ or 休憩の名前が、 {1} にはポモドーロ数が、 {2} にはタイマーの分数が入ります（必須）")]
+        string _startTimerLogFormat = "<color='#ff9900'>[START]</color> {0} #{1} : {2} minutes";
 
         [SerializeField]
-        [Tooltip("ポモドーロ終了のメッセージを設定します。 {0} にはポモドーロ数が入ります（必須）")]
-        string _endPomodoroLogFormat = "End Pomodoro {0}";
+        [Tooltip("タイマー終了のメッセージを設定します。 {0} にはポモドーロ or 休憩の名前が、 {1} にはポモドーロ数が入ります（必須）")]
+        string _endTimerLogFormat = "<color='#ff9900'>[End]</color> {0} #{1}";
 
         [SerializeField]
-        [Tooltip("休憩開始のメッセージを設定します。 {0} には休憩時間の分が、 {1} にはポモドーロ数が入ります（必須）")]
-        string _startBreakLogFormat = "Start {0} minutes Break {1}";
-
-        [SerializeField]
-        [Tooltip("休憩終了のメッセージを設定します。 {0} にはポモドーロ数が入ります（必須）")]
-        string _endBreakLogFormat = "End Break {0}";
+        [Tooltip("タイマースキップのメッセージを設定します。 {0} にはポモドーロ or 休憩の名前が、 {1} にはポモドーロ数が入ります（必須）")]
+        string _skipTimerLogFormat = "<color='#ff9900'>[Skip]</color> {0} #{1}";
 #pragma warning restore CS0414
     }
 }

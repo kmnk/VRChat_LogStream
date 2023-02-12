@@ -926,23 +926,18 @@ MonoBehaviour:
   _logStream: {fileID: 0}
   _pomodoroMinutes: 25
   _shortBreakMinutes: 5
-  _longBreakMinutes: 30
+  _longBreakMinutes: 15
   _longBreakInterval: 4
   _autoContinue: 0
   _autoContinueIntervalSeconds: 5
   _soundEffectAudioSource: {fileID: 4445907260901679852}
   _soundEffectEnabled: 1
-  _onlyMaster: 1
+  _onlyMaster: 0
   _pomodoroName: <color='red'>Pomodoro</color>
   _breakName: <color='green'>Break</color>
-  _startPomodoroLogFormat: <color='#ff9900'>[START]</color> {0} minutes <color='red'>Pomodoro</color>
-    #{1}
-  _endPomodoroLogFormat: <color='#ff9900'>[END]</color> <color='red'>Pomodoro</color>
-    #{0}
-  _startBreakLogFormat: <color='#ff9900'>[START]</color> {0} minutes <color='green'>Break</color>
-    #{1}
-  _endBreakLogFormat: <color='#ff9900'>[END]</color> <color='green'>Break</color>
-    #{0}
+  _startTimerLogFormat: '<color=''#ff9900''>[START]</color> {0} #{1} : {2} minutes'
+  _endTimerLogFormat: <color='#ff9900'>[End]</color> {0} #{1}
+  _skipTimerLogFormat: <color='#ff9900'>[Skip]</color> {0} #{1}
   _toggleButton: {fileID: 1493006455}
   _toggleButtonText: {fileID: 911779306}
   _skipButton: {fileID: 1264569567}
@@ -1192,7 +1187,7 @@ MonoBehaviour:
   _id: 0
   _pomodoroMinutes: 25
   _shortBreakMinutes: 5
-  _longBreakMinutes: 30
+  _longBreakMinutes: 15
   _longBreakInterval: 4
   _autoContinue: 0
   _autoContinueIntervalSeconds: 5
@@ -1201,17 +1196,12 @@ MonoBehaviour:
   _soundEffectEnabled: 1
   _soundEffectGain: 10
   _soundEffectFar: 10
-  _onlyMaster: 1
+  _onlyMaster: 0
   _pomodoroName: <color='red'>Pomodoro</color>
   _breakName: <color='green'>Break</color>
-  _startPomodoroLogFormat: <color='#ff9900'>[START]</color> {0} minutes <color='red'>Pomodoro</color>
-    #{1}
-  _endPomodoroLogFormat: <color='#ff9900'>[END]</color> <color='red'>Pomodoro</color>
-    #{0}
-  _startBreakLogFormat: <color='#ff9900'>[START]</color> {0} minutes <color='green'>Break</color>
-    #{1}
-  _endBreakLogFormat: <color='#ff9900'>[END]</color> <color='green'>Break</color>
-    #{0}
+  _startTimerLogFormat: '<color=''#ff9900''>[START]</color> {0} #{1} : {2} minutes'
+  _endTimerLogFormat: <color='#ff9900'>[End]</color> {0} #{1}
+  _skipTimerLogFormat: <color='#ff9900'>[Skip]</color> {0} #{1}
 --- !u!1 &5012753956071052031
 GameObject:
   m_ObjectHideFlags: 0

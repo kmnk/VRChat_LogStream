@@ -9,7 +9,7 @@ namespace Kmnk.LogStream.Udon
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LogTriggerEnterExit : UdonSharpBehaviour
     {
-        string _type = "";
+        LogType _type = LogType.Notification;
 
         [SerializeField]
         Udon.LogStream _logStream = null;

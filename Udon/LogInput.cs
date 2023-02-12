@@ -7,7 +7,7 @@ namespace Kmnk.LogStream.Udon
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LogInput : UdonSharpBehaviour
     {
-        string _type = "INPUT";
+        LogType _type = LogType.Message;
 
         [SerializeField]
         Udon.LogStream _logStream = null;

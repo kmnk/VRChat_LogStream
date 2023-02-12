@@ -9,7 +9,7 @@ namespace Kmnk.LogStream.Udon
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LogJoinLeave : UdonSharpBehaviour
     {
-        string _type = "JOIN/LEAVE";
+        LogType _type = LogType.Notification;
 
         [SerializeField]
         Udon.LogStream _logStream = null;

@@ -43,7 +43,7 @@ namespace Kmnk.LogStream.Udon
         bool _soundEffectEnabled = false;
 
         [UdonSynced]
-        private string[] _types = null;
+        private LogType[] _types = null;
 
         [UdonSynced]
         private long[] _ticks = null;
@@ -58,7 +58,7 @@ namespace Kmnk.LogStream.Udon
 
         private DateTime _dateTime;
 
-        private string _currentType = "";
+        private LogType _currentType = LogType.None;
 
         private void Start()
         {
@@ -107,7 +107,7 @@ namespace Kmnk.LogStream.Udon
             return _logLimit;
         }
 
-        public string[] GetTypes()
+        public LogType[] GetTypes()
         {
             return _types;
         }
@@ -146,14 +146,14 @@ namespace Kmnk.LogStream.Udon
 
         private void InitializeUdonSyncedFields()
         {
-            _types = new string[_logLimit];
+            _types = new LogType[_logLimit];
             _ticks = new long[_logLimit];
             _names = new string[_logLimit];
             _messages = new string[_logLimit];
 
             for (var i = 0; i < _logLimit; i++)
             {
-                _types[i] = string.Empty;
+                _types[i] = LogType.None;
                 _ticks[i] = 0;
                 if (_initialMessages != null && _initialMessages.Length > i)
                 {
@@ -177,7 +177,7 @@ namespace Kmnk.LogStream.Udon
             return true;
         }
 
-        public void AddMessage(string type, string message, string playerName)
+        public void AddMessage(LogType type, string message, string playerName)
         {
             if (string.IsNullOrEmpty(message)) { return; }
             if (!HasAllUdonSyncedFieldInitialized()) { return; }
@@ -212,7 +212,7 @@ namespace Kmnk.LogStream.Udon
             {
                 for (++logIndex; logIndex < _logLimit; logIndex++)
                 {
-                    if (_currentType == "" || _types[logIndex] == _currentType) { break; }
+                    if (_currentType == LogType.None || _types[logIndex] == _currentType) { break; }
                 }
                 DisplayLogLine(i, logIndex < _logLimit ? logIndex : -1);
             }
@@ -242,7 +242,7 @@ namespace Kmnk.LogStream.Udon
             _soundEffectAudioSource.Play();
         }
 
-        public void ChangeType(string type)
+        public void ChangeType(LogType type)
         {
             _currentType = type;        
             DisplayAllLogLines();

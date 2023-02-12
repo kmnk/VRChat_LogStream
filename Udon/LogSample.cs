@@ -4,7 +4,7 @@ using VRC.SDKBase;
 
 public class LogSample : UdonSharpBehaviour
 {
-    string _type = "SAMPLE";
+    Kmnk.LogStream.Udon.LogType _type = Kmnk.LogStream.Udon.LogType.Others;
 
     [SerializeField]
     [Tooltip("ワールドに設置した LogStream Prefab の Udon オブジェクトをドラッグ＆ドロップしてください")]

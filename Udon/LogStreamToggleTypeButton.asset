@@ -62,7 +62,7 @@ MonoBehaviour:
       Data: 3|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: Kmnk.LogStream.Udon.LogStream, Assembly-CSharp
+      Data: Kmnk.LogStream.Udon.LogStreamBase, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 

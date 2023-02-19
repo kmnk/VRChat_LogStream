@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using UdonSharp;
 using UnityEngine;
-using UnityEngine.UI;
 using VRC.SDKBase;
 
 using Kmnk.Core.Udon;
@@ -10,7 +8,7 @@ using Kmnk.Core.Udon;
 namespace Kmnk.LogStream.Udon
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class LogStream : UdonSharpBehaviour
+    public class LogStream : LogStreamBase
     {
         [SerializeField]
         int _logLimit = 100;
@@ -23,18 +21,6 @@ namespace Kmnk.LogStream.Udon
 
         [SerializeField]
         string _initialName = "";
-
-        [SerializeField]
-        GameObject _logLinesParent = null;
-
-        [SerializeField]
-        Text _dateText = null;
-
-        [SerializeField]
-        Text _timeText = null;
-
-        [SerializeField]
-        Text _playersCountText = null;
 
         [SerializeField]
         AudioSource _soundEffectAudioSource = null;
@@ -54,57 +40,14 @@ namespace Kmnk.LogStream.Udon
         [UdonSynced]
         private string[] _messages = null;
 
-        private Udon.LogLine[] _logLines = null;
-
-        private DateTime _dateTime;
-
-        private LogType _currentType = LogType.None;
-
-        private void Start()
-        {
-            _logLines = _logLinesParent.GetComponentsInChildren<Udon.LogLine>();
-            InitializeLogLines();
-
-            if (Util.AmIOwner(gameObject))
-            {
-                InitializeUdonSyncedFields();
-                RequestSerialization();
-            }
-
-            DisplayAllLogLines();
-
-            _dateTime = DateTime.UtcNow;
-            UpdateHeader();
-        }
-
-        private void UpdateHeader()
-        {
-            var now = DateTime.UtcNow;
-            _dateText.text = now.ToLocalTime().ToString("yyyy/MM/dd");
-            _timeText.text = now.ToLocalTime().ToString("HH:mm:ss");
-            _playersCountText.text = VRCPlayerApi.GetPlayerCount().ToString();
-        }
-
-        private void Update()
-        {
-            if (_dateTime.Second != DateTime.UtcNow.Second)
-            {
-                UpdateHeader();
-            }
-            _dateTime = DateTime.UtcNow;
-        }
-
-        public override void OnDeserialization()
-        {
-            if (!HasAllLogLinesInitialized()) { return; }
-            if (!HasAllUdonSyncedFieldInitialized()) { return; }
-            DisplayAllLogLines();
-            PlaySoundEffect();
-        }
-
         public int GetLogLimit()
         {
             return _logLimit;
+        }
+
+        public string GetTimeFormat()
+        {
+            return _timeFormat;
         }
 
         public LogType[] GetTypes()
@@ -127,21 +70,31 @@ namespace Kmnk.LogStream.Udon
             return _ticks;
         }
 
-        private void InitializeLogLines()
+        protected override void Start()
         {
-            foreach (var l in _logLines)
-            {
-                l.Initialize();
-            }
+            base.Start();
+
+            DisplayAllLogLines();
         }
 
-        private bool HasAllLogLinesInitialized()
+        protected override void OnStartIfOwner()
         {
-            foreach (var l in _logLines)
-            {
-                if (!l.HasInitialized()) { return false; }
-            }
-            return true;
+            base.OnStartIfOwner();
+            InitializeUdonSyncedFields();
+            RequestSerialization();
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+        }
+
+        public override void OnDeserialization()
+        {
+            if (!HasAllLogLinesInitialized()) { return; }
+            if (!HasAllUdonSyncedFieldInitialized()) { return; }
+            DisplayAllLogLines();
+            PlaySoundEffect();
         }
 
         private void InitializeUdonSyncedFields()
@@ -201,38 +154,10 @@ namespace Kmnk.LogStream.Udon
             PlaySoundEffect();
         }
 
-        private void DisplayAllLogLines()
+        protected override void DisplayAllLogLines()
         {
             if (!HasAllUdonSyncedFieldInitialized()) { return; }
-            if (!HasAllLogLinesInitialized()) { return; }
-
-            // maybe can write cooler
-            var logIndex = -1;
-            for (var i = 0; i < _logLines.Length; i++)
-            {
-                for (++logIndex; logIndex < _logLimit; logIndex++)
-                {
-                    if (_currentType == LogType.None || _types[logIndex] == _currentType) { break; }
-                }
-                DisplayLogLine(i, logIndex < _logLimit ? logIndex : -1);
-            }
-
-            if (_evnetListeners != null)
-            {
-                foreach (var listener in _evnetListeners)
-                {
-                    listener.OnDisplayAllLogLines();
-                }
-            }
-        }
-
-        private void DisplayLogLine(int lineIndex, int logIndex)
-        {
-            _logLines[lineIndex].Display(
-                logIndex >= 0 ? _messages[logIndex] : string.Empty,
-                logIndex >= 0 ? _names[logIndex] : string.Empty,
-                FormatTicks(logIndex >= 0 ? _ticks[logIndex] : 0)
-            );
+            base.DisplayAllLogLines();
         }
 
         private void PlaySoundEffect()
@@ -240,49 +165,6 @@ namespace Kmnk.LogStream.Udon
             if (!_soundEffectEnabled) { return; }
             if (_soundEffectAudioSource == null) { return; }
             _soundEffectAudioSource.Play();
-        }
-
-        public void ChangeType(LogType type)
-        {
-            _currentType = type;        
-            DisplayAllLogLines();
-            if (_evnetListeners != null)
-            {
-                foreach (var listener in _evnetListeners)
-                {
-                    listener.OnChangeType(_currentType);
-                }
-            }
-        }
-
-        private string FormatTicks(long ticks)
-        {
-            if (ticks == 0) { return string.Empty; }
-            return (new DateTime(ticks))
-                .ToLocalTime()
-                .ToString(_timeFormat, CultureInfo.InvariantCulture);
-        }
-
-        private LogStreamEventListener[] _evnetListeners;
-        public void AddEventListener(UdonSharpBehaviour listener)
-        {
-            if (_evnetListeners == null)
-            {
-                _evnetListeners
-                    = new LogStreamEventListener[]
-                    {
-                         (LogStreamEventListener)listener
-                    };
-            }
-            else
-            {
-                var newArray
-                    = new LogStreamEventListener[_evnetListeners.Length + 1];
-                _evnetListeners.CopyTo(newArray, 0);
-                newArray[newArray.Length - 1]
-                    = (LogStreamEventListener)listener;
-                _evnetListeners = newArray;
-            }
         }
     }
 }

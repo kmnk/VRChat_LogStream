@@ -5,12 +5,9 @@ using UnityEngine.UI;
 namespace Kmnk.LogStream.Udon
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class LogInput : UdonSharpBehaviour
+    public class LogInput : LogWriteBase
     {
         LogType _type = LogType.Message;
-
-        [SerializeField]
-        Udon.LogStream _logStream = null;
 
         [SerializeField]
         Button _activateButton = null;
@@ -23,7 +20,7 @@ namespace Kmnk.LogStream.Udon
 
         public void AddMessage()
         {
-            _logStream.AddMessage(_type, _inputField.text, null);
+            AddMessage(_type, _inputField.text, null);
         }
 
         public void DeactivateInput()

@@ -12,10 +12,6 @@ namespace Kmnk.LogStream
         [SerializeField]
         [Tooltip("ボードのピックアップ ON/OFF を切り替えます")]
         bool _pickupable = true;
-
-        [SerializeField]
-        [Tooltip("ログの時間部分のフォーマットを指定します")]
-        string _timeFormat = "HH:mm:ss";
 #pragma warning restore CS0414
     }
 }

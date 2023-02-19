@@ -7,12 +7,9 @@ using Kmnk.Core.Udon;
 namespace Kmnk.LogStream.Udon
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class LogTriggerEnterExit : UdonSharpBehaviour
+    public class LogTriggerEnterExit : LogWriteBase
     {
         LogType _type = LogType.Notification;
-
-        [SerializeField]
-        Udon.LogStream _logStream = null;
 
         [SerializeField]
         string _enterLogFormat = "{0} has entered";
@@ -20,17 +17,10 @@ namespace Kmnk.LogStream.Udon
         [SerializeField]
         string _exitLogFormat = "{0} has exited";
 
-        private void Start()
-        {
-            if (_logStream == null) { return; }
-            _logStream.AddEventListener(this);
-        }
-
         public override void OnPlayerTriggerEnter(VRCPlayerApi player)
         {
             if (!Util.AmIOwner(gameObject)) { return; }
-            if (_logStream == null) { return; }
-            _logStream.AddMessage(
+            AddMessage(
                 _type,
                 string.Format(_enterLogFormat, player.displayName),
                 ""
@@ -40,8 +30,7 @@ namespace Kmnk.LogStream.Udon
         public override void OnPlayerTriggerExit(VRCPlayerApi player)
         {
             if (!Util.AmIOwner(gameObject)) { return; }
-            if (_logStream == null) { return; }
-            _logStream.AddMessage(
+            AddMessage(
                 _type,
                 string.Format(_exitLogFormat, player.displayName),
                 ""

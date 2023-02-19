@@ -12,14 +12,12 @@ namespace Kmnk.LogStream
     {
         SerializedProperty _idProperty;
         SerializedProperty _pickupableProperty;
-        SerializedProperty _timeFormatProperty;
 
         protected override void FindProperties()
         {
             _target = target as LogStreamViewer;
             _idProperty = serializedObject.FindProperty("_id");
             _pickupableProperty = serializedObject.FindProperty("_pickupable");
-            _timeFormatProperty = serializedObject.FindProperty("_timeFormat");
         }
 
         protected override void LayoutGUI()
@@ -36,7 +34,6 @@ namespace Kmnk.LogStream
             {
                 EditorGUILayout.LabelField("Option", BoxTitleStyle());
                 EditorGUILayout.PropertyField(_pickupableProperty);
-                EditorGUILayout.PropertyField(_timeFormatProperty);
             }
         }
 
@@ -55,8 +52,6 @@ namespace Kmnk.LogStream
             var udonSerializedObject = new SerializedObject(udon);
             udonSerializedObject.FindProperty("_logStream").objectReferenceValue
                 = logStream.GetComponentInChildren<Udon.LogStream>();
-            udonSerializedObject.FindProperty("_timeFormat").stringValue
-                = _timeFormatProperty.stringValue;
             udonSerializedObject.ApplyModifiedProperties();
         }
     }

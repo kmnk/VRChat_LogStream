@@ -6172,15 +6172,16 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 3942491935627893744}
+  _logStream: {fileID: 8052487410385260148}
+  _logLinesParent: {fileID: 5412911108380618049}
+  _dateText: {fileID: 7714657678702138927}
+  _timeText: {fileID: 4427209245181392872}
+  _playersCountText: {fileID: 5697495001041788852}
   _logLimit: 100
   _timeFormat: HH:mm:ss
   _initialMessages:
   - <color='grey'>Log Stream v1.3.0</color>
   _initialName: 
-  _logLinesParent: {fileID: 5412911108380618049}
-  _dateText: {fileID: 7714657678702138927}
-  _timeText: {fileID: 4427209245181392872}
-  _playersCountText: {fileID: 5697495001041788852}
   _soundEffectAudioSource: {fileID: 8354540297477832933}
   _soundEffectEnabled: 1
 --- !u!114 &3942491935627893744

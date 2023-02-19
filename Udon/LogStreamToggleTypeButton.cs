@@ -8,7 +8,7 @@ namespace Kmnk.LogStream.Udon
     public class LogStreamToggleTypeButton : UdonSharpBehaviour
     {
         [SerializeField]
-        Udon.LogStream _logStream = null;
+        LogStreamBase _logStream = null;
 
         [SerializeField]
         LogType _type = LogType.None;

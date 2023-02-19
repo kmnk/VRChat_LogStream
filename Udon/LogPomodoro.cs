@@ -19,15 +19,12 @@ namespace Kmnk.LogStream.Udon
     }
 
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class LogPomodoro : UdonSharpBehaviour
+    public class LogPomodoro : LogWriteBase
     {
         LogType _type = LogType.Others;
 
         private Color _activeTextColor = new Color32(255, 255, 255, 255);
         private Color _inactiveTextColor = new Color32(128, 128, 128, 128);
-
-        [SerializeField]
-        Udon.LogStream _logStream = null;
 
         [SerializeField]
         int _pomodoroMinutes;
@@ -530,7 +527,7 @@ namespace Kmnk.LogStream.Udon
 
         private void AddPomodoroStartMessage()
         {
-            _logStream.AddMessage(
+            AddMessage(
                 _type,
                 string.Format(
                     _startTimerLogFormat,
@@ -544,7 +541,7 @@ namespace Kmnk.LogStream.Udon
 
         private void AddBreakStartMessage()
         {
-            _logStream.AddMessage(
+            AddMessage(
                 _type,
                 string.Format(
                     _startTimerLogFormat,
@@ -558,7 +555,7 @@ namespace Kmnk.LogStream.Udon
 
         private void AddPomodoroEndMessage()
         {
-            _logStream.AddMessage(
+            AddMessage(
                 _type,
                 string.Format(
                     _endTimerLogFormat,
@@ -571,7 +568,7 @@ namespace Kmnk.LogStream.Udon
 
         private void AddBreakEndMessage()
         {
-            _logStream.AddMessage(
+            AddMessage(
                 _type,
                 string.Format(
                     _endTimerLogFormat,
@@ -584,7 +581,7 @@ namespace Kmnk.LogStream.Udon
 
         private void AddPomodoroSkipMessage()
         {
-            _logStream.AddMessage(
+            AddMessage(
                 _type,
                 string.Format(
                     _skipTimerLogFormat,
@@ -597,7 +594,7 @@ namespace Kmnk.LogStream.Udon
 
         private void AddBreakSkipMessage()
         {
-            _logStream.AddMessage(
+            AddMessage(
                 _type,
                 string.Format(
                     _skipTimerLogFormat,

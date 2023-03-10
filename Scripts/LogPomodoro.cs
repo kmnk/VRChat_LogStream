@@ -72,6 +72,10 @@ namespace Kmnk.LogStream
         [SerializeField]
         [Tooltip("タイマースキップのメッセージを設定します。 {0} にはポモドーロ or 休憩の名前が、 {1} にはポモドーロ数が入ります（必須）")]
         string _skipTimerLogFormat = "<color='#ff9900'>[Skip]</color> {0} #{1}";
+
+        [SerializeField]
+        [Tooltip("タイマーリセットのメッセージを設定します。 {0} にはポモドーロの名前が入ります（必須）")]
+        string _resetTimerLogFormat = "<color='#ff9900'>[Reset]</color> {0}";
 #pragma warning restore CS0414
     }
 }

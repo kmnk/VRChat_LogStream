@@ -938,6 +938,7 @@ MonoBehaviour:
   _startTimerLogFormat: '<color=''#ff9900''>[START]</color> {0} #{1} : {2} minutes'
   _endTimerLogFormat: <color='#ff9900'>[End]</color> {0} #{1}
   _skipTimerLogFormat: <color='#ff9900'>[Skip]</color> {0} #{1}
+  _resetTimerLogFormat: <color='#ff9900'>[Reset]</color> {0}
   _toggleButton: {fileID: 1493006455}
   _toggleButtonText: {fileID: 911779306}
   _skipButton: {fileID: 1264569567}
@@ -1202,6 +1203,7 @@ MonoBehaviour:
   _startTimerLogFormat: '<color=''#ff9900''>[START]</color> {0} #{1} : {2} minutes'
   _endTimerLogFormat: <color='#ff9900'>[End]</color> {0} #{1}
   _skipTimerLogFormat: <color='#ff9900'>[Skip]</color> {0} #{1}
+  _resetTimerLogFormat: <color='#ff9900'>[Reset]</color> {0}
 --- !u!1 &5012753956071052031
 GameObject:
   m_ObjectHideFlags: 0

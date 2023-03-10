@@ -69,6 +69,9 @@ namespace Kmnk.LogStream.Udon
         string _skipTimerLogFormat;
 
         [SerializeField]
+        string _resetTimerLogFormat;
+
+        [SerializeField]
         Button _toggleButton = null;
 
         [SerializeField]
@@ -352,6 +355,7 @@ namespace Kmnk.LogStream.Udon
             _currentStatus = PomodoroStatus.NotStarted;
             ResetPomodoroCount();
             ResetTimerToPomodoro();
+            AddResetMessage();
 
             RequestSerialization();
             OnUdonSyncedFieldsChange();
@@ -600,6 +604,18 @@ namespace Kmnk.LogStream.Udon
                     _skipTimerLogFormat,
                     _breakName,
                     _pomodoroCount - 1
+                ),
+                ""
+            );
+        }
+
+        private void AddResetMessage()
+        {
+            AddMessage(
+                _type,
+                string.Format(
+                    _resetTimerLogFormat,
+                    _pomodoroName
                 ),
                 ""
             );

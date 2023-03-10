@@ -42,7 +42,7 @@ I have written a brief comment (in Japanese) so that you can refer to it when yo
 
 
 ## Notes
-- I have confirmed that this works with Unity 2019.4.31f1, VRChat SDK Base 3.1.10, VRChat SDK Worlds 3.1.10, UdonSharp 1.1.5
+- I have confirmed that this works with Unity 2019.4.31f1, VRChat SDK Base 3.1.11, VRChat SDK Worlds 3.1.11, UdonSharp 1.1.7
 
 ## License
 MIT License

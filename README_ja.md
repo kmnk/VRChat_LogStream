@@ -42,7 +42,7 @@ Start の `{0}` と `{1}` 、 End の `{0}` は必須なので、必ず入れる
 
 
 ## その他
-- Unity 2019.4.31f1, VRChat SDK Base 3.1.10, VRChat SDK Worlds 3.1.10, UdonSharp 1.1.5 で動作を確認しています
+- Unity 2019.4.31f1, VRChat SDK Base 3.1.11, VRChat SDK Worlds 3.1.11, UdonSharp 1.1.7 で動作を確認しています
 
 ## License
 MIT License

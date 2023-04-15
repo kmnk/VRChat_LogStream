@@ -49,6 +49,7 @@ MIT License
 Copyright (c) 2022 KMNK
 
 ## Updates
+- 2023/04/15 v1.3.2 Master only mode is now displayed on button
 - 2023/03/11 v1.3.1 Send message when resetting Pomodoro. Also, did some refactoring
 - 2023/01/22 v1.3.0 Pomodoro timer function ( LogPomodoro ) added
 - 2023/01/15 v1.2.0 Change to UdonSharp v1.1.0 dependent

@@ -466,17 +466,7 @@ namespace Kmnk.LogStream.Udon
                     break;
             }
 
-            switch(_currentStatus)
-            {
-                case PomodoroStatus.InPomodoro:
-                case PomodoroStatus.InBreak:
-                    _toggleButtonText.text = "PAUSE";
-                    break;
-
-                default:
-                    _toggleButtonText.text = "START";
-                    break;
-            }
+            ResetButtonText();
         }
 
         private void OnStatusChange()
@@ -506,6 +496,28 @@ namespace Kmnk.LogStream.Udon
             SetToggleButtonActive(isActive);
             SetSkipButtonActive(isActive);
             SetResetButtonActive(isActive);
+            ResetButtonText();
+        }
+
+        private void ResetButtonText()
+        {
+            if (_onlyMaster && !Util.AmIOwner(gameObject))
+            {
+                _toggleButtonText.text = "MASTER ONLY";
+                return;
+            }
+
+            switch(_currentStatus)
+            {
+                case PomodoroStatus.InPomodoro:
+                case PomodoroStatus.InBreak:
+                    _toggleButtonText.text = "PAUSE";
+                    break;
+
+                default:
+                    _toggleButtonText.text = "START";
+                    break;
+            }
         }
 
         private void SetToggleButtonActive(bool active)

@@ -43,14 +43,14 @@ namespace Kmnk.LogStream
         {
             FindProperties();
 
-            var logStream = LogStreamEditor.GetLogStream(_idProperty.intValue);
+            var core = LogStreamCoreEditor.GetCore(_idProperty.intValue);
 
-            if (logStream == null) { return; }
+            if (core == null) { return; }
 
             var udon = _target.GetComponentInChildren<Udon.LogTriggerEnterExit>();
             var udonSerializedObject = new SerializedObject(udon);
-            udonSerializedObject.FindProperty("_logStream").objectReferenceValue
-                = logStream.GetComponentInChildren<Udon.LogStream>();
+            udonSerializedObject.FindProperty("_core").objectReferenceValue
+                = core.GetComponentInChildren<Udon.LogStreamCore>();
             udonSerializedObject.FindProperty("_enterLogFormat").stringValue
                 = _enterLogFormatProperty.stringValue;
             udonSerializedObject.FindProperty("_exitLogFormat").stringValue

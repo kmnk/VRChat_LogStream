@@ -60,9 +60,9 @@ namespace Kmnk.LogStream
         {
             FindProperties();
 
-            var logStream = LogStreamEditor.GetLogStream(_idProperty.intValue);
+            var core = LogStreamCoreEditor.GetCore(_idProperty.intValue);
 
-            if (logStream == null) { return; }
+            if (core == null) { return; }
 
             var templateMessages = Enumerable.Range(0, _templateMessagesProperty.arraySize)
                 .Select(x => _templateMessagesProperty.GetArrayElementAtIndex(x))
@@ -74,8 +74,8 @@ namespace Kmnk.LogStream
 
             var udon = _target.GetComponentInChildren<Udon.LogInput>();
             var udonSerializedObject = new SerializedObject(udon);
-            udonSerializedObject.FindProperty("_logStream").objectReferenceValue
-                = logStream.GetComponentInChildren<Udon.LogStream>();
+            udonSerializedObject.FindProperty("_core").objectReferenceValue
+                = core.GetComponentInChildren<Udon.LogStreamCore>();
             udonSerializedObject.ApplyModifiedProperties();
 
             if (IsActiveInHierarchy() && !IsInPrefabMode())

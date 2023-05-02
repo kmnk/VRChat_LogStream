@@ -110,19 +110,19 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: _logStream
+      Data: _core
     - Name: $v
       Entry: 7
       Data: 6|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: _logStream
+      Data: _core
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 7|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: Kmnk.LogStream.Udon.LogStream, Assembly-CSharp
+      Data: Kmnk.LogStream.Udon.LogStreamCore, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 

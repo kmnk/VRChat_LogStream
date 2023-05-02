@@ -12,17 +12,17 @@ namespace Kmnk.LogStream.Udon
         LogType _type = LogType.Notification;
 
         [SerializeField]
-        string _joinLogFormat = "<color='green'>>>JOIN>></color> {0}";
+        string _joinLog = "<color='green'>>>JOIN>></color> {{name}}";
 
         [SerializeField]
-        string _leaveLogFormat = "<color='red'><LEAVE<</color> {0}";
+        string _leaveLog = "<color='red'><LEAVE<</color> {{name}}";
 
         public override void OnPlayerJoined(VRCPlayerApi player)  
         {
             if (!Util.AmIOwner(gameObject)) { return; }
             AddMessage(
                 _type,
-                string.Format(_joinLogFormat, player.displayName),
+                _joinLog.Replace("{{name}}", player.displayName),
                 ""
             );
         }
@@ -32,7 +32,7 @@ namespace Kmnk.LogStream.Udon
             if (!Util.AmIOwner(gameObject)) { return; }
             AddMessage(
                 _type,
-                string.Format(_leaveLogFormat, player.displayName),
+                _leaveLog.Replace("{{name}}", player.displayName),
                 ""
             );
         }

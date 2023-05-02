@@ -8,7 +8,7 @@ using Kmnk.Core.Udon;
 namespace Kmnk.LogStream.Udon
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class LogStream : LogStreamBase
+    public class LogStreamCore : UdonSharpBehaviour
     {
         [SerializeField]
         int _logLimit = 100;
@@ -70,31 +70,54 @@ namespace Kmnk.LogStream.Udon
             return _ticks;
         }
 
-        protected override void Start()
-        {
-            base.Start();
-
-            DisplayAllLogLines();
-        }
-
-        protected override void OnStartIfOwner()
-        {
-            base.OnStartIfOwner();
-            InitializeUdonSyncedFields();
-            RequestSerialization();
-        }
-
-        protected override void Update()
-        {
-            base.Update();
+        private void Start() {
+            if (Util.AmIOwner(gameObject))
+            {
+                InitializeUdonSyncedFields();
+                RequestSerialization();
+                InvokeOnDisplayAllLogLines();
+            }
         }
 
         public override void OnDeserialization()
         {
-            if (!HasAllLogLinesInitialized()) { return; }
+            base.OnDeserialization();
             if (!HasAllUdonSyncedFieldInitialized()) { return; }
-            DisplayAllLogLines();
+            InvokeOnDisplayAllLogLines();
             PlaySoundEffect();
+        }
+
+        protected LogStreamEventListener[] _eventListeners;
+        public void AddEventListener(UdonSharpBehaviour listener)
+        {
+            if (_eventListeners == null)
+            {
+                _eventListeners
+                    = new LogStreamEventListener[]
+                    {
+                         (LogStreamEventListener)listener
+                    };
+            }
+            else
+            {
+                var newArray
+                    = new LogStreamEventListener[_eventListeners.Length + 1];
+                _eventListeners.CopyTo(newArray, 0);
+                newArray[newArray.Length - 1]
+                    = (LogStreamEventListener)listener;
+                _eventListeners = newArray;
+            }
+        }
+
+        protected virtual void InvokeOnDisplayAllLogLines()
+        {
+            if (_eventListeners != null)
+            {
+                foreach (var listener in _eventListeners)
+                {
+                    listener.OnDisplayAllLogLines();
+                }
+            }
         }
 
         private void InitializeUdonSyncedFields()
@@ -121,7 +144,7 @@ namespace Kmnk.LogStream.Udon
             }
         }
 
-        private bool HasAllUdonSyncedFieldInitialized()
+        public bool HasAllUdonSyncedFieldInitialized()
         {
             if (_types == null) { return false; }
             if (_ticks == null) { return false; }
@@ -150,14 +173,8 @@ namespace Kmnk.LogStream.Udon
             _messages[0] = message;
 
             RequestSerialization();
-            DisplayAllLogLines();
+            InvokeOnDisplayAllLogLines();
             PlaySoundEffect();
-        }
-
-        protected override void DisplayAllLogLines()
-        {
-            if (!HasAllUdonSyncedFieldInitialized()) { return; }
-            base.DisplayAllLogLines();
         }
 
         private void PlaySoundEffect()

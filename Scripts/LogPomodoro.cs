@@ -62,20 +62,20 @@ namespace Kmnk.LogStream
         string _breakName = "<color='green'>Break</color>";
 
         [SerializeField]
-        [Tooltip("タイマー開始のメッセージを設定します。 {0} にはポモドーロ or 休憩の名前が、 {1} にはポモドーロ数が、 {2} にはタイマーの分数が入ります（必須）")]
-        string _startTimerLogFormat = "<color='#ff9900'>[START]</color> {0} #{1} : {2} minutes";
+        [Tooltip("タイマー開始のメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が、 {{count}} にはポモドーロ数が、 {{m}} にはタイマーの分数が入ります")]
+        string _startTimerLog = "<color='#ff9900'>[START]</color> {{status}} #{{count}} : {{m}} minutes";
 
         [SerializeField]
-        [Tooltip("タイマー終了のメッセージを設定します。 {0} にはポモドーロ or 休憩の名前が、 {1} にはポモドーロ数が入ります（必須）")]
-        string _endTimerLogFormat = "<color='#ff9900'>[End]</color> {0} #{1}";
+        [Tooltip("タイマー終了のメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が、 {{count}} にはポモドーロ数が入ります")]
+        string _endTimerLog = "<color='#ff9900'>[End]</color> {{status}} #{{count}}";
 
         [SerializeField]
-        [Tooltip("タイマースキップのメッセージを設定します。 {0} にはポモドーロ or 休憩の名前が、 {1} にはポモドーロ数が入ります（必須）")]
-        string _skipTimerLogFormat = "<color='#ff9900'>[Skip]</color> {0} #{1}";
+        [Tooltip("タイマースキップのメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が、 {{count}} にはポモドーロ数が入ります")]
+        string _skipTimerLog = "<color='#ff9900'>[Skip]</color> {{status}} #{{count}}";
 
         [SerializeField]
-        [Tooltip("タイマーリセットのメッセージを設定します。 {0} にはポモドーロの名前が入ります（必須）")]
-        string _resetTimerLogFormat = "<color='#ff9900'>[Reset]</color> {0}";
+        [Tooltip("タイマーリセットのメッセージを設定します。 {{status}} にはポモドーロの名前が入ります")]
+        string _resetTimerLog = "<color='#ff9900'>[Reset]</color> {{status}}";
 #pragma warning restore CS0414
     }
 }

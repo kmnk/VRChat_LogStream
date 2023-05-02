@@ -1740,7 +1740,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5436923817463648550}
-  _logStream: {fileID: 0}
+  _core: {fileID: 0}
   _activateButton: {fileID: 1494213625234622448}
   _inputParent: {fileID: 1759682240790458124}
   _inputField: {fileID: 4606916785681559584}

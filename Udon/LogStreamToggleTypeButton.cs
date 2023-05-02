@@ -8,7 +8,7 @@ namespace Kmnk.LogStream.Udon
     public class LogStreamToggleTypeButton : UdonSharpBehaviour
     {
         [SerializeField]
-        LogStreamBase _logStream = null;
+        LogStreamViewer _viewer = null;
 
         [SerializeField]
         LogType _type = LogType.None;
@@ -30,15 +30,15 @@ namespace Kmnk.LogStream.Udon
 
         private void Start()
         {
-            if (_logStream == null) { return; }
-            _logStream.AddEventListener(this);
+            if (_viewer == null) { return; }
+            _viewer.AddEventListener(this);
         }
 
         public void Toggle()
         {
-            if (_logStream == null) { return; }
+            if (_viewer == null) { return; }
             _isActive = !_isActive;
-            _logStream.ChangeType(_isActive ? _type : LogType.None);
+            _viewer.ChangeType(_isActive ? _type : LogType.None);
             ApplyColor();
         }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Kmnk.LogStream
 {
-    public class LogStream : MonoBehaviour
+    public class LogStreamCore : MonoBehaviour
     {
 #pragma warning disable CS0414
         [SerializeField]

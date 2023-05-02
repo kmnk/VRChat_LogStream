@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _id: 0
-  _joinLogFormat: <color='green'>>>JOIN>></color> {0}
-  _leaveLogFormat: <color='red'><LEAVE<</color> {0}
+  _joinLog: <color='green'>>>JOIN>></color> {{name}}
+  _leaveLog: <color='red'><LEAVE</color> {{name}}
 --- !u!1 &8210608396664598902
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,9 +101,9 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 7402996252447991742}
-  _logStream: {fileID: 0}
-  _joinLogFormat: <color='green'>>>JOIN>></color> {0}
-  _leaveLogFormat: <color='red'><LEAVE<</color> {0}
+  _core: {fileID: 0}
+  _joinLog: <color='green'>>>JOIN>></color> {{name}}
+  _leaveLog: <color='red'><LEAVE</color> {{name}}
 --- !u!114 &7402996252447991742
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -846,7 +846,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 2450870646611487736}
-  _logStream: {fileID: -6721976703352837308}
+  _viewer: {fileID: -6721976703352837308}
   _type: 1
   _buttonImage: {fileID: 3301346715589865792}
   _buttonText: {fileID: 923514484807607609}
@@ -2281,7 +2281,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1530513362592920862}
-  _logStream: {fileID: -6721976703352837308}
+  _viewer: {fileID: -6721976703352837308}
   _type: 0
   _buttonImage: {fileID: 6989169724157045968}
   _buttonText: {fileID: 3153832839562090134}
@@ -5953,7 +5953,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 7443735625777495265}
-  _logStream: {fileID: 0}
+  _core: {fileID: 0}
   _logLinesParent: {fileID: 5412911108380618049}
   _dateText: {fileID: 7714657678702138927}
   _timeText: {fileID: 4427209245181392872}
@@ -7719,7 +7719,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5619224358283827523}
-  _logStream: {fileID: -6721976703352837308}
+  _viewer: {fileID: -6721976703352837308}
   _type: 2147483647
   _buttonImage: {fileID: 7354813860731102014}
   _buttonText: {fileID: 3020530115625057597}
@@ -8730,7 +8730,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 6484375198332465596}
-  _logStream: {fileID: -6721976703352837308}
+  _viewer: {fileID: -6721976703352837308}
   _type: 2
   _buttonImage: {fileID: 612071155561384886}
   _buttonText: {fileID: 3896957550025205469}

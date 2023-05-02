@@ -10,15 +10,15 @@ namespace Kmnk.LogStream
     class LogJoinLeaveEditor : EditorBase<LogJoinLeave>
     {
         SerializedProperty _idProperty;
-        SerializedProperty _joinLogFormatProperty;
-        SerializedProperty _leaveLogFormatProperty;
+        SerializedProperty _joinLogProperty;
+        SerializedProperty _leaveLogProperty;
 
         protected override void FindProperties()
         {
             _target = target as LogJoinLeave;
             _idProperty = serializedObject.FindProperty("_id");
-            _joinLogFormatProperty = serializedObject.FindProperty("_joinLogFormat");
-            _leaveLogFormatProperty = serializedObject.FindProperty("_leaveLogFormat");
+            _joinLogProperty = serializedObject.FindProperty("_joinLog");
+            _leaveLogProperty = serializedObject.FindProperty("_leaveLog");
         }
 
         protected override void LayoutGUI()
@@ -34,8 +34,8 @@ namespace Kmnk.LogStream
             using (new GUILayout.VerticalScope(GUI.skin.box))
             {
                 EditorGUILayout.LabelField("Option", BoxTitleStyle());
-                EditorGUILayout.PropertyField(_joinLogFormatProperty);
-                EditorGUILayout.PropertyField(_leaveLogFormatProperty);
+                EditorGUILayout.PropertyField(_joinLogProperty);
+                EditorGUILayout.PropertyField(_leaveLogProperty);
             }
         }
 
@@ -43,18 +43,18 @@ namespace Kmnk.LogStream
         {
             FindProperties();
 
-            var logStream = LogStreamEditor.GetLogStream(_idProperty.intValue);
+            var core = LogStreamCoreEditor.GetCore(_idProperty.intValue);
 
-            if (logStream == null) { return; }
+            if (core == null) { return; }
 
             var udon = _target.GetComponentInChildren<Udon.LogJoinLeave>();
             var udonSerializedObject = new SerializedObject(udon);
-            udonSerializedObject.FindProperty("_logStream").objectReferenceValue
-                = logStream.GetComponentInChildren<Udon.LogStream>();
-            udonSerializedObject.FindProperty("_joinLogFormat").stringValue
-                = _joinLogFormatProperty.stringValue;
-            udonSerializedObject.FindProperty("_leaveLogFormat").stringValue
-                = _leaveLogFormatProperty.stringValue;
+            udonSerializedObject.FindProperty("_core").objectReferenceValue
+                = core.GetComponentInChildren<Udon.LogStreamCore>();
+            udonSerializedObject.FindProperty("_joinLog").stringValue
+                = _joinLogProperty.stringValue;
+            udonSerializedObject.FindProperty("_leaveLog").stringValue
+                = _leaveLogProperty.stringValue;
             udonSerializedObject.ApplyModifiedProperties();
         }
     }

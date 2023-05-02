@@ -14,7 +14,7 @@ namespace Kmnk.LogStream
 
         public void OnProcessScene(UnityEngine.SceneManagement.Scene scene, BuildReport report)
         {
-            Reapply<LogStream, LogStreamEditor>();
+            Reapply<LogStreamCore, LogStreamCoreEditor>();
             Reapply<LogJoinLeave, LogJoinLeaveEditor>();
             Reapply<LogInput, LogInputEditor>();
             Reapply<LogStreamViewer, LogStreamViewerEditor>();

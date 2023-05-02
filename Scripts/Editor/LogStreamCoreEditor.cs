@@ -7,8 +7,8 @@ using Kmnk.Core;
 
 namespace Kmnk.LogStream
 {
-    [CustomEditor(typeof(LogStream))]
-    class LogStreamEditor : EditorBase<LogStream>
+    [CustomEditor(typeof(LogStreamCore))]
+    class LogStreamCoreEditor : EditorBase<LogStreamCore>
     {
         SerializedProperty _idProperty;
         SerializedProperty _soundEffectAudioClipProperty;
@@ -22,7 +22,7 @@ namespace Kmnk.LogStream
 
         protected override void FindProperties()
         {
-            _target = target as LogStream;
+            _target = target as LogStreamCore;
             _idProperty = serializedObject.FindProperty("_id");
             _soundEffectAudioClipProperty = serializedObject.FindProperty("_soundEffectAudioClip");
             _soundEffectEnabledProperty = serializedObject.FindProperty("_soundEffectEnabled");
@@ -88,7 +88,7 @@ namespace Kmnk.LogStream
             spatialAudioSource.Gain = _soundEffectGainProperty.floatValue;
             spatialAudioSource.Far = _soundEffectFarProperty.floatValue;
 
-            var udon = _target.GetComponentInChildren<Udon.LogStream>();
+            var udon = _target.GetComponentInChildren<Udon.LogStreamCore>();
             var udonSerializedObject = new SerializedObject(udon);
             udonSerializedObject.FindProperty("_soundEffectEnabled").boolValue
                 = _soundEffectEnabledProperty.boolValue;
@@ -110,9 +110,9 @@ namespace Kmnk.LogStream
             udonSerializedObject.ApplyModifiedProperties();
         }
 
-        public static LogStream GetLogStream(int id)
+        public static LogStreamCore GetCore(int id)
         {
-            return Resources.FindObjectsOfTypeAll<LogStream>()
+            return Resources.FindObjectsOfTypeAll<LogStreamCore>()
                 .Where(x => AssetDatabase.GetAssetOrScenePath(x).EndsWith(".unity"))
                 .Where(x => x.GetId() == id)
                 .FirstOrDefault();

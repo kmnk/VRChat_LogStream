@@ -60,16 +60,16 @@ namespace Kmnk.LogStream.Udon
         string _breakName;
 
         [SerializeField]
-        string _startTimerLogFormat;
+        string _startTimerLog;
 
         [SerializeField]
-        string _endTimerLogFormat;
+        string _endTimerLog;
 
         [SerializeField]
-        string _skipTimerLogFormat;
+        string _skipTimerLog;
 
         [SerializeField]
-        string _resetTimerLogFormat;
+        string _resetTimerLog;
 
         [SerializeField]
         Button _toggleButton = null;
@@ -545,12 +545,7 @@ namespace Kmnk.LogStream.Udon
         {
             AddMessage(
                 _type,
-                string.Format(
-                    _startTimerLogFormat,
-                    _pomodoroName,
-                    _pomodoroCount,
-                    _pomodoroMinutes
-                ),
+                ReplaceLogVariables(_startTimerLog, _pomodoroName, _pomodoroCount, _pomodoroMinutes),
                 ""
             );
         }
@@ -559,12 +554,7 @@ namespace Kmnk.LogStream.Udon
         {
             AddMessage(
                 _type,
-                string.Format(
-                    _startTimerLogFormat,
-                    _breakName,
-                    _pomodoroCount,
-                    NextBreakMinutes()
-                ),
+                ReplaceLogVariables(_startTimerLog, _breakName, _pomodoroCount, NextBreakMinutes()),
                 ""
             );
         }
@@ -573,11 +563,7 @@ namespace Kmnk.LogStream.Udon
         {
             AddMessage(
                 _type,
-                string.Format(
-                    _endTimerLogFormat,
-                    _pomodoroName,
-                    _pomodoroCount
-                ),
+                ReplaceLogVariables(_endTimerLog, _pomodoroName, _pomodoroCount),
                 ""
             );
         }
@@ -586,11 +572,7 @@ namespace Kmnk.LogStream.Udon
         {
             AddMessage(
                 _type,
-                string.Format(
-                    _endTimerLogFormat,
-                    _breakName,
-                    _pomodoroCount - 1
-                ),
+                ReplaceLogVariables(_endTimerLog, _breakName, _pomodoroCount - 1),
                 ""
             );
         }
@@ -599,11 +581,7 @@ namespace Kmnk.LogStream.Udon
         {
             AddMessage(
                 _type,
-                string.Format(
-                    _skipTimerLogFormat,
-                    _pomodoroName,
-                    _pomodoroCount
-                ),
+                ReplaceLogVariables(_skipTimerLog, _pomodoroName, _pomodoroCount),
                 ""
             );
         }
@@ -612,11 +590,7 @@ namespace Kmnk.LogStream.Udon
         {
             AddMessage(
                 _type,
-                string.Format(
-                    _skipTimerLogFormat,
-                    _breakName,
-                    _pomodoroCount - 1
-                ),
+                ReplaceLogVariables(_skipTimerLog, _breakName, _pomodoroCount - 1),
                 ""
             );
         }
@@ -625,12 +599,22 @@ namespace Kmnk.LogStream.Udon
         {
             AddMessage(
                 _type,
-                string.Format(
-                    _resetTimerLogFormat,
-                    _pomodoroName
-                ),
+                ReplaceLogVariables(_resetTimerLog, _pomodoroName),
                 ""
             );
+        }
+
+        private string ReplaceLogVariables(
+            string log,
+            string status,
+            int count = 0,
+            int minutes = 0
+        )
+        {
+            log = log.Replace("{{status}}", status);
+            log = log.Replace("{{count}}", count.ToString());
+            log = log.Replace("{{m}}", minutes.ToString());
+            return log;
         }
     }
 }

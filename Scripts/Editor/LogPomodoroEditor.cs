@@ -24,10 +24,10 @@ namespace Kmnk.LogStream
         SerializedProperty _onlyMasterProperty;
         SerializedProperty _pomodoroNameProperty;
         SerializedProperty _breakNameProperty;
-        SerializedProperty _startTimerLogFormatProperty;
-        SerializedProperty _endTimerLogFormatProperty;
-        SerializedProperty _skipTimerLogFormatProperty;
-        SerializedProperty _resetTimerLogFormatProperty;
+        SerializedProperty _startTimerLogProperty;
+        SerializedProperty _endTimerLogProperty;
+        SerializedProperty _skipTimerLogProperty;
+        SerializedProperty _resetTimerLogProperty;
 
         protected override void FindProperties()
         {
@@ -46,10 +46,10 @@ namespace Kmnk.LogStream
             _soundEffectFarProperty = serializedObject.FindProperty("_soundEffectFar");
             _pomodoroNameProperty = serializedObject.FindProperty("_pomodoroName");
             _breakNameProperty = serializedObject.FindProperty("_breakName");
-            _startTimerLogFormatProperty = serializedObject.FindProperty("_startTimerLogFormat");
-            _endTimerLogFormatProperty = serializedObject.FindProperty("_endTimerLogFormat");
-            _skipTimerLogFormatProperty = serializedObject.FindProperty("_skipTimerLogFormat");
-            _resetTimerLogFormatProperty = serializedObject.FindProperty("_resetTimerLogFormat");
+            _startTimerLogProperty = serializedObject.FindProperty("_startTimerLog");
+            _endTimerLogProperty = serializedObject.FindProperty("_endTimerLog");
+            _skipTimerLogProperty = serializedObject.FindProperty("_skipTimerLog");
+            _resetTimerLogProperty = serializedObject.FindProperty("_resetTimerLog");
         }
 
         protected override void LayoutGUI()
@@ -92,10 +92,10 @@ namespace Kmnk.LogStream
                 EditorGUILayout.PropertyField(_onlyMasterProperty);
                 EditorGUILayout.PropertyField(_pomodoroNameProperty);
                 EditorGUILayout.PropertyField(_breakNameProperty);
-                EditorGUILayout.PropertyField(_startTimerLogFormatProperty);
-                EditorGUILayout.PropertyField(_endTimerLogFormatProperty);
-                EditorGUILayout.PropertyField(_skipTimerLogFormatProperty);
-                EditorGUILayout.PropertyField(_resetTimerLogFormatProperty);
+                EditorGUILayout.PropertyField(_startTimerLogProperty);
+                EditorGUILayout.PropertyField(_endTimerLogProperty);
+                EditorGUILayout.PropertyField(_skipTimerLogProperty);
+                EditorGUILayout.PropertyField(_resetTimerLogProperty);
             }
         }
 
@@ -103,9 +103,9 @@ namespace Kmnk.LogStream
         {
             FindProperties();
 
-            var logStream = LogStreamEditor.GetLogStream(_idProperty.intValue);
+            var core = LogStreamCoreEditor.GetCore(_idProperty.intValue);
 
-            if (logStream == null) { return; }
+            if (core == null) { return; }
 
             var audioSource = _target.GetComponentInChildren<AudioSource>();
             audioSource.clip = _soundEffectAudioClipProperty.objectReferenceValue as AudioClip;
@@ -116,8 +116,8 @@ namespace Kmnk.LogStream
 
             var udon = _target.GetComponentInChildren<Udon.LogPomodoro>();
             var udonSerializedObject = new SerializedObject(udon);
-            udonSerializedObject.FindProperty("_logStream").objectReferenceValue
-                = logStream.GetComponentInChildren<Udon.LogStream>();
+            udonSerializedObject.FindProperty("_core").objectReferenceValue
+                = core.GetComponentInChildren<Udon.LogStreamCore>();
             udonSerializedObject.FindProperty("_pomodoroMinutes").intValue
                 = _pomodoroMinutesProperty.intValue;
             udonSerializedObject.FindProperty("_shortBreakMinutes").intValue
@@ -138,14 +138,14 @@ namespace Kmnk.LogStream
                 = _pomodoroNameProperty.stringValue;
             udonSerializedObject.FindProperty("_breakName").stringValue
                 = _breakNameProperty.stringValue;
-            udonSerializedObject.FindProperty("_startTimerLogFormat").stringValue
-                = _startTimerLogFormatProperty.stringValue;
-            udonSerializedObject.FindProperty("_endTimerLogFormat").stringValue
-                = _endTimerLogFormatProperty.stringValue;
-            udonSerializedObject.FindProperty("_skipTimerLogFormat").stringValue
-                = _skipTimerLogFormatProperty.stringValue;
-            udonSerializedObject.FindProperty("_resetTimerLogFormat").stringValue
-                = _resetTimerLogFormatProperty.stringValue;
+            udonSerializedObject.FindProperty("_startTimerLog").stringValue
+                = _startTimerLogProperty.stringValue;
+            udonSerializedObject.FindProperty("_endTimerLog").stringValue
+                = _endTimerLogProperty.stringValue;
+            udonSerializedObject.FindProperty("_skipTimerLog").stringValue
+                = _skipTimerLogProperty.stringValue;
+            udonSerializedObject.FindProperty("_resetTimerLog").stringValue
+                = _resetTimerLogProperty.stringValue;
 
             udonSerializedObject.ApplyModifiedProperties();
         }

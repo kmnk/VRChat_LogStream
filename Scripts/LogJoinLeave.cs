@@ -11,11 +11,11 @@ namespace Kmnk.LogStream
 
         [SerializeField]
         [Tooltip("入室時のメッセージを設定します")]
-        string _joinLogFormat = "<color='green'>>>JOIN>></color> {0}";
+        string _joinLog = "<color='green'>>>JOIN>></color> {{name}}";
 
         [SerializeField]
         [Tooltip("退室時のメッセージを設定します")]
-        string _leaveLogFormat = "<color='red'><LEAVE</color> {0}";
+        string _leaveLog = "<color='red'><LEAVE</color> {{name}}";
 #pragma warning restore CS0414
     }
 }

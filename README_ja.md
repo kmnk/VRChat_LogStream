@@ -1,54 +1,90 @@
 # LogStream
-VRChat のワールドに設置する、任意のログテキストを流す簡単な仕組みです。
+VRChat のワールドに設置する、任意のテキストログを流す簡単な仕組みです。
 
-## Required
+## 必要なもの
 - [UdonSharp](vrchat-community/UdonSharp)
 - [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core)
 
 ## 使い方
-1. UdonSharp を Import
-2. LogStream の unitypackage を Import
-3. Kmnk/LogStream/Prefabs 下の LogStream Prefab をシーンに配置
-4. 用途に応じて後述の Prefab を追加で配置
+ログを表示するボードをワールドプロジェクトに置くまでの手順です。
 
-### LogInput
-テンプレートの文言や任意のテキストログを入力する機能です。
-設置したい場所に prefab を配置してください。
+0. LogStream の unitypackage を Booth や github のリポジトリの zip ファイル等から用意する
+1. 任意の Unity プロジェクトに UdonSharp を Import する
+2. 同 Unity プロジェクトに LogStream の unitypackage を Import する
+3. Project タブの `Kmnk/LogStream/Prefabs` 下の `LogStream` プレハブをシーンにドラッグ＆ドロップして、好きな場所に配置する
 
-### LogJoinLeave
-ワールドへの Join/Leave をログへ流す機能です。
-ワールドのどこかへ配置すれば機能します。
+## その他の機能の準備と使い方
+- 基本的に `Kmnk/LogStream/Prefabs` 下の任意のプレハブをシーンにドラッグ＆ドロップするだけで使うことができます
+- 細かい調整欄の説明は、 `Inspector` タブの各値のラベル部分にカーソルを合わせると Tips がポップアップします
 
-### LogStreamViewer
-LogStream に流れるログと同じものを流す機能を持った Prefab です。
-LogStream は Id 毎に1つしか設置できないですが Viewer はいくつでも設置できるので、複数箇所でログを表示したい場所がある場合に設置してください。
+### ワールドインスタンスへの Join/Leave をログへ流す
+#### 準備
+1. `LogJoinLeave` プレハブをシーンにドラッグ＆ドロップする（場所はどこでも大丈夫です）
+2. メッセージを変更したい場合には、 `LogJoinLeave` オブジェクトを選択して、 `Join Log` と `Leave Log` を変更する
+    - `{{name}}` に Join/Leave した人の名前が入ります
 
-### LogTriggerEnter
-任意のエリア内にプレーヤーが入ったことを通知する機能です。
-Enter Log Format, Leave Log Format のメッセージが流れます。 `{0}` にプレーヤーの名前が入ります。
-プレハブの中にある `Udon` オブジェクトについている Box Collider が検知するエリアになっているので、大きさを調整して使ってください。
+#### 使い方
+- 設置すると自動的に動作します
 
-### LogPomodoro
-ポモドーロタイマーを実行する機能です。
-Master のみ操作できるようにするかを Only Master のチェックで設定できます。
-タイマーが終了したときに効果音を鳴らすかどうかを Sound Effect Enabled のチェックで設定できます。
-ポモドーロタイマーの開始/終了時のメッセージを変更する場合は、 Option ブロックのそれぞれの値を変更して下さい。
-Start の `{0}` と `{1}` 、 End の `{0}` は必須なので、必ず入れるようにして下さい。
+### テンプレートのメッセージや入力したメッセージをログへ流す
+#### 準備
+1. `LogInput` プレハブをシーンにドラッグ＆ドロップして、好きな場所に配置する
+2. テンプレートのメッセージを変更・追加したい場合には、 `LogInput` オブジェクトを選択して、 `Template Messages` の `Size` を増減させ（用意しておくメッセージの数を変更できます）、 `Element X` のテキストを変更する
+3. 持ち運びを出来るようにする場合は、 `Pickapable` にチェックを入れてください
 
-### LogSample
-好きなログを流すための最低限の機能を実装したサンプルの Prefab です。
-デフォルトでは Use した時にログが流れる実装が `Kmnk/LogStream/Udon/LogSample.cs` に実装されています。
-簡単なコメントを書いているので、何か自分でテキストを流す際の参考にしてください。
+#### 使い方
+- テキストの書いてあるボタンを押すと入力欄に文字が追加され、 `SEND` ボタンを押すと送信できます。 `X` ボタンを押すとキャンセルできます
+- `Click To Input` を押して、直接テキストを入力して `SEND` ボタンを押すと、任意のメッセージを送信できます
 
+### 色々な場所に同じログを表示する板を設置する
+#### 準備
+1. `LogStreamViewer` プレハブをシーンにドラッグ＆ドロップして、好きな場所に配置する
+2. 持ち運びを出来るようにする場合は、 `Pickapable` にチェックを入れてください
 
-## その他
-- Unity 2019.4.31f1, VRChat SDK Base 3.1.11, VRChat SDK Worlds 3.1.11, UdonSharp 1.1.7 で動作を確認しています
+#### 使い方
+- 設置すると自動的に動作します
+
+### 指定の場所への人の出入りをログに流す
+#### 準備
+1. `LogTriggerEnterExit` プレハブをシーンにドラッグ＆ドロップして、好きな場所に配置する
+2. 設置した `LogTriggerEnterExit` オブジェクトの中にある `Udon` オブジェクトを選択する
+3. `Inspector` タブに表示される、 `Box Collider` コンポーネントの `Center` や `Size` を調整して、出入りをログに流したい場所を設定する
+4. メッセージを変更したい場合には、 `LogTriggerEnterExit` オブジェクトを選択して、 `Enter Log` と `Exit Log` を変更する
+    - `{{name}}` に Join/Leave した人の名前が入ります
+
+#### 使い方
+- 3 で指定した場所に人が出入りすると自動的にログが流れます
+
+### ポモドーロタイマーを使う
+#### 準備
+1. `LogPomodoro` プレハブをシーンにドラッグ＆ドロップして、好きな場所に配置する
+2. 設置した `LogPomodoro` オブジェクトを選択して、ポモドーロのタイマー設定（ `Pomodoro` の欄）を好みの値に調整する
+3. メッセージを変更したい場合には、 `LogPomodoro` オブジェクトを選択して、 `Option` 欄の値を調整する
+4. タイマーが終わった時のサウンドを変更したい場合には、 `LogPomodoro` オブジェクトを選択して、 `Sound Effect` 欄の値を調整する
+
+#### 使い方
+- 真ん中のボタンを押すと、タイマーのスタート/ポーズが切り替わります
+- 左のボタンを押すとタイマーがリセットされ、最初からになります
+- 右のボタンを押すと今のタイマーがスキップされて次の状態に移ります
+
+### 1 ワールドに複数の種類のログを表示するボードを設置する
+1. `LogStream` プレハブを複数シーンにドラッグ＆ドロップして、好きな場所に配置する
+2. `LogStream` オブジェクトの中にある `LogStreamCore` を選択して、分けたいログ毎に `Core` 欄の `Id` の数字を変更する
+    - 他のプレハブにも同じ `Id` 設定欄があるので、グループごとに同じ `Id` を設定してください
+    - `LogStreamCore` は同じ `Id` で複数設置することはできません。意図した動作をしなくなるので、注意してください
+
+### その他
+- 好きなログを流すための最低限の機能を実装したサンプルを `LogSample` プレハブと `Kmnk/LogStream/Udon/LogSample.cs` のスクリプトに実装しています
+
+## 動作確認
+- Unity 2019.4.31f1, VRChat SDK Base 3.1.13, VRChat SDK Worlds 3.1.13, UdonSharp 1.1.7 で動作を確認しています
 
 ## License
 MIT License
-Copyright (c) 2022 KMNK
+Copyright (c) 2023 KMNK
 
 ## 更新履歴
+- 2023/05/03 v2.0.0 ベース実装のリファクタリングを行って後方互換が無くなりました。ログのテンプレートの変数を C# デフォルトのものから名前付きの物に変更しました
 - 2023/04/15 v1.3.2 Master Only モードをボタンに表示するようにしました
 - 2023/01/11 v1.3.1 Pomodoro をリセットする時にメッセージを流すようにしました。また、幾つかのリファクタリングをしました
 - 2023/01/22 v1.3.0 ポモドーロタイマー機能（ LogPomodoro ）を追加

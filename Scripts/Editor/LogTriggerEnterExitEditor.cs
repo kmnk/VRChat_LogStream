@@ -10,15 +10,15 @@ namespace Kmnk.LogStream
     class LogTriggerEnterExitEditor : EditorBase<LogTriggerEnterExit>
     {
         SerializedProperty _idProperty;
-        SerializedProperty _enterLogFormatProperty;
-        SerializedProperty _exitLogFormatProperty;
+        SerializedProperty _enterLogProperty;
+        SerializedProperty _exitLogProperty;
 
         protected override void FindProperties()
         {
             _target = target as LogTriggerEnterExit;
             _idProperty = serializedObject.FindProperty("_id");
-            _enterLogFormatProperty = serializedObject.FindProperty("_enterLogFormat");
-            _exitLogFormatProperty = serializedObject.FindProperty("_exitLogFormat");
+            _enterLogProperty = serializedObject.FindProperty("_enterLog");
+            _exitLogProperty = serializedObject.FindProperty("_exitLog");
         }
 
         protected override void LayoutGUI()
@@ -34,8 +34,8 @@ namespace Kmnk.LogStream
             using (new GUILayout.VerticalScope(GUI.skin.box))
             {
                 EditorGUILayout.LabelField("Option", BoxTitleStyle());
-                EditorGUILayout.PropertyField(_enterLogFormatProperty);
-                EditorGUILayout.PropertyField(_exitLogFormatProperty);
+                EditorGUILayout.PropertyField(_enterLogProperty);
+                EditorGUILayout.PropertyField(_exitLogProperty);
             }
         }
 
@@ -51,10 +51,10 @@ namespace Kmnk.LogStream
             var udonSerializedObject = new SerializedObject(udon);
             udonSerializedObject.FindProperty("_core").objectReferenceValue
                 = core.GetComponentInChildren<Udon.LogStreamCore>();
-            udonSerializedObject.FindProperty("_enterLogFormat").stringValue
-                = _enterLogFormatProperty.stringValue;
-            udonSerializedObject.FindProperty("_exitLogFormat").stringValue
-                = _exitLogFormatProperty.stringValue;
+            udonSerializedObject.FindProperty("_enterLog").stringValue
+                = _enterLogProperty.stringValue;
+            udonSerializedObject.FindProperty("_exitLog").stringValue
+                = _exitLogProperty.stringValue;
             udonSerializedObject.ApplyModifiedProperties();
         }
 

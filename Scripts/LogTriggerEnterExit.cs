@@ -11,11 +11,11 @@ namespace Kmnk.LogStream
 
         [SerializeField]
         [Tooltip("Trigger Enter 時のメッセージを設定します")]
-        string _enterLogFormat = "{0} has entered";
+        string _enterLog = "{{name}} has entered";
 
         [SerializeField]
         [Tooltip("Trigger Exit 時のメッセージを設定します")]
-        string _exitLogFormat = "{0} has exited";
+        string _exitLog = "{{name}} has exited";
 #pragma warning restore CS0414
     }
 }

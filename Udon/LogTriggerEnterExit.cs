@@ -12,17 +12,17 @@ namespace Kmnk.LogStream.Udon
         LogType _type = LogType.Notification;
 
         [SerializeField]
-        string _enterLogFormat = "{0} has entered";
+        string _enterLog = "{{name}} has entered";
 
         [SerializeField]
-        string _exitLogFormat = "{0} has exited";
+        string _exitLog = "{{name}} has exited";
 
         public override void OnPlayerTriggerEnter(VRCPlayerApi player)
         {
             if (!Util.AmIOwner(gameObject)) { return; }
             AddMessage(
                 _type,
-                string.Format(_enterLogFormat, player.displayName),
+                _enterLog.Replace("{{name}}", player.displayName),
                 ""
             );
         }
@@ -32,7 +32,7 @@ namespace Kmnk.LogStream.Udon
             if (!Util.AmIOwner(gameObject)) { return; }
             AddMessage(
                 _type,
-                string.Format(_exitLogFormat, player.displayName),
+                _exitLog.Replace("{{name}}", player.displayName),
                 ""
             );
         }

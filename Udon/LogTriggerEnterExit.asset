@@ -176,13 +176,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: _enterLogFormat
+      Data: _enterLog
     - Name: $v
       Entry: 7
       Data: 11|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: _enterLogFormat
+      Data: _enterLog
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 12|System.RuntimeType, mscorlib
@@ -236,13 +236,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: _exitLogFormat
+      Data: _exitLog
     - Name: $v
       Entry: 7
       Data: 15|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: _exitLogFormat
+      Data: _exitLog
     - Name: <UserType>k__BackingField
       Entry: 9
       Data: 12

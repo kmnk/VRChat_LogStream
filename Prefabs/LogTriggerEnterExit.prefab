@@ -55,7 +55,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 6134386203506039898}
-  _logStream: {fileID: 0}
+  _core: {fileID: 0}
   _enterLogFormat: '{0} has entered'
   _exitLogFormat: '{0} has exited'
 --- !u!114 &6134386203506039898

@@ -923,7 +923,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1261234073409962245}
-  _logStream: {fileID: 0}
+  _core: {fileID: 0}
   _pomodoroMinutes: 25
   _shortBreakMinutes: 5
   _longBreakMinutes: 15
@@ -935,10 +935,11 @@ MonoBehaviour:
   _onlyMaster: 0
   _pomodoroName: <color='red'>Pomodoro</color>
   _breakName: <color='green'>Break</color>
-  _startTimerLogFormat: '<color=''#ff9900''>[START]</color> {0} #{1} : {2} minutes'
-  _endTimerLogFormat: <color='#ff9900'>[End]</color> {0} #{1}
-  _skipTimerLogFormat: <color='#ff9900'>[Skip]</color> {0} #{1}
-  _resetTimerLogFormat: <color='#ff9900'>[Reset]</color> {0}
+  _startTimerLog: '<color=''#ff9900''>[START]</color> {{status}} #{{count}} : {{m}}
+    minutes'
+  _endTimerLog: <color='#ff9900'>[End]</color> {{status}} #{{count}}
+  _skipTimerLog: <color='#ff9900'>[Skip]</color> {{status}} #{{count}}
+  _resetTimerLog: <color='#ff9900'>[Reset]</color> {{status}}
   _toggleButton: {fileID: 1493006455}
   _toggleButtonText: {fileID: 911779306}
   _skipButton: {fileID: 1264569567}
@@ -1200,10 +1201,11 @@ MonoBehaviour:
   _onlyMaster: 0
   _pomodoroName: <color='red'>Pomodoro</color>
   _breakName: <color='green'>Break</color>
-  _startTimerLogFormat: '<color=''#ff9900''>[START]</color> {0} #{1} : {2} minutes'
-  _endTimerLogFormat: <color='#ff9900'>[End]</color> {0} #{1}
-  _skipTimerLogFormat: <color='#ff9900'>[Skip]</color> {0} #{1}
-  _resetTimerLogFormat: <color='#ff9900'>[Reset]</color> {0}
+  _startTimerLog: '<color=''#ff9900''>[START]</color> {{status}} #{{count}} : {{m}}
+    minutes'
+  _endTimerLog: <color='#ff9900'>[End]</color> {{status}} #{{count}}
+  _skipTimerLog: <color='#ff9900'>[Skip]</color> {{status}} #{{count}}
+  _resetTimerLog: <color='#ff9900'>[Reset]</color> {{status}}
 --- !u!1 &5012753956071052031
 GameObject:
   m_ObjectHideFlags: 0

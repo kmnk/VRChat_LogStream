@@ -84,7 +84,8 @@ MIT License
 Copyright (c) 2023 KMNK
 
 ## Updates
-- 2023/05/03 v2.0.0 Refactored the base implementation so that it is no longer backward compatible. Changed log template variables from C# defaults to named ones.
+- 2023/10/08 v2.1.0 Pomodoro Timer Master Only and Auto Continue can now be toggled in-game
+- 2023/05/03 v2.0.0 Refactored the base implementation so that it is no longer backward compatible. Changed log template variables from C# defaults to named ones
 - 2023/04/15 v1.3.2 Master only mode is now displayed on button
 - 2023/03/11 v1.3.1 Send message when resetting Pomodoro. Also, did some refactoring
 - 2023/01/22 v1.3.0 Pomodoro timer function ( LogPomodoro ) added

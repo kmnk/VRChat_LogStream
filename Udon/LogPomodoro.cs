@@ -95,6 +95,24 @@ namespace Kmnk.LogStream.Udon
         [SerializeField]
         Text _timerText = null;
 
+        [SerializeField]
+        Toggle _onlyMasterToggle = null;
+
+        [SerializeField]
+        Image _onlyMasterToggleImage = null;
+
+        [SerializeField]
+        Text _onlyMasterToggleText = null;
+
+        [SerializeField]
+        Toggle _autoContinueToggle = null;
+
+        [SerializeField]
+        Image _autoContinueToggleImage = null;
+
+        [SerializeField]
+        Text _autoContinueToggleText = null;
+
         [UdonSynced]
         int _pomodoroCount = 0;
 
@@ -106,6 +124,12 @@ namespace Kmnk.LogStream.Udon
 
         [UdonSynced]
         private long _pausingRemainingSeconds;
+
+        [UdonSynced]
+        private bool _syncedOnlyMaster;
+
+        [UdonSynced]
+        private bool _syncedAutoContinue;
 
         private DateTime _dateTime;
 
@@ -218,10 +242,12 @@ namespace Kmnk.LogStream.Udon
 
         private void Start()
         {
+            _syncedOnlyMaster = _onlyMaster;
+            _syncedAutoContinue = _autoContinue;
             ResetPausingRemainingSeconds();
             ResetTimerBy(DateTime.UtcNow.AddSeconds(_pomodoroMinutes * 60));
 
-            ResetButtonActive();
+            ResetInteractionActive();
 
             if (Util.AmIOwner(gameObject))
             {
@@ -238,7 +264,7 @@ namespace Kmnk.LogStream.Udon
         {
             if (_wasIOwner != Util.AmIOwner(gameObject))
             {
-                ResetButtonActive();
+                ResetInteractionActive();
                 _wasIOwner = Util.AmIOwner(gameObject);
             }
             if (_dateTime.Second != DateTime.UtcNow.Second && !IsPaused())
@@ -257,8 +283,28 @@ namespace Kmnk.LogStream.Udon
 
         private void OnUdonSyncedFieldsChange()
         {
+            if (_syncedOnlyMaster != _onlyMaster)
+            {
+                _onlyMaster = _syncedOnlyMaster;
+                ResetInteractionActive();
+            }
+            if (_onlyMasterToggle.isOn != _onlyMaster)
+            {
+                _onlyMasterToggle.isOn = _onlyMaster;
+            }
+
+            if (_syncedAutoContinue != _autoContinue)
+            {
+                _autoContinue = _syncedAutoContinue;
+            }
+            if (_autoContinueToggle.isOn != _autoContinue)
+            {
+                _autoContinueToggle.isOn = _autoContinue;
+            }
+
             DisplayTimer();
             DisplayStatus();
+
             if (_prevStatus != _currentStatus)
             {
                 OnStatusChange();
@@ -361,6 +407,32 @@ namespace Kmnk.LogStream.Udon
             OnUdonSyncedFieldsChange();
         }
 
+        public void ToggleOnlyMaster()
+        {
+            if (_onlyMaster && !Util.AmIOwner(gameObject)) { return; }
+            if (_onlyMasterToggle.isOn == _syncedOnlyMaster) { return; }
+
+            if (!_onlyMaster && !_wasIOwner) { Util.TakeOwner(gameObject); }
+
+            _syncedOnlyMaster = _onlyMasterToggle.isOn;
+
+            RequestSerialization();
+            OnUdonSyncedFieldsChange();
+        }
+
+        public void ToggleAutoContinue()
+        {
+            if (_onlyMaster && !Util.AmIOwner(gameObject)) { return; }
+            if (_autoContinueToggle.isOn == _syncedAutoContinue) { return; }
+
+            if (!_onlyMaster && !_wasIOwner) { Util.TakeOwner(gameObject); }
+
+            _syncedAutoContinue = _autoContinueToggle.isOn;
+
+            RequestSerialization();
+            OnUdonSyncedFieldsChange();
+        }
+
         private void HandleTimer()
         {
             if (!_autoContinue
@@ -436,6 +508,10 @@ namespace Kmnk.LogStream.Udon
                     SetCurrentTimerTextBy(NextBreakMinutes() * 60);
                     break;
 
+                case PomodoroStatus.PausedPomodoro:
+                case PomodoroStatus.PausedBreak:
+                    break;
+
                 default:
                     SetCurrentTimerTextBy(GetRemainingSeconds());
                     break;
@@ -490,12 +566,14 @@ namespace Kmnk.LogStream.Udon
             _soundEffectAudioSource.Play();
         }
 
-        private void ResetButtonActive()
+        private void ResetInteractionActive()
         {
             var isActive = !_onlyMaster || Util.AmIOwner(gameObject);
             SetToggleButtonActive(isActive);
             SetSkipButtonActive(isActive);
             SetResetButtonActive(isActive);
+            SetOnlyMasterToggleActive(isActive);
+            SetAutoContinueToggleActive(isActive);
             ResetButtonText();
         }
 
@@ -538,6 +616,24 @@ namespace Kmnk.LogStream.Udon
         {
             _resetButton.interactable = active;
             _resetButtonImage.color
+                = active ? _activeTextColor : _inactiveTextColor;
+        }
+
+        private void SetOnlyMasterToggleActive(bool active)
+        {
+            _onlyMasterToggle.interactable = active;
+            _onlyMasterToggleImage.color
+                = active ? _activeTextColor : _inactiveTextColor;
+            _onlyMasterToggleText.color
+                = active ? _activeTextColor : _inactiveTextColor;
+        }
+
+        private void SetAutoContinueToggleActive(bool active)
+        {
+            _autoContinueToggle.interactable = active;
+            _autoContinueToggleImage.color
+                = active ? _activeTextColor : _inactiveTextColor;
+            _autoContinueToggleText.color
                 = active ? _activeTextColor : _inactiveTextColor;
         }
 

@@ -16,6 +16,8 @@ namespace Kmnk.LogStream
         SerializedProperty _idProperty;
         SerializedProperty _pickupableProperty;
         SerializedProperty _templateMessagesProperty;
+        SerializedProperty _useTemplateTextProperty;
+        SerializedProperty _templateTextProperty;
         SerializedProperty _templateButtonsTransformProperty;
         SerializedProperty _templateButtonOriginProperty;
 
@@ -25,6 +27,8 @@ namespace Kmnk.LogStream
             _idProperty = serializedObject.FindProperty("_id");
             _pickupableProperty = serializedObject.FindProperty("_pickupable");
             _templateMessagesProperty = serializedObject.FindProperty("_templateMessages");
+            _useTemplateTextProperty = serializedObject.FindProperty("_useTemplateText");
+            _templateTextProperty = serializedObject.FindProperty("_templateText");
             _templateButtonsTransformProperty = serializedObject.FindProperty("_templateButtonsTransform");
             _templateButtonOriginProperty = serializedObject.FindProperty("_templateButtonOrigin");
         }
@@ -44,6 +48,8 @@ namespace Kmnk.LogStream
                 EditorGUILayout.LabelField("Option", BoxTitleStyle());
                 EditorGUILayout.PropertyField(_pickupableProperty);
                 EditorGUILayout.PropertyField(_templateMessagesProperty);
+                EditorGUILayout.PropertyField(_useTemplateTextProperty);
+                EditorGUILayout.PropertyField(_templateTextProperty);
             }
 
             EditorGUILayout.Space();
@@ -64,10 +70,26 @@ namespace Kmnk.LogStream
 
             if (core == null) { return; }
 
-            var templateMessages = Enumerable.Range(0, _templateMessagesProperty.arraySize)
-                .Select(x => _templateMessagesProperty.GetArrayElementAtIndex(x))
-                .Select(x => x.stringValue)
-                .ToArray();
+            string[] templateMessages; 
+            if (_useTemplateTextProperty.boolValue
+                && _templateTextProperty.objectReferenceValue != null)
+            {
+                templateMessages
+                    = (_templateTextProperty.objectReferenceValue as TextAsset)
+                        .text
+                        .Split(
+                            new string[] {"\r\n", "\r", "\n"},
+                            System.StringSplitOptions.RemoveEmptyEntries
+                        );
+            }
+            else
+            {
+                templateMessages = Enumerable.Range(0, _templateMessagesProperty.arraySize)
+                    .Select(x => _templateMessagesProperty.GetArrayElementAtIndex(x))
+                    .Select(x => x.stringValue)
+                    .ToArray();
+            }
+
 
             var pickup = _target.GetComponentInChildren<VRCPickup>();
             pickup.pickupable = _pickupableProperty.boolValue;

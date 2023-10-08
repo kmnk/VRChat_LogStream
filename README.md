@@ -29,11 +29,11 @@ The steps to place a board in the world project that displays logs.
 ### Send template messages and input messages to the log
 #### Preparation
 1. Drag and drop the `LogInput` prefab into your scene and place it wherever you want
-2. Select the `LogInput` object, increase or decrease the `Size` of the `Template Messages` (you can change the number of messages to be prepared), and change the text of the `Element X` if you want to change or add template messages
+2. If you want to change or add a template message, select the `LogInput` object, edit the text file set to `Template Text`, and check the `Use Template Text` checkbox
 3. Check `Pickapable` if you want to make it portable
 
 #### How to use
-- Press the button with the text to add the text to the input field, and press the `SEND` button to send the message. Press `X` to cancel
+- Press the button with the text to add the text to the input field, and press the `SEND` button to send the message. Press `x` to cancel
 - Press `Click To Input` to enter text directly and press `SEND` button to send any message
 
 ### Set up a board that displays the same log in various places
@@ -84,6 +84,7 @@ MIT License
 Copyright (c) 2023 KMNK
 
 ## Updates
+- 2023/10/09 v2.2.0 Template messages for LogInput assets can now be read from text files
 - 2023/10/08 v2.1.0 Pomodoro Timer Master Only and Auto Continue can now be toggled in-game
 - 2023/05/03 v2.0.0 Refactored the base implementation so that it is no longer backward compatible. Changed log template variables from C# defaults to named ones
 - 2023/04/15 v1.3.2 Master only mode is now displayed on button

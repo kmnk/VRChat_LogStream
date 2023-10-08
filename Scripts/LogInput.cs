@@ -14,8 +14,16 @@ namespace Kmnk.LogStream
         bool _pickupable = true;
 
         [SerializeField]
-        [Tooltip("テンプレートメッセージ")]
+        [Tooltip("テンプレートメッセージ指定（旧方式）")]
         string[] _templateMessages = null;
+
+        [SerializeField]
+        [Tooltip("テキストファイルからテンプレートメッセージを読み込みます")]
+        bool _useTemplateText = false;
+
+        [SerializeField]
+        [Tooltip("テンプレートメッセージを改行区切りで指定したテキストファイル")]
+        TextAsset _templateText = null;
 
         [SerializeField]
         [Tooltip("テンプレートメッセージのボタンが入るオブジェクト")]

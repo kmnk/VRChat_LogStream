@@ -1830,6 +1830,8 @@ MonoBehaviour:
   - "\u96E2\u5E2D\u3057\u307E\u3059\u3002"
   - "VC\u3042\u308A\u307E\u3059\u3002"
   - "VC\u306A\u3044\u3067\u3059\u3002"
+  _useTemplateText: 0
+  _templateText: {fileID: 4900000, guid: 5d6cc02ecab289843a5421bce7ee5e0e, type: 3}
   _templateButtonsTransform: {fileID: 8925445924524548306}
   _templateButtonOrigin: {fileID: 5305204913815755787}
 --- !u!1 &8527668801700027951

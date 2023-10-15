@@ -23,8 +23,8 @@ namespace Kmnk.LogStream.Udon
     {
         LogType _type = LogType.Others;
 
-        private Color _activeTextColor = new Color32(255, 255, 255, 255);
-        private Color _inactiveTextColor = new Color32(128, 128, 128, 128);
+        private Color _activeColor = new Color32(255, 255, 255, 255);
+        private Color _inactiveColor = new Color32(128, 128, 128, 128);
 
         [SerializeField]
         int _pomodoroMinutes;
@@ -96,22 +96,22 @@ namespace Kmnk.LogStream.Udon
         Text _timerText = null;
 
         [SerializeField]
-        Toggle _onlyMasterToggle = null;
+        Button _onlyMasterToggleButton = null;
 
         [SerializeField]
-        Image _onlyMasterToggleImage = null;
+        Image _onlyMasterToggleButtonImage = null;
 
         [SerializeField]
-        Text _onlyMasterToggleText = null;
+        Sprite _lockedSprite = null;
 
         [SerializeField]
-        Toggle _autoContinueToggle = null;
+        Sprite _unlockedSprite = null;
 
         [SerializeField]
-        Image _autoContinueToggleImage = null;
+        Button _autoContinueToggleButton = null;
 
         [SerializeField]
-        Text _autoContinueToggleText = null;
+        Image _autoContinueToggleButtonImage = null;
 
         [UdonSynced]
         int _pomodoroCount = 0;
@@ -283,23 +283,19 @@ namespace Kmnk.LogStream.Udon
 
         private void OnUdonSyncedFieldsChange()
         {
-            if (_syncedOnlyMaster != _onlyMaster)
-            {
-                _onlyMaster = _syncedOnlyMaster;
-                ResetInteractionActive();
-            }
-            if (_onlyMasterToggle.isOn != _onlyMaster)
-            {
-                _onlyMasterToggle.isOn = _onlyMaster;
-            }
 
-            if (_syncedAutoContinue != _autoContinue)
+            if (_syncedOnlyMaster != _onlyMaster
+                || _syncedAutoContinue != _autoContinue)
             {
-                _autoContinue = _syncedAutoContinue;
-            }
-            if (_autoContinueToggle.isOn != _autoContinue)
-            {
-                _autoContinueToggle.isOn = _autoContinue;
+                if (_syncedOnlyMaster != _onlyMaster)
+                {
+                    _onlyMaster = _syncedOnlyMaster;
+                }
+                if (_syncedAutoContinue != _autoContinue)
+                {
+                    _autoContinue = _syncedAutoContinue;
+                }
+                ResetInteractionActive();
             }
 
             DisplayTimer();
@@ -315,7 +311,7 @@ namespace Kmnk.LogStream.Udon
         public void TogglePomodoro()
         {
             if (_onlyMaster && !Util.AmIOwner(gameObject)) { return; }
-            if (!_onlyMaster && !_wasIOwner) { Util.TakeOwner(gameObject); }
+            if (!_wasIOwner) { Util.TakeOwner(gameObject); }
 
             switch (_currentStatus)
             {
@@ -364,7 +360,7 @@ namespace Kmnk.LogStream.Udon
         public void SkipPomodoro()
         {
             if (_onlyMaster && !Util.AmIOwner(gameObject)) { return; }
-            if (!_onlyMaster && !_wasIOwner) { Util.TakeOwner(gameObject); }
+            if (!_wasIOwner) { Util.TakeOwner(gameObject); }
 
             ResetPausingRemainingSeconds();
 
@@ -396,7 +392,7 @@ namespace Kmnk.LogStream.Udon
         public void ResetPomodoro()
         {
             if (_onlyMaster && !Util.AmIOwner(gameObject)) { return; }
-            if (!_onlyMaster && !_wasIOwner) { Util.TakeOwner(gameObject); }
+            if (!_wasIOwner) { Util.TakeOwner(gameObject); }
 
             _currentStatus = PomodoroStatus.NotStarted;
             ResetPomodoroCount();
@@ -410,11 +406,9 @@ namespace Kmnk.LogStream.Udon
         public void ToggleOnlyMaster()
         {
             if (_onlyMaster && !Util.AmIOwner(gameObject)) { return; }
-            if (_onlyMasterToggle.isOn == _syncedOnlyMaster) { return; }
+            if (!_wasIOwner) { Util.TakeOwner(gameObject); }
 
-            if (!_onlyMaster && !_wasIOwner) { Util.TakeOwner(gameObject); }
-
-            _syncedOnlyMaster = _onlyMasterToggle.isOn;
+            _syncedOnlyMaster = !_onlyMaster;
 
             RequestSerialization();
             OnUdonSyncedFieldsChange();
@@ -423,11 +417,9 @@ namespace Kmnk.LogStream.Udon
         public void ToggleAutoContinue()
         {
             if (_onlyMaster && !Util.AmIOwner(gameObject)) { return; }
-            if (_autoContinueToggle.isOn == _syncedAutoContinue) { return; }
+            if (!_wasIOwner) { Util.TakeOwner(gameObject); }
 
-            if (!_onlyMaster && !_wasIOwner) { Util.TakeOwner(gameObject); }
-
-            _syncedAutoContinue = _autoContinueToggle.isOn;
+            _syncedAutoContinue = !_autoContinue;
 
             RequestSerialization();
             OnUdonSyncedFieldsChange();
@@ -572,8 +564,8 @@ namespace Kmnk.LogStream.Udon
             SetToggleButtonActive(isActive);
             SetSkipButtonActive(isActive);
             SetResetButtonActive(isActive);
-            SetOnlyMasterToggleActive(isActive);
-            SetAutoContinueToggleActive(isActive);
+            SetOnlyMasterToggleButtonDisplay(isActive);
+            SetAutoContinueToggleButtonDisplay(isActive);
             ResetButtonText();
         }
 
@@ -602,39 +594,39 @@ namespace Kmnk.LogStream.Udon
         {
             _toggleButton.interactable = active;
             _toggleButtonText.color
-                = active ? _activeTextColor : _inactiveTextColor;
+                = active ? _activeColor : _inactiveColor;
         }
 
         private void SetSkipButtonActive(bool active)
         {
             _skipButton.interactable = active;
             _skipButtonImage.color
-                = active ? _activeTextColor : _inactiveTextColor;
+                = active ? _activeColor : _inactiveColor;
         }
 
         private void SetResetButtonActive(bool active)
         {
             _resetButton.interactable = active;
             _resetButtonImage.color
-                = active ? _activeTextColor : _inactiveTextColor;
+                = active ? _activeColor : _inactiveColor;
         }
 
-        private void SetOnlyMasterToggleActive(bool active)
+        private void SetOnlyMasterToggleButtonDisplay(bool active)
         {
-            _onlyMasterToggle.interactable = active;
-            _onlyMasterToggleImage.color
-                = active ? _activeTextColor : _inactiveTextColor;
-            _onlyMasterToggleText.color
-                = active ? _activeTextColor : _inactiveTextColor;
+            _onlyMasterToggleButton.interactable = active;
+            _onlyMasterToggleButtonImage.color
+                = active ? _activeColor : _inactiveColor;
+            _onlyMasterToggleButtonImage.sprite
+                = _onlyMaster ? _lockedSprite : _unlockedSprite;
         }
 
-        private void SetAutoContinueToggleActive(bool active)
+        private void SetAutoContinueToggleButtonDisplay(bool active)
         {
-            _autoContinueToggle.interactable = active;
-            _autoContinueToggleImage.color
-                = active ? _activeTextColor : _inactiveTextColor;
-            _autoContinueToggleText.color
-                = active ? _activeTextColor : _inactiveTextColor;
+            _autoContinueToggleButton.interactable = active;
+            _autoContinueToggleButtonImage.color
+                = !active ? _inactiveColor
+                : !_autoContinue ? _inactiveColor
+                : _activeColor;
         }
 
         private void AddPomodoroStartMessage()

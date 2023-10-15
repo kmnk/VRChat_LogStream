@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: LogStreamToggleTypeButton
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: e76be05360509b3428ee7f00ec8bde0d,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: aaa26dc3854fc2143a38003f74be4279,
     type: 2}
   udonAssembly: 
   assemblyError: 

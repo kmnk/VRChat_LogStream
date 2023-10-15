@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: LogInputTemplateButton
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 34284b30666afe94db78bb5427ce9515,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 75b1296a2d61c7f4cb2faae1952c7673,
     type: 2}
   udonAssembly: 
   assemblyError: 

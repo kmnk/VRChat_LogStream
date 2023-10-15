@@ -84,6 +84,7 @@ MIT License
 Copyright (c) 2023 KMNK
 
 ## Updates
+- 2023/10/15 v2.2.1 The button for switching Master Only and Auto Continue on the Pomodoro timer has been changed to an icon
 - 2023/10/09 v2.2.0 Template messages for LogInput assets can now be read from text files
 - 2023/10/08 v2.1.0 Pomodoro Timer Master Only and Auto Continue can now be toggled in-game
 - 2023/05/03 v2.0.0 Refactored the base implementation so that it is no longer backward compatible. Changed log template variables from C# defaults to named ones

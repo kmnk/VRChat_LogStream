@@ -77,13 +77,14 @@ The steps to place a board in the world project that displays logs.
 - A sample that implements the minimum functionality to stream any log you want is implemented in the `LogSample` prefab and the script `Kmnk/LogStream/Udon/LogSample.cs`
 
 ## Operation check
-- I have confirmed that this works with Unity 2019.4.31f1, VRChat SDK Base 3.1.13, VRChat SDK Worlds 3.1.13, UdonSharp 1.1.7
+- I have confirmed that this works with Unity 2022.3.6f1, VRChat SDK Base 3.5.0, VRChat SDK Worlds 3.5.0
 
 ## License
 MIT License
-Copyright (c) 2023 KMNK
+Copyright (c) 2024 KMNK
 
 ## Updates
+- 2024/01/08 v2.2.2 Apply Unity and SDK new version changes
 - 2023/10/15 v2.2.1 The button for switching Master Only and Auto Continue on the Pomodoro timer has been changed to an icon
 - 2023/10/09 v2.2.0 Template messages for LogInput assets can now be read from text files
 - 2023/10/08 v2.1.0 Pomodoro Timer Master Only and Auto Continue can now be toggled in-game

@@ -77,13 +77,14 @@ VRChat のワールドに設置する、任意のテキストログを流す簡�
 - 好きなログを流すための最低限の機能を実装したサンプルを `LogSample` プレハブと `Kmnk/LogStream/Udon/LogSample.cs` のスクリプトに実装しています
 
 ## 動作確認
-- Unity 2019.4.31f1, VRChat SDK Base 3.1.13, VRChat SDK Worlds 3.1.13, UdonSharp 1.1.7 で動作を確認しています
+- Unity 2022.3.6f1, VRChat SDK Base 3.5.0, VRChat SDK Worlds 3.5.0 で動作を確認しています
 
 ## License
 MIT License
-Copyright (c) 2023 KMNK
+Copyright (c) 2024 KMNK
 
 ## 更新履歴
+- 2024/01/08 v2.2.2 Unity と SDK の新しいバージョンの変更を反映
 - 2023/10/15 v2.2.1 ポモドーロタイマーの Master Only, Auto Continue の切り替えボタンをアイコンに変更しました
 - 2023/10/09 v2.2.0 LogInput アセットのテンプレートメッセージをテキストファイルから読み込めるようにしました
 - 2023/10/08 v2.1.0 ポモドーロタイマーの Master Only と Auto Continue をゲーム内で切り替えられるようにしました

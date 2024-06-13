@@ -28,6 +28,8 @@ namespace Kmnk.LogStream
         SerializedProperty _endTimerLogProperty;
         SerializedProperty _skipTimerLogProperty;
         SerializedProperty _resetTimerLogProperty;
+        SerializedProperty _pauseTimerLogProperty;
+        SerializedProperty _resumeTimerLogProperty;
 
         protected override void FindProperties()
         {
@@ -50,6 +52,8 @@ namespace Kmnk.LogStream
             _endTimerLogProperty = serializedObject.FindProperty("_endTimerLog");
             _skipTimerLogProperty = serializedObject.FindProperty("_skipTimerLog");
             _resetTimerLogProperty = serializedObject.FindProperty("_resetTimerLog");
+            _pauseTimerLogProperty = serializedObject.FindProperty("_pauseTimerLog");
+            _resumeTimerLogProperty = serializedObject.FindProperty("_resumeTimerLog");
         }
 
         protected override void LayoutGUI()
@@ -96,6 +100,8 @@ namespace Kmnk.LogStream
                 EditorGUILayout.PropertyField(_endTimerLogProperty);
                 EditorGUILayout.PropertyField(_skipTimerLogProperty);
                 EditorGUILayout.PropertyField(_resetTimerLogProperty);
+                EditorGUILayout.PropertyField(_pauseTimerLogProperty);
+                EditorGUILayout.PropertyField(_resumeTimerLogProperty);
             }
         }
 
@@ -146,6 +152,10 @@ namespace Kmnk.LogStream
                 = _skipTimerLogProperty.stringValue;
             udonSerializedObject.FindProperty("_resetTimerLog").stringValue
                 = _resetTimerLogProperty.stringValue;
+            udonSerializedObject.FindProperty("_pauseTimerLog").stringValue
+                = _pauseTimerLogProperty.stringValue;
+            udonSerializedObject.FindProperty("_resumeTimerLog").stringValue
+                = _resumeTimerLogProperty.stringValue;
 
             udonSerializedObject.ApplyModifiedProperties();
         }

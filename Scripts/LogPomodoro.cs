@@ -67,15 +67,23 @@ namespace Kmnk.LogStream
 
         [SerializeField]
         [Tooltip("タイマー終了のメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が、 {{count}} にはポモドーロ数が入ります")]
-        string _endTimerLog = "<color='#ff9900'>[End]</color> {{status}} #{{count}}";
+        string _endTimerLog = "<color='#ff9900'>[END]</color> {{status}} #{{count}}";
 
         [SerializeField]
         [Tooltip("タイマースキップのメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が、 {{count}} にはポモドーロ数が入ります")]
-        string _skipTimerLog = "<color='#ff9900'>[Skip]</color> {{status}} #{{count}}";
+        string _skipTimerLog = "<color='#ff9900'>[SKIP]</color> {{status}} #{{count}}";
 
         [SerializeField]
         [Tooltip("タイマーリセットのメッセージを設定します。 {{status}} にはポモドーロの名前が入ります")]
-        string _resetTimerLog = "<color='#ff9900'>[Reset]</color> {{status}}";
+        string _resetTimerLog = "<color='#ff9900'>[RESET]</color> {{status}}";
+
+        [SerializeField]
+        [Tooltip("タイマーポーズのメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が入ります")]
+        string _pauseTimerLog = "<color='#ff9900'>[PAUSE]</color> {{status}}";
+
+        [SerializeField]
+        [Tooltip("タイマー再開のメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が入ります")]
+        string _resumeTimerLog = "<color='#ff9900'>[RESUME]</color> {{status}}";
 #pragma warning restore CS0414
     }
 }

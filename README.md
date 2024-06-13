@@ -84,6 +84,7 @@ MIT License
 Copyright (c) 2024 KMNK
 
 ## Updates
+- 2024/06/14 v2.2.3 Add Pomodoro Pause and Resume message
 - 2024/01/08 v2.2.2 Apply Unity and SDK new version changes
 - 2023/10/15 v2.2.1 The button for switching Master Only and Auto Continue on the Pomodoro timer has been changed to an icon
 - 2023/10/09 v2.2.0 Template messages for LogInput assets can now be read from text files

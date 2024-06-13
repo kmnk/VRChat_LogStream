@@ -72,6 +72,12 @@ namespace Kmnk.LogStream.Udon
         string _resetTimerLog;
 
         [SerializeField]
+        string _pauseTimerLog;
+
+        [SerializeField]
+        string _resumeTimerLog;
+
+        [SerializeField]
         Button _toggleButton = null;
 
         [SerializeField]
@@ -326,12 +332,14 @@ namespace Kmnk.LogStream.Udon
                 case PomodoroStatus.InPomodoro:
                     _currentStatus = PomodoroStatus.PausedPomodoro;
                     ResetPausingRemainingSeconds();
+                    AddPomodoroPauseMessage();
                     break;
 
                 case PomodoroStatus.PausedPomodoro:
                     _currentStatus = PomodoroStatus.InPomodoro;
                     ResumeTimer();
                     ClaerPausingRemainingSeconds();
+                    AddPomodoroResumeMessage();
                     break;
 
                 case PomodoroStatus.ToBreak:
@@ -344,12 +352,14 @@ namespace Kmnk.LogStream.Udon
                 case PomodoroStatus.InBreak:
                     _currentStatus = PomodoroStatus.PausedBreak;
                     ResetPausingRemainingSeconds();
+                    AddBreakPauseMessage();
                     break;
 
                 case PomodoroStatus.PausedBreak:
                     _currentStatus = PomodoroStatus.InBreak;
                     ResumeTimer();
                     ClaerPausingRemainingSeconds();
+                    AddBreakResumeMessage();
                     break;
             }
 
@@ -688,6 +698,42 @@ namespace Kmnk.LogStream.Udon
             AddMessage(
                 _type,
                 ReplaceLogVariables(_resetTimerLog, _pomodoroName),
+                ""
+            );
+        }
+
+        private void AddPomodoroPauseMessage()
+        {
+            AddMessage(
+                _type,
+                ReplaceLogVariables(_pauseTimerLog, _pomodoroName),
+                ""
+            );
+        }
+
+        private void AddBreakPauseMessage()
+        {
+            AddMessage(
+                _type,
+                ReplaceLogVariables(_pauseTimerLog, _breakName),
+                ""
+            );
+        }
+
+        private void AddPomodoroResumeMessage()
+        {
+            AddMessage(
+                _type,
+                ReplaceLogVariables(_resumeTimerLog, _pomodoroName),
+                ""
+            );
+        }
+
+        private void AddBreakResumeMessage()
+        {
+            AddMessage(
+                _type,
+                ReplaceLogVariables(_resumeTimerLog, _breakName),
                 ""
             );
         }

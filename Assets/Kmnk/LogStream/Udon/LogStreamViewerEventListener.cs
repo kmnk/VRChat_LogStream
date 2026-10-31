@@ -1,4 +1,4 @@
-﻿using UdonSharp;
+using UdonSharp;
 
 namespace Kmnk.LogStream.Udon
 {

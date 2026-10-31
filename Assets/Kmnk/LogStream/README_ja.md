@@ -2,14 +2,13 @@
 VRChat のワールドに設置する、任意のテキストログを流す簡単な仕組みです。
 
 ## 必要なもの
-- [UdonSharp](vrchat-community/UdonSharp)
 - [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core)
 
 ## 使い方
 ログを表示するボードをワールドプロジェクトに置くまでの手順です。
 
 0. LogStream の unitypackage を Booth や github のリポジトリの zip ファイル等から用意する
-1. 任意の Unity プロジェクトに UdonSharp を Import する
+1. VRChat SDK Worlds を入れた Unity プロジェクトを用意する（UdonSharp は VRChat SDK Worlds 3.4.0 以降に含まれています）
 2. 同 Unity プロジェクトに LogStream の unitypackage を Import する
 3. Project タブの `Kmnk/LogStream/Prefabs` 下の `LogStream` プレハブをシーンにドラッグ＆ドロップして、好きな場所に配置する
 
@@ -77,7 +76,7 @@ VRChat のワールドに設置する、任意のテキストログを流す簡�
 - 好きなログを流すための最低限の機能を実装したサンプルを `LogSample` プレハブと `Kmnk/LogStream/Udon/LogSample.cs` のスクリプトに実装しています
 
 ## 動作確認
-- Unity 2022.3.6f1, VRChat SDK Base 3.5.0, VRChat SDK Worlds 3.5.0 で動作を確認しています
+- Unity 2022.3.22f1, VRChat SDK Base 3.10.6, VRChat SDK Worlds 3.10.6 で動作を確認しています
 
 ## License
 MIT License

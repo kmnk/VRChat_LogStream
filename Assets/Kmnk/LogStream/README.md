@@ -2,14 +2,13 @@
 Simple system to stream text logs to be placed in the VRChat world.
 
 ## Required
-- [UdonSharp](vrchat-community/UdonSharp)
 - [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core)
 
 ## Usage
 The steps to place a board in the world project that displays logs.
 
 0. Prepare LogStream unitypackage from Booth or github repository zip file
-1. Import UdonSharp into any your Unity project
+1. Prepare a Unity project with VRChat SDK Worlds (UdonSharp is included in VRChat SDK Worlds 3.4.0 and later)
 2. Import LogStream unitypackage into the same Unity project
 3. Drag and drop `LogStream` prefabs under `Kmnk/LogStream/Prefabs` in the Project tab to the scene and place them wherever you want
 
@@ -77,7 +76,7 @@ The steps to place a board in the world project that displays logs.
 - A sample that implements the minimum functionality to stream any log you want is implemented in the `LogSample` prefab and the script `Kmnk/LogStream/Udon/LogSample.cs`
 
 ## Operation check
-- I have confirmed that this works with Unity 2022.3.6f1, VRChat SDK Base 3.5.0, VRChat SDK Worlds 3.5.0
+- I have confirmed that this works with Unity 2022.3.22f1, VRChat SDK Base 3.10.6, VRChat SDK Worlds 3.10.6
 
 ## License
 MIT License

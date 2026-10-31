@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+# Unity の資産。Unity の YAML のマージを使う
+*.prefab merge=unityyamlmerge eol=lf
+*.unity  merge=unityyamlmerge eol=lf
+*.asset  merge=unityyamlmerge eol=lf
+*.meta   merge=unityyamlmerge eol=lf
+
+# バイナリ
+*.png  binary
+*.jpg  binary
+*.mp3  binary
+*.wav  binary
+*.ogg  binary
+*.dll  binary
+*.unitypackage binary
+*.zip  binary

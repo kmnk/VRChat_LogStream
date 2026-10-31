@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# 使い方: bin/release <版（例 2.2.4）>
+# Build/release/ に unitypackage と zip を作り、GitHub の直前の release の unitypackage と項目を比べる。上げるのは手で行う（docs/release.md）
+# Unity と GitHub を使うので、sandbox の外で単独で動かす。直前の release を手元のファイルで渡すときは PREVIOUS_PACKAGE に置く
+set -uo pipefail
+source "$(dirname "$0")/lib/unity.sh"
+cd "$root"
+version="${1:-}"
+if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "使い方: bin/release <版（例 2.2.4）>" >&2
+  exit 2
+fi
+u="${version//./_}"
+out="$root/Build/release"
+package="$out/LogStream_v${u}.unitypackage"
+zip="$out/VRChat_LogStream_v${u}.zip"
+rm -rf "$out"
+mkdir -p "$out"
+
+echo "== Core のコピーを確かめる"
+"$root/bin/check-core" || { echo "Core のコピーが core-version.txt と違う。bin/sync-core で合わせてから作る" >&2; exit 1; }
+
+echo "== unitypackage を書き出す"
+log="$root/Logs/bin-release.log"
+LOGSTREAM_EXPORT_PATH="$package" run_unity "$log" -executeMethod Kmnk.LogStreamDev.Release.Export \
+  || { compile_errors "$log"; echo "失敗（ログ: ${log}）" >&2; exit 1; }
+
+echo "== zip に固める"
+(cd "$root/Assets/Kmnk/LogStream" && zip -q -j "$zip" "$package" README.md README_ja.md LICENSE.md) || exit 1
+unzip -l "$zip"
+
+echo "== 直前の release と比べる"
+previous="${PREVIOUS_PACKAGE:-}"
+if [ -z "$previous" ]; then
+  tag="$(gh release list --exclude-drafts --exclude-pre-releases --json tagName -q '.[].tagName' | grep -vx "v${version}" | head -1)"
+  [ -n "$tag" ] || { echo "直前の release が見つからない" >&2; exit 1; }
+  mkdir -p "$out/previous"
+  gh release download "$tag" --pattern '*.unitypackage' --dir "$out/previous" || exit 1
+  previous="$(ls "$out"/previous/*.unitypackage | head -1)"
+  echo "直前の release: $tag"
+fi
+"$root/bin/compare-package" "$package" "$previous" || { echo "失敗: 直前の release と項目が違う（上の MISSING・GUID）" >&2; exit 1; }
+echo "成功"
+echo "$package"
+echo "$zip"

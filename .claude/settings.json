@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "ask": [
+      "Edit(**/*.prefab)",
+      "Edit(**/*.unity)",
+      "Edit(**/*.asset)",
+      "Edit(**/*.meta)"
+    ]
+  },
+  "sandbox": {
+    "excludedCommands": [
+      "bin/setup",
+      "bin/compile",
+      "bin/test",
+      "bin/release *",
+      "bin/create-program-asset *"
+    ]
+  }
+}

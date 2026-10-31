@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# 新しい clone を検証できる状態にする。パッケージを入れ、SDK の設定の書き換えを落ち着かせて保存し、1 度コンパイルする
+# Unity を使うので、sandbox の外で単独で動かす
+set -uo pipefail
+source "$(dirname "$0")/lib/unity.sh"
+cd "$root"
+
+echo "== Core のコピーを確かめる"
+"$root/bin/check-core" || exit 1
+
+echo "== パッケージを入れる（vrc-get resolve）"
+if ! command -v vrc-get >/dev/null; then
+  echo "vrc-get が無い。docs/development.md の手順で入れる" >&2
+  exit 1
+fi
+vrc-get resolve || exit $?
+
+echo "== SDK の設定の書き換えを落ち着かせて保存する"
+LOGSTREAM_SETTLE=1 run_unity "$root/Logs/bin-setup-settle.log" || { echo "失敗（ログ: $root/Logs/bin-setup-settle.log）" >&2; exit 1; }
+
+echo "== コンパイルする"
+"$root/bin/compile"

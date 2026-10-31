@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Assets/LogStreamDev/Tests のテストを Unity Test Framework の EditMode で動かす。Unity を使うので、sandbox の外で単独で動かす
+# 成功: 終了コード 0 と結果の XML のパス。失敗: 終了コード 1 と、失敗したテストの名前と文面
+set -uo pipefail
+source "$(dirname "$0")/lib/unity.sh"
+log="$root/Logs/bin-test.log"
+results="$root/Logs/test-results.xml"
+rm -f "$results"
+# -assemblyNames で絞らないと、SDK のテストも動き、LogStream と関わりなく失敗するものがある
+run_unity "$log" -runTests -testPlatform EditMode -assemblyNames LogStreamDev.Tests -testResults "$results"
+code=$?
+if [ ! -f "$results" ]; then
+  compile_errors "$log"
+  echo "テストの結果ができなかった（終了コード ${code}、ログ: ${log}）" >&2
+  exit 1
+fi
+python3 "$root/bin/lib/test_results.py" "$results"
+summary=$?
+# Unity Test Framework はテストの失敗を終了コード 2 で返す。他のコマンドとそろえて 1 にする
+if [ $code -ne 0 ] || [ $summary -ne 0 ]; then
+  echo "失敗（Unity の終了コード ${code}、結果: ${results}、ログ: ${log}）" >&2
+  exit 1
+fi
+echo "成功（結果: ${results}）"

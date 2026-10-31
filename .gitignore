@@ -2,6 +2,7 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+.utmp/
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -59,6 +60,7 @@ sysinfo.txt
 *.apk
 *.aab
 *.unitypackage
+*.unitypackage.meta
 *.app
 
 # Crashlytics generated file
@@ -71,4 +73,45 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+# Release archives
 *.zip
+
+# UdonSharp の生成物。SDK の sample の分は clone のたびに乱数の GUID で作られるので除き、
+# Assets/Kmnk と Assets/LogStreamDev の U# 資産が指すものだけを追跡する。U# スクリプトを足したら、bin/check-assets が出すファイルをここに足す
+/Assets/SerializedUdonPrograms/*
+!/Assets/SerializedUdonPrograms/180610b7903460b43977ceb543bcba42.asset
+!/Assets/SerializedUdonPrograms/180610b7903460b43977ceb543bcba42.asset.meta
+!/Assets/SerializedUdonPrograms/259fd2dd7b6815740af1f3aabf1529ab.asset
+!/Assets/SerializedUdonPrograms/259fd2dd7b6815740af1f3aabf1529ab.asset.meta
+!/Assets/SerializedUdonPrograms/378d1172847c33344a7105b5b9d0e9e6.asset
+!/Assets/SerializedUdonPrograms/378d1172847c33344a7105b5b9d0e9e6.asset.meta
+!/Assets/SerializedUdonPrograms/3c57534fac2850a4aa26df09e100304d.asset
+!/Assets/SerializedUdonPrograms/3c57534fac2850a4aa26df09e100304d.asset.meta
+!/Assets/SerializedUdonPrograms/4e8cac360d3b2ad4b91e4132c7e352e9.asset
+!/Assets/SerializedUdonPrograms/4e8cac360d3b2ad4b91e4132c7e352e9.asset.meta
+!/Assets/SerializedUdonPrograms/62318dd37fa599a40abb62a8634f8f28.asset
+!/Assets/SerializedUdonPrograms/62318dd37fa599a40abb62a8634f8f28.asset.meta
+!/Assets/SerializedUdonPrograms/b36ab62bbc755124fa1a68a454973111.asset
+!/Assets/SerializedUdonPrograms/b36ab62bbc755124fa1a68a454973111.asset.meta
+!/Assets/SerializedUdonPrograms/bb8d3ab92d3a0e049bc48138a76819d9.asset
+!/Assets/SerializedUdonPrograms/bb8d3ab92d3a0e049bc48138a76819d9.asset.meta
+!/Assets/SerializedUdonPrograms/ceda3c536f548134d8b6ccd7c8ac9c4f.asset
+!/Assets/SerializedUdonPrograms/ceda3c536f548134d8b6ccd7c8ac9c4f.asset.meta
+!/Assets/SerializedUdonPrograms/f2e79c3d66d9d9a4f997635f7c1ec261.asset
+!/Assets/SerializedUdonPrograms/f2e79c3d66d9d9a4f997635f7c1ec261.asset.meta
+!/Assets/SerializedUdonPrograms/566cc00e27d5822449529a3785eae366.asset
+!/Assets/SerializedUdonPrograms/566cc00e27d5822449529a3785eae366.asset.meta
+!/Assets/SerializedUdonPrograms/c8df303ceb45ae84f85a11591f741734.asset
+!/Assets/SerializedUdonPrograms/c8df303ceb45ae84f85a11591f741734.asset.meta
+!/Assets/SerializedUdonPrograms/10381fac43e6a4f6caaea8f3fa89ab8d.asset
+!/Assets/SerializedUdonPrograms/10381fac43e6a4f6caaea8f3fa89ab8d.asset.meta
+
+# テストが作る一時的な scene
+/Assets/LogStreamDev/Temp/
+/Assets/LogStreamDev/Temp.meta
+
+# ClientSim がテストで書くプレイヤーのデータ
+/ClientSimStorage/
+
+# XR の設定の参照だけを持ち、VRChat SDK が環境ごとに乱数の GUID で作る資産を指すので追跡しない
+/ProjectSettings/EditorBuildSettings.asset

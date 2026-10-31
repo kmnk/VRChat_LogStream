@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# 使い方: bin/compare-package <新の unitypackage> <旧の unitypackage>
+# 旧の項目が新にも同じ pathname と GUID であるかを見る。Unity を使わない
+set -euo pipefail
+if [ $# -ne 2 ]; then
+  echo "使い方: bin/compare-package <新の unitypackage> <旧の unitypackage>" >&2
+  exit 2
+fi
+root="$(cd "$(dirname "$0")/.." && pwd)"
+exec python3 "$root/bin/lib/compare_package.py" "$1" "$2"

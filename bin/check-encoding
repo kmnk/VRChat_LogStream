@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Unity を使わない。使い方は docs/development.md
+set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd)"
+exec python3 "$root/bin/lib/check_encoding.py" "$root" "$@"

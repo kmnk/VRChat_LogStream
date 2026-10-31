@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# 使い方: bin/sync-core [<commit>]
+# Assets/Kmnk/Core のコピーを Core の <commit>（既定は main の最新）に合わせ、core-version.txt を書き換える
+# Core でファイルが消えた・動いた・GUID が変わったときは「注意:」を出す。その後に bin/compile・bin/test・bin/check-assets を動かす
+set -uo pipefail
+source "$(dirname "$0")/lib/core.sh"
+repo="$(core_repo)" || { echo "Core を取れない。CORE_REPO で手元の clone を指すこともできる" >&2; exit 1; }
+exec python3 "$root/bin/lib/core.py" sync "$root" "$repo" "$@"

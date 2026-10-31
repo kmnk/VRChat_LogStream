@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# LogStream と Core を C# と UdonSharp でコンパイルする。Unity を使うので、sandbox の外で単独で動かす
+# 成功: 終了コード 0 と「Compile of <n> scripts finished」。失敗: 終了コード 1 とエラーの行
+set -uo pipefail
+source "$(dirname "$0")/lib/unity.sh"
+log="$root/Logs/bin-compile.log"
+run_unity "$log" -executeMethod Kmnk.LogStreamDev.Verify.Compile
+code=$?
+if [ $code -eq 0 ]; then
+  grep -o 'Compile of [0-9]* scripts* finished.*' "$log" | tail -1
+  echo "成功（ログ: ${log}）"
+  exit 0
+fi
+compile_errors "$log"
+echo "失敗（終了コード ${code}、ログ: ${log}）" >&2
+exit 1

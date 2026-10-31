@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Assets/Kmnk/Core のコピーを core-version.txt の commit と比べ、Core の main が先に進んでいれば commit の一覧を出す
+# 成功: 終了コード 0（先に進んでいるだけなら 0）。失敗: 終了コード 1 と違うファイル
+# GitHub の Core を使う。手元の clone を使うときは CORE_REPO で指す
+set -uo pipefail
+source "$(dirname "$0")/lib/core.sh"
+repo="$(core_repo)" || { echo "Core を取れない。CORE_REPO で手元の clone を指すこともできる" >&2; exit 1; }
+exec python3 "$root/bin/lib/core.py" check "$root" "$repo"

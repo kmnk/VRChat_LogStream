@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# 使い方: bin/create-program-asset <Assets/… の U# スクリプトの .cs>
+# U# スクリプトの隣に UdonSharpProgramAsset（.asset）を Unity で作り、コンパイルする。.asset と .meta を手で書かないために使う
+# Unity を使うので、sandbox の外で単独で動かす
+set -uo pipefail
+source "$(dirname "$0")/lib/unity.sh"
+if [ $# -ne 1 ] || [ ! -f "$root/$1" ]; then
+  echo "使い方: bin/create-program-asset <Assets/… の .cs>（リポジトリのルートからのパス）" >&2
+  exit 2
+fi
+log="$root/Logs/bin-create-program-asset.log"
+LOGSTREAM_SCRIPT="$1" run_unity "$log" -executeMethod Kmnk.LogStreamDev.Verify.CreateProgramAsset
+code=$?
+grep -E '\[LogStreamDev\] created' "$log" || true
+if [ $code -ne 0 ]; then
+  compile_errors "$log"
+  echo "失敗（終了コード ${code}、ログ: ${log}）" >&2
+  exit 1
+fi
+echo "成功。bin/check-assets で、生成物を .gitignore の例外に足す要があるかを確かめる"

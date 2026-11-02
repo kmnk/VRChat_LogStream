@@ -109,7 +109,7 @@ UdonSharp は生成物を gzip で圧縮して 16 進で書き、gzip のヘッ�
 
 VRChat SDK でビルド（Build & Test、Build & Upload）すると、OS に関わらず、生成物の中身が変わる。filter はこれを隠さない。
 
-- UdonSharp は、ビルドのときは `UNITY_EDITOR` を外してコンパイルし直す（`Packages/com.vrchat.worlds/Integrations/UdonSharp/Editor/UdonSharpUtils.cs` の `GetProjectDefines`）。`GetComponentsInChildren<LogLine>()` を使う `LogStreamViewer` は、`GetComponentShim.cs` の `#if UNITY_EDITOR` の型の確かめが外れて短くなる（2026-11-03 に、Windows でビルドした後の版と mac の版を逆アセンブルして比べた）。
+- UdonSharp は、ビルドのときは `UNITY_EDITOR` を外してコンパイルし直す（`Packages/com.vrchat.worlds/Integrations/UdonSharp/Editor/UdonSharpUtils.cs` の `GetProjectDefines`）。`GetComponentsInChildren<LogLine>()` を使う `LogStreamViewer` は、`Packages/com.vrchat.worlds/Integrations/UdonSharp/Runtime/Libraries/CompilerInternal/GetComponentShim.cs` の `#if UNITY_EDITOR` の型の確かめが外れて短くなる（2026-11-03 に、Windows でビルドした後の版と mac の版を逆アセンブルして比べた）。
 - scene の Udon Graph の 2 個（`566cc00e…`・`c8df303c…`、SDK の sample の prefab のもの）は、ビルドのときに `serializedSignature` が入る。
 - 次に Editor でコンパイルし直すまで、ビルドの版が残る。commit するのは Editor でコンパイルした版にし、ビルドの後に出たこの差分は `git restore Assets/SerializedUdonPrograms` で戻す。U# スクリプトを足したときに、生成物が `.gitignore` で除かれたままだと、`bin/check-assets` がそのファイルを出して終了コード 1 になる。
 

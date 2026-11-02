@@ -25,6 +25,8 @@ IGNORE = {
     'Scripts/Editor/': '2.x の置き場所',
     'UdonSharpBehaviourOverrideEditor': 'VRChat SDK（UdonSharp）の型。SDK は追跡しない',
     'pM.AssignId': 'VRChat SDK のコードの式',
+    'GetProjectDefines': 'VRChat SDK（UdonSharp）のメソッド',
+    'serializedSignature': 'VRChat SDK（Udon）の SerializedUdonProgramAsset の field',
 }
 
 EXTENSIONS = ('.cs', '.md', '.py', '.sh', '.prefab', '.unity', '.asset', '.asmdef', '.txt', '.json',

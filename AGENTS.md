@@ -29,7 +29,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 ## 守る約束
 
-- `Udon/` の下と `Assets/LogStreamDev/TestUdon/` は UdonSharp のスクリプトで、UdonSharp の制約に従う。`List<T>` などのジェネリックのコレクション、LINQ、ラムダ、`try/catch`、`async` を使わず、配列と `for` で書く。`bin/compile` が通っても制約を守ったことにはならない。使わないフィールドに `List<T>` を書いただけではエラーにならなかった。
+- `Udon/` の下と `Assets/LogStreamDev/TestUdon/` は UdonSharp のスクリプトで、UdonSharp の制約に従う。`List<T>` などのジェネリックのコレクション、LINQ、ラムダ、`try/catch`、`async` を使わず、配列と `for` で書く。`bin/compile` が通っても制約を守ったことにはならない。使わないフィールドに `List<T>` を書いただけではエラーにならなかった。`bin/check-udonsharp` が文字列の照合で補う。
 - `Scripts/` と `Scripts/Editor/` は通常の C#。
 - Inspector の tooltip（`[Tooltip]`）は日本語で書く。
 - C# は BOM なしの UTF-8、改行は LF（`.editorconfig`）。UdonSharp の Create > U# Script は BOM つきで書くので、作ったら BOM を外す。`bin/check-encoding` で確かめる。
@@ -56,6 +56,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 | `bin/test` | 使う | 振る舞いのテスト | 終了コード 0 と `Passed:` の行 | 終了コード 1 と `Failed:` の行と文面 |
 | `bin/check-assets` | 使わない | prefab・scene・asset の GUID の参照の検査 | 終了コード 0 | 終了コード 1 と `ファイル:行: guid`。`bin/setup` の前は終了コード 2 |
 | `bin/check-encoding` | 使わない | C# の BOM と改行の検査 | 終了コード 0 | 終了コード 1 とファイルの一覧 |
+| `bin/check-udonsharp` | 使わない | Udon で動く C# から UdonSharp が受け付けない構文を文字列で探す | 終了コード 0 | 終了コード 1 と `ファイル:行: 理由` |
 | `bin/check-core` | 使わない | Core のコピーと `core-version.txt` の比較 | 終了コード 0 | 終了コード 1 と違うファイル |
 | `bin/sync-core [<commit>]` | 使わない | Core のコピーを Core の commit に合わせる | 終了コード 0 | git の終了コード |
 | `bin/create-program-asset <.cs>` | 使う | U# スクリプトの `.asset` を作る | 終了コード 0 | 終了コード 1 |

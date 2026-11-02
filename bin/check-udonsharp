@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Unity を使わない。Udon で動く C# から UdonSharp が受け付けない構文を探す。使い方は docs/development.md
+set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd)"
+exec python3 "$root/bin/lib/check_udonsharp.py" "$root" "$@"

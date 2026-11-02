@@ -55,6 +55,12 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 テストを足すときは、この表に行を足し、変更を外すとテストが落ちることを確かめる。
 
+## UdonSharp の制約の検査
+
+`bin/check-udonsharp`（`bin/lib/check_udonsharp.py`）は、`Assets/Kmnk/LogStream/` と `Assets/LogStreamDev/TestUdon/` の `.cs` のうち `Editor/` の下に無いものから、generic のコレクション、LINQ、`try`/`catch`/`throw`、`async`/`await`/`yield`、`?.`、`interface`、`is`・`as`、`switch` 式、`new()`、`goto`/`lock`/`checked`、static field、多次元配列、入れ子の型を探す。コメントと文字列の中身は外してから探す。ラムダ・local function・タプルは、property の式の形（`get => _x`）や通常の括弧と文字列で見分けられないので見ない。2.x の設定のクラス（通常の `MonoBehaviour`）も対象に入るが、これらの構文を使っていないので外していない。
+
+`.editorconfig` は、波括弧・可視性・`this.`・型のキーワード・定数と private field の名前の規則を持つ。Rider・Visual Studio が読み、警告として出す。`Assets/Kmnk/Core/` は Core のリポジトリが書き方を決めるので、可視性と field の名前の規則を切っている。
+
 ## UdonSharp の生成物
 
 `Assets/SerializedUdonPrograms/` には UdonSharp と Udon がコンパイルした結果が入る。LogStream の `Udon/*.asset` と `Samples/LogStream.unity` はここのファイルを GUID で指すので、指されているものだけを `.gitignore` の例外にして追跡する。SDK の sample の分は clone のたびに乱数の GUID で作られるので追跡しない。U# スクリプトを足したときに、生成物が `.gitignore` で除かれたままだと、`bin/check-assets` がそのファイルを出して終了コード 1 になる。

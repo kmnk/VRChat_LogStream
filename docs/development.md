@@ -56,6 +56,8 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 | `JoinLeave_AddsPlayerName` | 入室・退室の event で、プレイヤーの名前を `{{name}}` に入れたログが足される | `Runtime/LogJoinLeave.cs` の退室で入室の文を使う |
 | `TriggerEnterExit_AddsPlayerName` | Trigger の enter・exit の event で、同上 | `Runtime/LogTriggerEnterExit.cs` の exit で enter の文を使う |
 | `Input_AddsTypedMessage` | 入力欄の文を送ると、送った人の名前でログが足される | `Runtime/LogInput.cs` で入力欄の文の代わりに固定の文を送る |
+| `SampleScene_HasNoBlueprintId` | git で追跡する `Samples/LogStream.unity` の `PipelineManager` に、ワールドの ID が入っていない | `Samples/LogStream.unity` を ID の入った前の版に戻す |
+| `SampleBlueprintId_KeepsIdOutOfSavedScene` | サンプルの scene を開くと `UserSettings/` に置いた ID が入り、保存したファイルからは外れ、開いている scene には残る。scene の ID が変わっていれば、保存のときに置き場へ書く | `Assets/LogStreamDev/Editor/SampleBlueprintId.cs` の、保存の前に ID を外す行・保存の後に戻す行・置き場へ書く行・開いたときに入れる行を、1 つずつ外す |
 
 確かめていないこと:
 
@@ -68,6 +70,18 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 `Assets/LogStreamDev/Editor/V3Assets.cs` は、3.0.0 で配る prefab と `Samples/LogStream.unity` を Unity の Editor の API で書き換えたスクリプトで、2.x の設定の値を子の Udon に揃え（`_migrated` は false のまま）、Pomodoro の表示を `View` の子の `LogPomodoroView` に分け、UI の event の名前を `_` で始まる名前にし、入力欄の文字数の上限を 256 にした。何度動かしても同じ結果になる。動かすときは `bash -c 'source bin/lib/unity.sh; run_unity "$root/Logs/v3assets.log" -quit -executeMethod Kmnk.LogStreamDev.V3Assets.Apply'` とする。
 
 テストを足すときは、この表に行を足し、変更を外すとテストが落ちることを確かめる。
+
+## サンプルのワールドをアップロードする
+
+`Samples/LogStream.unity` のワールドの ID は、git で追跡しない `UserSettings/LogStreamDev/SampleBlueprintId.txt` に置く。ID はアップロードした人のアカウントのもので、配る scene に入れると、利用者がサンプルをアップロードしようとしたときに他人の ID になるため。
+
+`Assets/LogStreamDev/Editor/SampleBlueprintId.cs` が、サンプルの scene を開くとファイルの ID を `PipelineManager` に入れ、scene を保存するときはファイルに書く分からだけ ID を外す。保存が終わると開いている scene に戻すので、VRChat SDK の Build & Upload は ID の入った `PipelineManager` を使う。ビルドしたものに ID が入るかは確かめていない。入らなくても、SDK が新しいワールドに ID を振るのはビルドの後なので、新しいワールドの最初のアップロードと同じ形になる（SDK 3.10.6 の `Packages/com.vrchat.worlds/Editor/VRCSDK/SDK3/VRCSdkControlPanelWorldBuilder.cs` で、`pM.AssignId` がビルドの後のアップロードの処理にあることを読んだ）。
+
+- 別のマシンで初めてアップロードするときは、Unity のメニューの `Tools > LogStreamDev > Sample Blueprint ID` で ID を入れて保存する。今の ID は、VRChat のサイトのワールドのページの URL の `wrld_` で始まる部分か、ID を外す前の commit の scene（`git show 7a0d475:Assets/Kmnk/LogStream/Samples/LogStream.unity | grep blueprintId`）で分かる。
+- ファイルが無いままアップロードすると、SDK が新しいワールドの ID を振り、次に scene を保存したときにファイルへ書く。
+- ID を忘れさせるときは、ファイルを消して Unity を開き直す。
+
+3.0.0 より前の commit と、2.2.3 までの release の `Samples/LogStream.unity` には ID が入っている。秘密ではないので、履歴は書き換えていない。
 
 ## UdonSharp の制約の検査
 

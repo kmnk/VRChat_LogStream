@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.Build;
@@ -22,6 +23,8 @@ namespace Kmnk.LogStreamDev.Tests
     {
         const string TempDir = "Assets/LogStreamDev/Temp";
         const string Prefabs = "Assets/Kmnk/LogStream/Prefabs/";
+        const string SampleScene = "Assets/Kmnk/LogStream/Samples/LogStream.unity";
+        const string VRCWorld = "Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/VRCWorld.prefab";
         const string TestWriter = "Assets/LogStreamDev/TestUdon/LogStreamTestWriter.asset";
 
         // LogType の値（Runtime/LogType.cs）
@@ -257,9 +260,56 @@ namespace Kmnk.LogStreamDev.Tests
             Assert.IsTrue((bool)type.GetMethod("IsCollisionLayerMatrixSetup", Static).Invoke(null, null), "VRChat の衝突の行列が設定されていない");
         }
 
+        // サンプルの scene は、git で追跡するファイルにワールドの ID を持たない（ID は SampleBlueprintId が UserSettings/ に置く）
+        [Test]
+        public void SampleScene_HasNoBlueprintId()
+        {
+            var ids = Regex.Matches(File.ReadAllText(SampleScene), @"^\s*blueprintId:(.*)$", RegexOptions.Multiline);
+            Assert.AreEqual(1, ids.Count, "PipelineManager が 1 つでない");
+            Assert.AreEqual("", ids[0].Groups[1].Value.Trim(), "サンプルの scene にワールドの ID が入っている");
+        }
+
+        // 開くと置いてある ID が入り、保存したファイルからは外れ、開いている scene には残る。SDK が振った新しい ID は保存のときに置き場へ書く
+        [Test]
+        public void SampleBlueprintId_KeepsIdOutOfSavedScene()
+        {
+            var prevScene = SampleBlueprintId.ScenePath;
+            var prevStore = SampleBlueprintId.StorePath;
+            var path = $"{TempDir}/Sample.unity";
+            try
+            {
+                SampleBlueprintId.ScenePath = path;
+                SampleBlueprintId.StorePath = "Temp/LogStreamDevTests/SampleBlueprintId.txt";
+                NewSavedScene("Sample", () => Instantiate(VRCWorld));
+                SampleBlueprintId.Store("wrld_test-old");
+
+                var scene = EditorSceneManager.OpenScene(path);
+                Assert.AreEqual("wrld_test-old", BlueprintId(), "開いた scene に置いてある ID が入らない");
+
+                // 新しいワールドとしてアップロードすると、SDK が ID を振り替える
+                SetProp(PipelineManager(), "blueprintId", p => p.stringValue = "wrld_test-new");
+                EditorSceneManager.SaveScene(scene);
+
+                StringAssert.DoesNotContain("wrld_test", File.ReadAllText(path), "保存したファイルに ID が残る");
+                Assert.AreEqual("wrld_test-new", BlueprintId(), "保存の後に開いている scene の ID が戻らない");
+                Assert.AreEqual("wrld_test-new", SampleBlueprintId.Load(), "新しい ID が置き場に書かれない");
+            }
+            finally
+            {
+                SampleBlueprintId.ScenePath = prevScene;
+                SampleBlueprintId.StorePath = prevStore;
+                Directory.Delete("Temp/LogStreamDevTests", true);
+            }
+        }
+
+        static Component PipelineManager() =>
+            UnityEngine.Object.FindObjectsOfType<Component>(true).First(c => c != null && c.GetType().FullName == "VRC.Core.PipelineManager");
+
+        static string BlueprintId() => new SerializedObject(PipelineManager()).FindProperty("blueprintId").stringValue;
+
         static void AddWorldAndCore(int logLimit)
         {
-            Instantiate("Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/VRCWorld.prefab");
+            Instantiate(VRCWorld);
             var core = Instantiate(Prefabs + "LogStreamCore.prefab");
             SetProp(FindByTypeName(core, "Kmnk.LogStream.LogStreamCore"), "_logLimit", p => p.intValue = logLimit);
         }

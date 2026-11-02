@@ -6,9 +6,9 @@ LogStream は、ワールドの作者が Inspector で設定する層と、VRCha
 
 | 層 | 場所 | 名前空間 | 中身 |
 | --- | --- | --- | --- |
-| 設定の層 | `Assets/Kmnk/LogStream/Scripts/` | `Kmnk.LogStream` | 親の GameObject に付ける MonoBehaviour 6 本（`LogStreamCore`・`LogStreamViewer`・`LogInput`・`LogJoinLeave`・`LogTriggerEnterExit`・`LogPomodoro`）。値を持つだけで、`#pragma warning disable CS0414` で未使用の警告を止めている |
-| 設定の層の Editor | `Assets/Kmnk/LogStream/Scripts/Editor/` | `Kmnk.LogStream` | 上の 6 本の CustomEditor（`Kmnk.Core.EditorBase<T>` の派生）と `LogStreamBuildProcessor` |
-| 実行の層 | `Assets/Kmnk/LogStream/Udon/` | `Kmnk.LogStream.Udon` | UdonSharpBehaviour 14 本と、そのうち 10 本の `UdonSharpProgramAsset`（`.asset`） |
+| 設定の層 | `Assets/Kmnk/LogStream/Runtime/Legacy/` | `Kmnk.LogStream` | 親の GameObject に付ける MonoBehaviour 6 本（`LogStreamCore`・`LogStreamViewer`・`LogInput`・`LogJoinLeave`・`LogTriggerEnterExit`・`LogPomodoro`）。値を持つだけで、`#pragma warning disable CS0414` で未使用の警告を止めている |
+| 設定の層の Editor | `Assets/Kmnk/LogStream/Editor/` | `Kmnk.LogStream` | 上の 6 本の CustomEditor（`Kmnk.Core.EditorBase<T>` の派生）と `LogStreamBuildProcessor` |
+| 実行の層 | `Assets/Kmnk/LogStream/Runtime/` | `Kmnk.LogStream.Udon` | UdonSharpBehaviour 14 本と、そのうち 10 本の `UdonSharpProgramAsset`（`.asset`） |
 
 `Prefabs/` に `LogStream`・`LogStreamCore`・`LogStreamViewer`・`LogInput`・`LogJoinLeave`・`LogTriggerEnterExit`・`LogPomodoro`・`LogSample` の 8 個があり、`Samples/LogStream.unity` がそれらを置いたサンプルの scene である。
 
@@ -24,20 +24,20 @@ LogStream は、ワールドの作者が Inspector で設定する層と、VRCha
 - `Udon.LogStreamCore` は `BehaviourSyncMode.Manual` で、型（`LogType`）・時刻（`DateTime.UtcNow.Ticks`）・名前・本文の 4 本の `[UdonSynced]` 配列を `_logLimit`（既定 100）の長さで持つ。所有者が `Start` で配列を作る。
 - `AddMessage(type, message, playerName)` は所有権を取り、4 本の配列を 1 つずつ後ろへずらして先頭に入れ、`RequestSerialization()` する。最も古いものは落ちる。
 - 表示する側（`LogStreamViewer` など）は `AddEventListener` で登録し、`OnDisplayAllLogLines` で全行を描き直す。`LogStreamViewer` は `_currentType` で絞り込み、`LogType.None` のときはすべてを描く。
-- 書く側は `LogWriteBase` を継承し、`AddMessage` を呼ぶ。最小の例は `Udon/LogSample.cs`。
+- 書く側は `LogWriteBase` を継承し、`AddMessage` を呼ぶ。最小の例は `Runtime/LogSample.cs`。
 - `LogType` は `None`・`Message`・`Notification`・`Others` の 4 つ。
 
 ## 新しいギミックを足すとき
 
 次の 5 か所に手を入れる。
 
-1. `Udon/` に `LogWriteBase` の派生の U# スクリプトを足し、`bin/create-program-asset` で `.asset` を作る。
-2. `Scripts/` に、Inspector の値を持つ MonoBehaviour を足す。tooltip は日本語。
-3. `Scripts/Editor/` に、`EditorBase<T>` の派生の CustomEditor を足し、値を子の Udon へ写す `ApplyModifiedProperties()` を書く。
+1. `Runtime/` に `LogWriteBase` の派生の U# スクリプトを足し、`bin/create-program-asset` で `.asset` を作る。
+2. `Runtime/Legacy/` に、Inspector の値を持つ MonoBehaviour を足す。tooltip は日本語。
+3. `Editor/` に、`EditorBase<T>` の派生の CustomEditor を足し、値を子の Udon へ写す `ApplyModifiedProperties()` を書く。
 4. prefab を Unity の Editor で作る。親に 2 の MonoBehaviour、子に 1 の UdonBehaviour を付ける。
 5. `LogStreamBuildProcessor.OnProcessScene` に `Reapply<新しい MonoBehaviour, 新しい CustomEditor>();` の行を足す。
 
-`Udon/` のスクリプトの制約と、資産ファイルの扱いは [AGENTS.md](../AGENTS.md) にある。
+`Runtime/` のスクリプトの制約と、資産ファイルの扱いは [AGENTS.md](../AGENTS.md) にある。
 
 ## VRChat_Core への依存
 

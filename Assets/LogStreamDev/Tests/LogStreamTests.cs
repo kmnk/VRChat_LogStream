@@ -24,7 +24,7 @@ namespace Kmnk.LogStreamDev.Tests
         const string Prefabs = "Assets/Kmnk/LogStream/Prefabs/";
         const string TestWriter = "Assets/LogStreamDev/TestUdon/LogStreamTestWriter.asset";
 
-        // LogType の値（Udon/LogType.cs）
+        // LogType の値（Runtime/LogType.cs）
         const int Message = 1;
         const int Notification = 2;
 

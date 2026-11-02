@@ -19,7 +19,7 @@ namespace Kmnk.LogStreamDev.Tests
     {
         const string V2Fixture = "Assets/LogStreamDev/Fixtures/V2Overrides.unity";
 
-        // PomodoroStatus の値（Udon/LogPomodoro.cs）
+        // PomodoroStatus の値（Runtime/LogPomodoro.cs）
         const int NotStarted = 0, ToPomodoro = 1, InPomodoro = 2, PausedPomodoro = 3, ToBreak = 4, InBreak = 5, PausedBreak = 6;
 
         const string PomodoroName = "<color='red'>Pomodoro</color>";

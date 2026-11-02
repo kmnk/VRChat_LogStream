@@ -38,14 +38,14 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 | テスト | 確かめる振る舞い | 落ちることを確かめた変更 |
 | --- | --- | --- |
 | `BuildProcessor_CopiesInspectorValuesToUdon` | ビルドのときに、`LogStreamCore` の音の ON/OFF と音量、`LogJoinLeave` のメッセージが子の Udon と `VRCSpatialAudioSource` に写り、`Id` で `_core` が結ばれる | `LogStreamCoreEditor` の音の ON/OFF を写す行、音量を写す行を外す |
-| `AddMessage_ShiftsAndDropsOldest` | ログを足すと配列の先頭に入り、古いものは後ろへずれ、`_logLimit` を超えると最も古いものが落ちる | `Udon/LogStreamCore.cs` の `AddMessage` のずらすループの本文の行を外す |
-| `Viewer_FiltersByLogType` | `LogStreamViewer` は選んだ `LogType` のログだけを描き、`None` ではすべてを描く | `Udon/LogStreamViewer.cs` の `LogType` の比較を外す |
-| `ToggleTypeButton_FiltersAndNotifiesButtons` | 絞り込みのボタンを押すと Viewer がその `LogType` に絞り込み、別のボタンを押すと先のボタンが Viewer からの `OnChangeType` で外れる | `Udon/LogStreamViewer.cs` の `ChangeType` の `InvokeOnChangeType()` を外す |
+| `AddMessage_ShiftsAndDropsOldest` | ログを足すと配列の先頭に入り、古いものは後ろへずれ、`_logLimit` を超えると最も古いものが落ちる | `Runtime/LogStreamCore.cs` の `AddMessage` のずらすループの本文の行を外す |
+| `Viewer_FiltersByLogType` | `LogStreamViewer` は選んだ `LogType` のログだけを描き、`None` ではすべてを描く | `Runtime/LogStreamViewer.cs` の `LogType` の比較を外す |
+| `ToggleTypeButton_FiltersAndNotifiesButtons` | 絞り込みのボタンを押すと Viewer がその `LogType` に絞り込み、別のボタンを押すと先のボタンが Viewer からの `OnChangeType` で外れる | `Runtime/LogStreamViewer.cs` の `ChangeType` の `InvokeOnChangeType()` を外す |
 | `BuildProcessor_AppliesAllSettings` | 2.x の利用者の scene（`Assets/LogStreamDev/Fixtures/V2Overrides.unity`）をビルドの処理に通すと、全ギミックの全ての設定の値が、同じ名前の Udon の field と `AudioSource`・`VRCSpatialAudioSource`・`VRCPickup`・テンプレートのボタンに効く。`LogStreamCore._timeFormat` は 2.x で写らないので除いている | `LogPomodoroEditor` の `_breakName` を写す行の写し先を変える |
-| `Pomodoro_TransitionsAndMessages` | 開始・一時停止・再開・時間切れ・スキップ・リセット・自動で続けることで状態と回数が移り、決まった文面のログが足される。4 回目の後の休憩が長い休憩になる | `Udon/LogPomodoro.cs` の休憩の終わりのメッセージの `- 1` を外す |
-| `JoinLeave_AddsPlayerName` | 入室・退室の event で、プレイヤーの名前を `{{name}}` に入れたログが足される | `Udon/LogJoinLeave.cs` の退室で入室の文を使う |
-| `TriggerEnterExit_AddsPlayerName` | Trigger の enter・exit の event で、同上 | `Udon/LogTriggerEnterExit.cs` の exit で enter の文を使う |
-| `Input_AddsTypedMessage` | 入力欄の文を送ると、送った人の名前でログが足される | `Udon/LogInput.cs` で入力欄の文の代わりに固定の文を送る |
+| `Pomodoro_TransitionsAndMessages` | 開始・一時停止・再開・時間切れ・スキップ・リセット・自動で続けることで状態と回数が移り、決まった文面のログが足される。4 回目の後の休憩が長い休憩になる | `Runtime/LogPomodoro.cs` の休憩の終わりのメッセージの `- 1` を外す |
+| `JoinLeave_AddsPlayerName` | 入室・退室の event で、プレイヤーの名前を `{{name}}` に入れたログが足される | `Runtime/LogJoinLeave.cs` の退室で入室の文を使う |
+| `TriggerEnterExit_AddsPlayerName` | Trigger の enter・exit の event で、同上 | `Runtime/LogTriggerEnterExit.cs` の exit で enter の文を使う |
+| `Input_AddsTypedMessage` | 入力欄の文を送ると、送った人の名前でログが足される | `Runtime/LogInput.cs` で入力欄の文の代わりに固定の文を送る |
 
 確かめていないこと:
 
@@ -63,7 +63,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 ## UdonSharp の生成物
 
-`Assets/SerializedUdonPrograms/` には UdonSharp と Udon がコンパイルした結果が入る。LogStream の `Udon/*.asset` と `Samples/LogStream.unity` はここのファイルを GUID で指すので、指されているものだけを `.gitignore` の例外にして追跡する。SDK の sample の分は clone のたびに乱数の GUID で作られるので追跡しない。U# スクリプトを足したときに、生成物が `.gitignore` で除かれたままだと、`bin/check-assets` がそのファイルを出して終了コード 1 になる。
+`Assets/SerializedUdonPrograms/` には UdonSharp と Udon がコンパイルした結果が入る。LogStream の `Runtime/*.asset` と `Samples/LogStream.unity` はここのファイルを GUID で指すので、指されているものだけを `.gitignore` の例外にして追跡する。SDK の sample の分は clone のたびに乱数の GUID で作られるので追跡しない。U# スクリプトを足したときに、生成物が `.gitignore` で除かれたままだと、`bin/check-assets` がそのファイルを出して終了コード 1 になる。
 
 ## SDK を上げるとき
 

@@ -23,14 +23,14 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 ## 作りの要約
 
-- 設定の層: 親の GameObject の MonoBehaviour（`Scripts/`、名前空間 `Kmnk.LogStream`）が Inspector の値を持つ。CustomEditor（`Scripts/Editor/`、`Kmnk.Core.EditorBase<T>` の派生）が、値を子の UdonSharp のコンポーネントへ写す。ビルドのたびに `LogStreamBuildProcessor` が写し直す。
-- 実行の層: `Udon/` の UdonSharpBehaviour（名前空間 `Kmnk.LogStream.Udon`）。`Udon.LogStreamCore` が型・時刻・名前・本文の 4 本の `[UdonSynced]` 配列を持ち、`AddMessage` で先頭に足す。書く側は `LogWriteBase` の派生、表示は `LogStreamViewer`。
+- 設定の層: 親の GameObject の MonoBehaviour（`Runtime/Legacy/`、名前空間 `Kmnk.LogStream`）が Inspector の値を持つ。CustomEditor（`Editor/`、`Kmnk.Core.EditorBase<T>` の派生）が、値を子の UdonSharp のコンポーネントへ写す。ビルドのたびに `LogStreamBuildProcessor` が写し直す。
+- 実行の層: `Runtime/` の UdonSharpBehaviour（名前空間 `Kmnk.LogStream.Udon`）。`Udon.LogStreamCore` が型・時刻・名前・本文の 4 本の `[UdonSynced]` 配列を持ち、`AddMessage` で先頭に足す。書く側は `LogWriteBase` の派生、表示は `LogStreamViewer`。
 - 結び方: 各ギミックは `Id` で同じ `Id` の `LogStreamCore` に結ばれる。
 
 ## 守る約束
 
-- `Udon/` の下と `Assets/LogStreamDev/TestUdon/` は UdonSharp のスクリプトで、UdonSharp の制約に従う。`List<T>` などのジェネリックのコレクション、LINQ、ラムダ、`try/catch`、`async` を使わず、配列と `for` で書く。`bin/compile` が通っても制約を守ったことにはならない。使わないフィールドに `List<T>` を書いただけではエラーにならなかった。`bin/check-udonsharp` が文字列の照合で補う。
-- `Scripts/` と `Scripts/Editor/` は通常の C#。
+- `Runtime/` の下と `Assets/LogStreamDev/TestUdon/` は UdonSharp のスクリプトで、UdonSharp の制約に従う。`List<T>` などのジェネリックのコレクション、LINQ、ラムダ、`try/catch`、`async` を使わず、配列と `for` で書く。`bin/compile` が通っても制約を守ったことにはならない。使わないフィールドに `List<T>` を書いただけではエラーにならなかった。`bin/check-udonsharp` が文字列の照合で補う。
+- `Runtime/Legacy/` と `Editor/` は通常の C#。
 - Inspector の tooltip（`[Tooltip]`）は日本語で書く。
 - C# は BOM なしの UTF-8、改行は LF（`.editorconfig`）。UdonSharp の Create > U# Script は BOM つきで書くので、作ったら BOM を外す。`bin/check-encoding` で確かめる。
 - asmdef は `Assets/Kmnk/` の下に足さない。足すと `internal` の `Kmnk.Core.EditorBase` に届かなくなる。
@@ -43,7 +43,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 - 新しい `.cs` の `.meta` は自分で書かない。`bin/compile` を動かすと Unity が作る。
 - 新しい U# スクリプトの `UdonSharpProgramAsset`（`.asset`）は `bin/create-program-asset <.cs のパス>` で作る。その後 `bin/check-assets` が出す `Assets/SerializedUdonPrograms/` のファイルを `.gitignore` の例外に足す。
 - Claude Code では `.claude/settings.json` が、これらのファイルの書き換えの前に利用者の確認を求める。`Bash` での書き換えは止まらないので、約束と `bin/check-assets` で守る。
-- `Assets/SerializedUdonPrograms/` と `Udon/*.asset` に出た差分は、UdonSharp のスクリプトのフィールドを変えたときは `.cs` の変更と同じ commit に入れる。`.cs` を変えていないのに出た差分は戻す。SDK を上げた直後の差分は SDK を上げる commit に入れる。
+- `Assets/SerializedUdonPrograms/` と `Runtime/*.asset` に出た差分は、UdonSharp のスクリプトのフィールドを変えたときは `.cs` の変更と同じ commit に入れる。`.cs` を変えていないのに出た差分は戻す。SDK を上げた直後の差分は SDK を上げる commit に入れる。
 
 ## コマンド
 

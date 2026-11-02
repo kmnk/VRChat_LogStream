@@ -835,7 +835,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Toggle
+          m_StringArgument: _Toggle
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &6293252972721097177
@@ -2292,7 +2292,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Toggle
+          m_StringArgument: _Toggle
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &7778404723063078205
@@ -7844,7 +7844,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Toggle
+          m_StringArgument: _Toggle
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &8807168904071323504
@@ -8872,7 +8872,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Toggle
+          m_StringArgument: _Toggle
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1235636279023682747

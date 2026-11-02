@@ -205,7 +205,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: ResetPomodoro
+          m_StringArgument: _ResetPomodoro
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &911779304
@@ -496,7 +496,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: SkipPomodoro
+          m_StringArgument: _SkipPomodoro
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1493006453
@@ -629,7 +629,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: TogglePomodoro
+          m_StringArgument: _TogglePomodoro
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1722018826
@@ -916,7 +916,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: ToggleOnlyMaster
+          m_StringArgument: _ToggleOnlyMaster
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1261234073409962300
@@ -1094,20 +1094,7 @@ MonoBehaviour:
   _resetTimerLog: <color='#ff9900'>[RESET]</color> {{status}}
   _pauseTimerLog: <color='#ff9900'>[PAUSE]</color> {{status}}
   _resumeTimerLog: <color='#ff9900'>[RESUME]</color> {{status}}
-  _toggleButton: {fileID: 1493006455}
-  _toggleButtonText: {fileID: 911779306}
-  _skipButton: {fileID: 1264569567}
-  _skipButtonImage: {fileID: 1261234073135356131}
-  _resetButton: {fileID: 696011386}
-  _resetButtonImage: {fileID: 9033535928203022423}
-  _currentStatusText: {fileID: 1118284761}
-  _timerText: {fileID: 1722018828}
-  _onlyMasterToggleButton: {fileID: 3274735439927984031}
-  _onlyMasterToggleButtonImage: {fileID: 4907699347977302252}
-  _lockedSprite: {fileID: 21300000, guid: 1ee5d15496b758649be029e47ad3f12f, type: 3}
-  _unlockedSprite: {fileID: 21300000, guid: 725d5530006eba2448d2e5ff583287c3, type: 3}
-  _autoContinueToggleButton: {fileID: 4568179075408903342}
-  _autoContinueToggleButtonImage: {fileID: 8835339489235617578}
+  _view: {fileID: 2240251555943268505}
 --- !u!114 &1261234073409962245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1336,6 +1323,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1261234073409962303}
+  - {fileID: 4434605407339120188}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1261234073430063764
@@ -1438,6 +1426,102 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &2917219216669652630
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4434605407339120188}
+  - component: {fileID: 2240251555943268505}
+  - component: {fileID: 6769849690048459656}
+  m_Layer: 0
+  m_Name: View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4434605407339120188
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2917219216669652630}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1261234073430063765}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2240251555943268505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2917219216669652630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c32d4e11ecd14ec183a3faee3a018d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  _udonSharpBackingUdonBehaviour: {fileID: 6769849690048459656}
+  _toggleButton: {fileID: 1493006455}
+  _toggleButtonText: {fileID: 911779306}
+  _skipButton: {fileID: 1264569567}
+  _skipButtonImage: {fileID: 1261234073135356131}
+  _resetButton: {fileID: 696011386}
+  _resetButtonImage: {fileID: 9033535928203022423}
+  _currentStatusText: {fileID: 1118284761}
+  _timerText: {fileID: 1722018828}
+  _onlyMasterToggleButton: {fileID: 3274735439927984031}
+  _onlyMasterToggleButtonImage: {fileID: 4907699347977302252}
+  _lockedSprite: {fileID: 21300000, guid: 1ee5d15496b758649be029e47ad3f12f, type: 3}
+  _unlockedSprite: {fileID: 21300000, guid: 725d5530006eba2448d2e5ff583287c3, type: 3}
+  _autoContinueToggleButton: {fileID: 4568179075408903342}
+  _autoContinueToggleButtonImage: {fileID: 8835339489235617578}
+--- !u!114 &6769849690048459656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2917219216669652630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45115577ef41a5b4ca741ed302693907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactTextPlacement: {fileID: 0}
+  interactText: Use
+  interactTextGO: {fileID: 0}
+  proximity: 2
+  OutlineRenderers: []
+  SynchronizePosition: 0
+  AllowCollisionOwnershipTransfer: 0
+  Reliable: 0
+  _syncMethod: 0
+  serializedProgramAsset: {fileID: 11400000, guid: 225774f3d9eac4f388391b7e0123ab73,
+    type: 2}
+  programSource: {fileID: 11400000, guid: e7fce7bdc55c9480e9c38d79f84a1128, type: 2}
+  serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
+  publicVariablesUnityEngineObjects: []
+  publicVariablesSerializationDataFormat: 0
 --- !u!1 &5012753956071052031
 GameObject:
   m_ObjectHideFlags: 0
@@ -1783,6 +1867,6 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: ToggleAutoContinue
+          m_StringArgument: _ToggleAutoContinue
           m_BoolArgument: 0
         m_CallState: 2

@@ -155,8 +155,93 @@ namespace Kmnk.LogStreamDev.Tests
             });
         }
 
-        // UI から呼ぶ event の名前。D5 で変える
-        const string ToggleTypeEvent = "Toggle";
+        // UI から呼ぶ event の名前
+        const string ToggleTypeEvent = "_Toggle";
+
+        // owner でない人から owner に送られたログを、owner が足す
+        [UnityTest]
+        public IEnumerator AddMessage_OwnerReceivesNetworkEvent()
+        {
+            var scene = NewSavedScene("OwnerEvent", () =>
+            {
+                AddWorldAndCore(logLimit: 3);
+                AddTestWriter();
+            });
+            return InPlayMode(scene, OwnerEventBody);
+        }
+
+        static IEnumerator OwnerEventBody()
+        {
+            var core = FindUdon("LogStreamCore");
+            var writer = FindUdon("LogStreamTestWriter");
+            writer.SetProgramVariable("core", core);
+            writer.SetProgramVariable("type", Message);
+            writer.SetProgramVariable("message", "from remote");
+            writer.SetProgramVariable("playerName", "Remote");
+            writer.SendCustomEvent("SendToOwner");
+            for (var i = 0; i < 120 && ((string[])core.GetProgramVariable("_messages"))[0] != "from remote"; i++) { yield return null; }
+            Assert.AreEqual("from remote", ((string[])core.GetProgramVariable("_messages"))[0], "owner への event で足されない");
+            Assert.AreEqual("Remote", ((string[])core.GetProgramVariable("_names"))[0]);
+        }
+
+        // owner でないときは、自分では配列を書かず所有権も取らない
+        [UnityTest]
+        public IEnumerator AddMessage_NonOwnerDoesNotWriteLocally()
+        {
+            var scene = NewSavedScene("NonOwner", () =>
+            {
+                AddWorldAndCore(logLimit: 3);
+                AddTestWriter();
+            });
+            return InPlayMode(scene, NonOwnerBody);
+        }
+
+        static IEnumerator NonOwnerBody()
+        {
+            var core = FindUdon("LogStreamCore");
+            ClientSimMain.SpawnRemotePlayer("Remote");
+            VRCPlayerApi remote = null;
+            for (var i = 0; i < 300 && remote == null; i++)
+            {
+                remote = VRCPlayerApi.AllPlayers.FirstOrDefault(p => !p.isLocal);
+                yield return null;
+            }
+            Assert.IsNotNull(remote, "リモートのプレイヤーが出ない");
+            Networking.SetOwner(remote, core.gameObject);
+            Assert.IsFalse(Networking.IsOwner(core.gameObject), "所有権が移らない");
+
+            Write(core, Message, "local");
+            for (var i = 0; i < 30; i++) { yield return null; }
+            Assert.AreNotEqual("local", ((string[])core.GetProgramVariable("_messages"))[0], "owner でないのに自分で書く");
+            Assert.IsFalse(Networking.IsOwner(core.gameObject), "ログを足すと所有権を取る");
+        }
+
+        // 本文は MaxMessageLength（256 文字）で切られる
+        [UnityTest]
+        public IEnumerator AddMessage_TruncatesLongMessage()
+        {
+            var scene = NewSavedScene("Truncate", () =>
+            {
+                AddWorldAndCore(logLimit: 3);
+                AddTestWriter();
+            });
+            return InPlayMode(scene, () =>
+            {
+                var core = FindUdon("LogStreamCore");
+                Write(core, Message, new string('a', 300));
+                Assert.AreEqual(256, ((string[])core.GetProgramVariable("_messages"))[0].Length);
+            });
+        }
+
+        // 実行の層は毎フレーム動く処理を持たない
+        [Test]
+        public void Runtime_HasNoUpdate()
+        {
+            var withUpdate = Directory.GetFiles("Assets/Kmnk/LogStream/Runtime", "*.cs", SearchOption.AllDirectories)
+                .Where(f => System.Text.RegularExpressions.Regex.IsMatch(File.ReadAllText(f), @"void\s+(Update|LateUpdate|FixedUpdate)\s*\("))
+                .ToArray();
+            Assert.IsEmpty(withUpdate, string.Join(", ", withUpdate));
+        }
 
         static void AddWorldAndCore(int logLimit)
         {

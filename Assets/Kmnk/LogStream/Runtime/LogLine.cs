@@ -16,7 +16,7 @@ namespace Kmnk.LogStream.Udon
         [SerializeField]
         private Text _timeText = null;
 
-        public void Initialize()
+        public void _Clear()
         {
             Display(string.Empty, string.Empty, string.Empty);
         }

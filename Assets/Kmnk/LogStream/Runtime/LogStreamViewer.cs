@@ -32,8 +32,6 @@ namespace Kmnk.LogStream.Udon
 
         private LogLine[] _logLines = null;
 
-        private DateTime _dateTime;
-
         private LogType _currentType = LogType.None;
 
         private UdonSharpBehaviour[] _eventListeners = null;
@@ -60,28 +58,23 @@ namespace Kmnk.LogStream.Udon
             _logLines = _logLinesParent.GetComponentsInChildren<LogLine>();
             for (var i = 0; i < _logLines.Length; i++)
             {
-                _logLines[i].Initialize();
+                _logLines[i]._Clear();
             }
-
-            _dateTime = DateTime.UtcNow;
-            UpdateHeader();
 
             _core.AddEventListener(this);
+            _Tick();
         }
 
-        private void Update()
+        // 見出しの日付・時刻・人数を描き、次の秒の変わり目に呼ばれるよう予約する
+        public void _Tick()
         {
-            var now = DateTime.UtcNow;
-            if (_dateTime.Second != now.Second)
-            {
-                UpdateHeader();
-            }
-            _dateTime = now;
+            var now = Networking.GetNetworkDateTime();
+            UpdateHeader(now.ToLocalTime());
+            SendCustomEventDelayedSeconds(nameof(_Tick), (1000 - now.Millisecond) / 1000f + 0.02f);
         }
 
-        private void UpdateHeader()
+        private void UpdateHeader(DateTime now)
         {
-            var now = DateTime.UtcNow.ToLocalTime();
             _dateText.text = now.ToString("yyyy/MM/dd");
             _timeText.text = now.ToString("HH:mm:ss");
             _playersCountText.text = VRCPlayerApi.GetPlayerCount().ToString();
@@ -102,8 +95,8 @@ namespace Kmnk.LogStream.Udon
             if (!_core.AreSyncedFieldsInitialized()) { return; }
 
             // 別のビヘイビアへの呼び出しは遅いので、ループの前に 1 度だけ受け取る
-            var logLimit = _core.GetLogLimit();
             var types = _core.GetTypes();
+            var logLimit = Mathf.Min(_core.GetLogLimit(), types.Length);
             var messages = _core.GetMessages();
             var names = _core.GetNames();
             var ticks = _core.GetTicks();

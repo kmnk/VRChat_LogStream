@@ -270,7 +270,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &17348567
@@ -3413,7 +3413,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &84185458
@@ -3697,7 +3697,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &162466647
@@ -3964,7 +3964,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &245682092
@@ -4152,7 +4152,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &249595695
@@ -4419,7 +4419,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &274319811
@@ -4872,7 +4872,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &374747012
@@ -5297,7 +5297,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &500494326
@@ -8085,7 +8085,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &563461238
@@ -8738,7 +8738,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &907439956
@@ -9214,7 +9214,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1066320596
@@ -9508,7 +9508,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1232915541
@@ -9696,7 +9696,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1258136619
@@ -10045,6 +10045,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6769849690048459656, guid: 7e0e3001169ad4a42a4daedb67532b91,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10288,7 +10293,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1452736668
@@ -13241,7 +13246,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1583977042
@@ -13508,7 +13513,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1596342511
@@ -17058,7 +17063,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1884861835
@@ -17246,7 +17251,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1890998702
@@ -17619,7 +17624,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2034726069
@@ -17738,6 +17743,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6769849690048459656, guid: 7e0e3001169ad4a42a4daedb67532b91,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18308,7 +18318,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2136069171

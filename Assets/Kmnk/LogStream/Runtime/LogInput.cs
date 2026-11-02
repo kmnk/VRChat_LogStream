@@ -36,18 +36,18 @@ namespace Kmnk.LogStream.Udon
         [SerializeField]
         private InputField _inputField = null;
 
-        public void AddMessage()
+        public void _Submit()
         {
             AddMessage(LogType.Message, _inputField.text, null);
         }
 
-        public void DeactivateInput()
+        public void _DeactivateInput()
         {
             _activateButton.gameObject.SetActive(true);
             _inputParent.SetActive(false);
         }
 
-        public void ActivateInput()
+        public void _ActivateInput()
         {
             _activateButton.gameObject.SetActive(false);
             _inputParent.SetActive(true);

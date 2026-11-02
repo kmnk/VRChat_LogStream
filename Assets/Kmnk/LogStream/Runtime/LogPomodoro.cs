@@ -1,33 +1,37 @@
 using System;
 using UdonSharp;
 using UnityEngine;
-using UnityEngine.UI;
 using VRC.SDKBase;
 
 namespace Kmnk.LogStream.Udon
 {
-    // ポモドーロのタイマー。状態と終わりの時刻を同期し、状態が移るたびにログを足す
+    // ポモドーロのタイマー。状態と終わりの時刻を同期し、状態が移るたびにログを足す。表示は LogPomodoroView が描く
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class LogPomodoro : LogWriteBase
     {
         [SerializeField]
         [Tooltip("ポモドーロの時間を分単位で指定します")]
+        [Min(1)]
         private int _pomodoroMinutes = 25;
 
         [SerializeField]
         [Tooltip("短い休憩の時間を分単位で指定します")]
+        [Min(1)]
         private int _shortBreakMinutes = 5;
 
         [SerializeField]
         [Tooltip("長い休憩の時間を分単位で指定します")]
+        [Min(1)]
         private int _longBreakMinutes = 15;
 
         [SerializeField]
         [Tooltip("長い休憩までのポモドーロ数を指定します")]
+        [Min(1)]
         private int _longBreakInterval = 4;
 
         [SerializeField]
         [Tooltip("タイマー終了後、自動で次のタイマーを開始するかを指定します")]
+        [UdonSynced]
         private bool _autoContinue = false;
 
         [SerializeField]
@@ -42,7 +46,8 @@ namespace Kmnk.LogStream.Udon
         private bool _soundEffectEnabled = false;
 
         [SerializeField]
-        [Tooltip("マスターのみ操作できるようにするかどうかを指定します")]
+        [Tooltip("インスタンスのマスターのみ操作できるようにするかどうかを指定します")]
+        [UdonSynced]
         private bool _onlyMaster = false;
 
         [SerializeField]
@@ -78,49 +83,10 @@ namespace Kmnk.LogStream.Udon
         private string _resumeTimerLog = "<color='#ff9900'>[RESUME]</color> {{status}}";
 
         [SerializeField]
-        private Button _toggleButton = null;
-
-        [SerializeField]
-        private Text _toggleButtonText = null;
-
-        [SerializeField]
-        private Button _skipButton = null;
-
-        [SerializeField]
-        private Image _skipButtonImage = null;
-
-        [SerializeField]
-        private Button _resetButton = null;
-
-        [SerializeField]
-        private Image _resetButtonImage = null;
-
-        [SerializeField]
-        private Text _currentStatusText = null;
-
-        [SerializeField]
-        private Text _timerText = null;
-
-        [SerializeField]
-        private Button _onlyMasterToggleButton = null;
-
-        [SerializeField]
-        private Image _onlyMasterToggleButtonImage = null;
-
-        [SerializeField]
-        private Sprite _lockedSprite = null;
-
-        [SerializeField]
-        private Sprite _unlockedSprite = null;
-
-        [SerializeField]
-        private Button _autoContinueToggleButton = null;
-
-        [SerializeField]
-        private Image _autoContinueToggleButtonImage = null;
+        private LogPomodoroView _view = null;
 
         [UdonSynced]
-        private int _pomodoroCount = 0;
+        private int _pomodoroCount = 1;
 
         [UdonSynced]
         private PomodoroStatus _currentStatus = PomodoroStatus.NotStarted;
@@ -131,22 +97,9 @@ namespace Kmnk.LogStream.Udon
         [UdonSynced]
         private long _pausingRemainingSeconds = 0;
 
-        [UdonSynced]
-        private bool _syncedOnlyMaster = false;
-
-        [UdonSynced]
-        private bool _syncedAutoContinue = false;
-
-        private Color _activeColor = new Color32(255, 255, 255, 255);
-        private Color _inactiveColor = new Color32(128, 128, 128, 128);
-
-        private DateTime _dateTime;
-
-        private bool _wasOwner = false;
-
         private PomodoroStatus _prevStatus = PomodoroStatus.NotStarted;
 
-        public void TogglePomodoro()
+        public void _TogglePomodoro()
         {
             if (!CanOperate()) { return; }
             TakeOwnership();
@@ -157,40 +110,40 @@ namespace Kmnk.LogStream.Udon
                 case PomodoroStatus.ToPomodoro:
                     _currentStatus = PomodoroStatus.InPomodoro;
                     SetEndTimeAfterMinutes(_pomodoroMinutes);
-                    ClearPausingRemainingSeconds();
+                    _pausingRemainingSeconds = 0;
                     AddTimerMessage(_startTimerLog, _pomodoroName, _pomodoroCount, _pomodoroMinutes);
                     break;
 
                 case PomodoroStatus.InPomodoro:
                     _currentStatus = PomodoroStatus.PausedPomodoro;
-                    SavePausingRemainingSeconds();
+                    _pausingRemainingSeconds = GetRemainingSeconds();
                     AddTimerMessage(_pauseTimerLog, _pomodoroName, 0, 0);
                     break;
 
                 case PomodoroStatus.PausedPomodoro:
                     _currentStatus = PomodoroStatus.InPomodoro;
                     SetEndTimeAfterSeconds(_pausingRemainingSeconds);
-                    ClearPausingRemainingSeconds();
+                    _pausingRemainingSeconds = 0;
                     AddTimerMessage(_resumeTimerLog, _pomodoroName, 0, 0);
                     break;
 
                 case PomodoroStatus.ToBreak:
                     _currentStatus = PomodoroStatus.InBreak;
                     SetEndTimeAfterMinutes(NextBreakMinutes());
-                    ClearPausingRemainingSeconds();
+                    _pausingRemainingSeconds = 0;
                     AddTimerMessage(_startTimerLog, _breakName, _pomodoroCount, NextBreakMinutes());
                     break;
 
                 case PomodoroStatus.InBreak:
                     _currentStatus = PomodoroStatus.PausedBreak;
-                    SavePausingRemainingSeconds();
+                    _pausingRemainingSeconds = GetRemainingSeconds();
                     AddTimerMessage(_pauseTimerLog, _breakName, 0, 0);
                     break;
 
                 case PomodoroStatus.PausedBreak:
                     _currentStatus = PomodoroStatus.InBreak;
                     SetEndTimeAfterSeconds(_pausingRemainingSeconds);
-                    ClearPausingRemainingSeconds();
+                    _pausingRemainingSeconds = 0;
                     AddTimerMessage(_resumeTimerLog, _breakName, 0, 0);
                     break;
             }
@@ -198,12 +151,12 @@ namespace Kmnk.LogStream.Udon
             ApplySyncedFields();
         }
 
-        public void SkipPomodoro()
+        public void _SkipPomodoro()
         {
             if (!CanOperate()) { return; }
             TakeOwnership();
 
-            SavePausingRemainingSeconds();
+            _pausingRemainingSeconds = GetRemainingSeconds();
 
             switch (_currentStatus)
             {
@@ -229,7 +182,7 @@ namespace Kmnk.LogStream.Udon
             ApplySyncedFields();
         }
 
-        public void ResetPomodoro()
+        public void _ResetPomodoro()
         {
             if (!CanOperate()) { return; }
             TakeOwnership();
@@ -242,24 +195,31 @@ namespace Kmnk.LogStream.Udon
             ApplySyncedFields();
         }
 
-        public void ToggleOnlyMaster()
+        public void _ToggleOnlyMaster()
         {
             if (!CanOperate()) { return; }
             TakeOwnership();
-
-            _syncedOnlyMaster = !_onlyMaster;
-
+            _onlyMaster = !_onlyMaster;
             ApplySyncedFields();
         }
 
-        public void ToggleAutoContinue()
+        public void _ToggleAutoContinue()
         {
             if (!CanOperate()) { return; }
             TakeOwnership();
-
-            _syncedAutoContinue = !_autoContinue;
-
+            _autoContinue = !_autoContinue;
             ApplySyncedFields();
+        }
+
+        // 1 秒ごとに、owner は時間切れなら次の状態へ移し、全員が残りの時間を描き直す。次の秒の変わり目に呼ばれるよう予約する
+        public void _Tick()
+        {
+            if (!IsWaiting())
+            {
+                if (Networking.IsOwner(gameObject)) { AdvanceIfExpired(); }
+                if (_view != null) { _view.ShowTimer(TimerSeconds()); }
+            }
+            SendCustomEventDelayedSeconds(nameof(_Tick), (1000 - Networking.GetNetworkDateTime().Millisecond) / 1000f + 0.02f);
         }
 
         public override void OnDeserialization()
@@ -267,55 +227,46 @@ namespace Kmnk.LogStream.Udon
             OnSyncedFieldsChanged();
         }
 
+        // マスターのみの間は、マスターでない人への所有権の移動を拒む
+        public override bool OnOwnershipRequest(VRCPlayerApi requestingPlayer, VRCPlayerApi requestedOwner)
+        {
+            return !_onlyMaster || (Utilities.IsValid(requestedOwner) && requestedOwner.isMaster);
+        }
+
+        // マスターが抜けると別の人がマスターになるので、操作できるかを描き直す
+        public override void OnPlayerLeft(VRCPlayerApi player)
+        {
+            Render();
+        }
+
         private void Start()
         {
-            _syncedOnlyMaster = _onlyMaster;
-            _syncedAutoContinue = _autoContinue;
-            SavePausingRemainingSeconds();
-            SetEndTimeAfterMinutes(_pomodoroMinutes);
-
-            UpdateInteractable();
+            _pomodoroMinutes = Mathf.Max(1, _pomodoroMinutes);
+            _shortBreakMinutes = Mathf.Max(1, _shortBreakMinutes);
+            _longBreakMinutes = Mathf.Max(1, _longBreakMinutes);
+            _longBreakInterval = Mathf.Max(1, _longBreakInterval);
 
             if (Networking.IsOwner(gameObject))
             {
-                _wasOwner = true;
                 _currentStatus = PomodoroStatus.NotStarted;
                 _pomodoroCount = 1;
                 SetEndTimeAfterMinutes(_pomodoroMinutes);
-                ApplySyncedFields();
+                RequestSerialization();
             }
-
-            _dateTime = DateTime.UtcNow;
-        }
-
-        private void Update()
-        {
-            var isOwner = Networking.IsOwner(gameObject);
-            if (_wasOwner != isOwner)
-            {
-                UpdateInteractable();
-                _wasOwner = isOwner;
-            }
-            var now = DateTime.UtcNow;
-            if (_dateTime.Second != now.Second && !IsWaiting())
-            {
-                if (isOwner) { AdvanceIfExpired(); }
-                DisplayTimer();
-            }
-            _dateTime = now;
+            Render();
+            _Tick();
         }
 
         private bool CanOperate()
         {
-            return !_onlyMaster || Networking.IsOwner(gameObject);
+            var player = Networking.LocalPlayer;
+            return !_onlyMaster || (Utilities.IsValid(player) && player.isMaster);
         }
 
         private void TakeOwnership()
         {
-            if (!_wasOwner)
-            {
-                Networking.SetOwner(Networking.LocalPlayer, gameObject);
-            }
+            if (Networking.IsOwner(gameObject)) { return; }
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
         }
 
         // 同期する値を送り、自分の表示にも反映する
@@ -327,21 +278,18 @@ namespace Kmnk.LogStream.Udon
 
         private void OnSyncedFieldsChanged()
         {
-            if (_syncedOnlyMaster != _onlyMaster || _syncedAutoContinue != _autoContinue)
-            {
-                _onlyMaster = _syncedOnlyMaster;
-                _autoContinue = _syncedAutoContinue;
-                UpdateInteractable();
-            }
-
-            DisplayTimer();
-            DisplayStatus();
-
+            Render();
             if (_prevStatus != _currentStatus)
             {
                 PlaySoundIfTimeUp();
                 _prevStatus = _currentStatus;
             }
+        }
+
+        private void Render()
+        {
+            if (_view == null) { return; }
+            _view.Show(_currentStatus, _pomodoroCount, TimerSeconds(), CanOperate(), _onlyMaster, _autoContinue, _pomodoroName, _breakName);
         }
 
         // 時間が進まない状態か。自動で続けるときは、次を待つ間も時間が進む
@@ -361,7 +309,7 @@ namespace Kmnk.LogStream.Udon
             }
         }
 
-        // owner が 1 秒ごとに呼ぶ。終わりの時刻を過ぎていれば次の状態へ移る
+        // 終わりの時刻を過ぎていれば次の状態へ移る
         private void AdvanceIfExpired()
         {
             if (IsWaiting()) { return; }
@@ -400,6 +348,24 @@ namespace Kmnk.LogStream.Udon
             ApplySyncedFields();
         }
 
+        // 表示する残りの秒数。始まる前は次のタイマーの長さ、一時停止中は止めた時の残り
+        private long TimerSeconds()
+        {
+            switch (_currentStatus)
+            {
+                case PomodoroStatus.NotStarted:
+                case PomodoroStatus.ToPomodoro:
+                    return _pomodoroMinutes * 60L;
+                case PomodoroStatus.ToBreak:
+                    return NextBreakMinutes() * 60L;
+                case PomodoroStatus.PausedPomodoro:
+                case PomodoroStatus.PausedBreak:
+                    return _pausingRemainingSeconds;
+                default:
+                    return GetRemainingSeconds();
+            }
+        }
+
         private int NextBreakMinutes()
         {
             return _pomodoroCount % _longBreakInterval == 0 ? _longBreakMinutes : _shortBreakMinutes;
@@ -417,22 +383,12 @@ namespace Kmnk.LogStream.Udon
 
         private void SetEndTimeAfterSeconds(long seconds)
         {
-            _endDateTimeTicks = DateTime.UtcNow.AddSeconds(seconds).Ticks;
+            _endDateTimeTicks = Networking.GetNetworkDateTime().AddSeconds(seconds).Ticks;
         }
 
         private long GetRemainingSeconds()
         {
-            return (long)(new DateTime(_endDateTimeTicks) - DateTime.UtcNow).TotalSeconds;
-        }
-
-        private void SavePausingRemainingSeconds()
-        {
-            _pausingRemainingSeconds = GetRemainingSeconds();
-        }
-
-        private void ClearPausingRemainingSeconds()
-        {
-            _pausingRemainingSeconds = 0;
+            return (long)(new DateTime(_endDateTimeTicks) - Networking.GetNetworkDateTime()).TotalSeconds;
         }
 
         // template の {{status}}・{{count}}・{{m}} を埋めたログを、名前の欄を空にして足す
@@ -455,107 +411,6 @@ namespace Kmnk.LogStream.Udon
             if (!_soundEffectEnabled) { return; }
             if (_soundEffectAudioSource == null) { return; }
             _soundEffectAudioSource.Play();
-        }
-
-        private void DisplayTimer()
-        {
-            switch (_currentStatus)
-            {
-                case PomodoroStatus.NotStarted:
-                case PomodoroStatus.ToPomodoro:
-                    DisplayRemainingSeconds(_pomodoroMinutes * 60L);
-                    break;
-
-                case PomodoroStatus.ToBreak:
-                    DisplayRemainingSeconds(NextBreakMinutes() * 60L);
-                    break;
-
-                case PomodoroStatus.PausedPomodoro:
-                case PomodoroStatus.PausedBreak:
-                    break;
-
-                default:
-                    DisplayRemainingSeconds(GetRemainingSeconds());
-                    break;
-            }
-        }
-
-        private void DisplayRemainingSeconds(long remainingSeconds)
-        {
-            var minutes = remainingSeconds / 60;
-            var seconds = remainingSeconds - minutes * 60;
-            _timerText.text = $"{minutes:00}:{seconds:00}";
-        }
-
-        private void DisplayStatus()
-        {
-            switch (_currentStatus)
-            {
-                case PomodoroStatus.NotStarted:
-                case PomodoroStatus.ToPomodoro:
-                    _currentStatusText.text = $"Next {_pomodoroName} #{_pomodoroCount}";
-                    break;
-
-                case PomodoroStatus.InPomodoro:
-                case PomodoroStatus.PausedPomodoro:
-                    _currentStatusText.text = $"{_pomodoroName} #{_pomodoroCount}";
-                    break;
-
-                case PomodoroStatus.ToBreak:
-                    _currentStatusText.text = $"Next {_breakName} #{_pomodoroCount}";
-                    break;
-
-                case PomodoroStatus.InBreak:
-                case PomodoroStatus.PausedBreak:
-                    _currentStatusText.text = $"{_breakName} #{_pomodoroCount}";
-                    break;
-            }
-
-            DisplayToggleButtonText();
-        }
-
-        private void UpdateInteractable()
-        {
-            var active = CanOperate();
-            SetButtonActive(_toggleButton, null, active);
-            _toggleButtonText.color = active ? _activeColor : _inactiveColor;
-            SetButtonActive(_skipButton, _skipButtonImage, active);
-            SetButtonActive(_resetButton, _resetButtonImage, active);
-            SetButtonActive(_onlyMasterToggleButton, _onlyMasterToggleButtonImage, active);
-            _onlyMasterToggleButtonImage.sprite = _onlyMaster ? _lockedSprite : _unlockedSprite;
-            _autoContinueToggleButton.interactable = active;
-            _autoContinueToggleButtonImage.color = active && _autoContinue ? _activeColor : _inactiveColor;
-            DisplayToggleButtonText();
-        }
-
-        private void SetButtonActive(Button button, Image image, bool active)
-        {
-            button.interactable = active;
-            if (image != null)
-            {
-                image.color = active ? _activeColor : _inactiveColor;
-            }
-        }
-
-        private void DisplayToggleButtonText()
-        {
-            if (!CanOperate())
-            {
-                _toggleButtonText.text = "MASTER ONLY";
-                return;
-            }
-
-            switch (_currentStatus)
-            {
-                case PomodoroStatus.InPomodoro:
-                case PomodoroStatus.InBreak:
-                    _toggleButtonText.text = "PAUSE";
-                    break;
-
-                default:
-                    _toggleButtonText.text = "START";
-                    break;
-            }
         }
     }
 }

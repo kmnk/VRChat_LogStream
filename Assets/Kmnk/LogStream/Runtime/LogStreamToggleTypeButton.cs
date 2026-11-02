@@ -28,7 +28,7 @@ namespace Kmnk.LogStream.Udon
         private Color _activeTextColor = new Color32(255, 255, 255, 255);
         private Color _inactiveTextColor = new Color32(128, 128, 128, 255);
 
-        public void Toggle()
+        public void _Toggle()
         {
             if (_viewer == null) { return; }
             _isActive = !_isActive;

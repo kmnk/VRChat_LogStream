@@ -480,7 +480,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: ActivateInput
+          m_StringArgument: _ActivateInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1281995754847611501
@@ -932,7 +932,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AddMessage
+          m_StringArgument: _Submit
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 5436923817463648550}
@@ -944,7 +944,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: DeactivateInput
+          m_StringArgument: _DeactivateInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &4381315823696707549
@@ -1158,7 +1158,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AppendToInput
+          m_StringArgument: _AppendToInput
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &-6252276810078500071
@@ -1418,7 +1418,7 @@ MonoBehaviour:
   m_LineType: 0
   m_HideMobileInput: 0
   m_CharacterValidation: 0
-  m_CharacterLimit: 0
+  m_CharacterLimit: 256
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -2044,6 +2044,6 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: DeactivateInput
+          m_StringArgument: _DeactivateInput
           m_BoolArgument: 0
         m_CallState: 2

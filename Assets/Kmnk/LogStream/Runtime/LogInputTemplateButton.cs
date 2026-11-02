@@ -13,11 +13,11 @@ namespace Kmnk.LogStream.Udon
         [SerializeField]
         private Text _buttonText = null;
 
-        public void AppendToInput()
+        public void _AppendToInput()
         {
             if (!_logInput.IsActiveInput())
             {
-                _logInput.ActivateInput();
+                _logInput._ActivateInput();
             }
             _logInput.AppendTextToInput(_buttonText.text);
         }

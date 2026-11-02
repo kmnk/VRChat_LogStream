@@ -189,6 +189,81 @@ namespace Kmnk.LogStreamDev.Tests
             AssertLatest(core, $"{Tag("START")} {BreakName} #1 : 5 minutes");
         }
 
+        // 分数と長い休憩までの回数は 1 以上に丸められる（0 で割らない）
+        [UnityTest]
+        public IEnumerator Pomodoro_ClampsMinutesAndInterval()
+        {
+            var scene = NewSavedScene("PomodoroClamp", () =>
+            {
+                AddWorldAndCore(logLimit: 10);
+                var pomodoro = Instantiate(Prefabs + "LogPomodoro.prefab");
+                var settings = FindByTypeName(pomodoro, "Kmnk.LogStream.LogPomodoro");
+                SetProp(settings, "_pomodoroMinutes", p => p.intValue = 0);
+                SetProp(settings, "_longBreakInterval", p => p.intValue = 0);
+            });
+            return InPlayMode(scene, () =>
+            {
+                var core = FindUdon("LogStreamCore");
+                var p = FindUdon("LogPomodoro");
+                Pomodoro(p, "Toggle");
+                AssertLatest(core, $"{Tag("START")} {PomodoroName} #1 : 1 minutes");
+                Pomodoro(p, "Skip");
+                Pomodoro(p, "Toggle");
+                // 長い休憩までの回数が 1 なので、毎回が長い休憩になる
+                AssertLatest(core, $"{Tag("START")} {BreakName} #1 : 15 minutes");
+            });
+        }
+
+        // prefab のボタンを押すと、3.0.0 の名前の event が呼ばれて動く
+        [UnityTest]
+        public IEnumerator Buttons_CallRenamedEvents()
+        {
+            var scene = NewSavedScene("Buttons", () =>
+            {
+                AddWorldAndCore(logLimit: 10);
+                Instantiate(Prefabs + "LogPomodoro.prefab");
+                Instantiate(Prefabs + "LogInput.prefab");
+            });
+            return InPlayMode(scene, () =>
+            {
+                var core = FindUdon("LogStreamCore");
+                var p = FindUdon("LogPomodoro");
+                Click(p.transform.parent, "ToggleButton");
+                AssertPomodoro(p, InPomodoro, 1);
+                Click(p.transform.parent, "SkipButton");
+                AssertPomodoro(p, ToBreak, 1);
+                Click(p.transform.parent, "ResetButton");
+                AssertPomodoro(p, NotStarted, 1);
+                Click(p.transform.parent, "ToggleAutoContinueButton");
+                Assert.AreEqual(true, p.GetProgramVariable("_autoContinue"));
+                Click(p.transform.parent, "ToggleOnlyMasterButton");
+                Assert.AreEqual(true, p.GetProgramVariable("_onlyMaster"));
+
+                var input = FindUdon("LogInput");
+                var inputParent = (GameObject)input.GetProgramVariable("_inputParent");
+                Click(input.transform.parent, "Button");
+                Assert.IsTrue(inputParent.activeSelf, "入力欄が開かない");
+                var template = input.transform.parent.GetComponentsInChildren<Button>(false)
+                    .First(b => b.GetComponentInParent<UdonBehaviour>() != null
+                        && b.GetComponentInParent<UdonBehaviour>().programSource.name == "LogInputTemplateButton");
+                template.onClick.Invoke();
+                var typed = ((InputField)input.GetProgramVariable("_inputField")).text;
+                Assert.IsNotEmpty(typed, "テンプレートが入力欄に入らない");
+                Click(input.transform.parent, "EnterButton");
+                AssertLatest(core, typed);
+                Click(input.transform.parent, "CancelButton");
+                Assert.IsFalse(inputParent.activeSelf, "入力欄が閉じない");
+            });
+        }
+
+        // root の下で name の GameObject の Button を押す
+        static void Click(Transform root, string name)
+        {
+            var button = root.GetComponentsInChildren<Button>(true).FirstOrDefault(b => b.name == name);
+            Assert.IsNotNull(button, name + " が無い");
+            button.onClick.Invoke();
+        }
+
         // 入退室: 入った人と出た人の名前を {{name}} に入れたログが足される
         [UnityTest]
         public IEnumerator JoinLeave_AddsPlayerName()
@@ -251,15 +326,15 @@ namespace Kmnk.LogStreamDev.Tests
             });
         }
 
-        // UI から呼ぶ event の名前。D5 で変える
-        const string InputSubmitEvent = "AddMessage";
+        // UI から呼ぶ event の名前
+        const string InputSubmitEvent = "_Submit";
 
         static readonly Dictionary<string, string> PomodoroEvents = new Dictionary<string, string>
         {
-            ["Toggle"] = "TogglePomodoro",
-            ["Skip"] = "SkipPomodoro",
-            ["Reset"] = "ResetPomodoro",
-            ["ToggleAutoContinue"] = "ToggleAutoContinue",
+            ["Toggle"] = "_TogglePomodoro",
+            ["Skip"] = "_SkipPomodoro",
+            ["Reset"] = "_ResetPomodoro",
+            ["ToggleAutoContinue"] = "_ToggleAutoContinue",
         };
 
         static void Pomodoro(UdonBehaviour p, string action) => p.SendCustomEvent(PomodoroEvents[action]);

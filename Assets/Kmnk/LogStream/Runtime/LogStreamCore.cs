@@ -1,20 +1,28 @@
-using System;
 using UdonSharp;
 using UnityEngine;
+using VRC.SDK3.UdonNetworkCalling;
 using VRC.SDKBase;
+using VRC.Udon.Common.Interfaces;
 
 namespace Kmnk.LogStream.Udon
 {
-    // ログを型・時刻・名前・本文の 4 本の配列で持ち、同期する。新しいログは先頭に入り、最も古いものが落ちる
+    // ログを型・時刻・名前・本文の 4 本の配列で持ち、同期する。新しいログは先頭に入り、最も古いものが落ちる。
+    // 配列を書くのは owner だけで、owner でない人が足すログは owner への network event で送る
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class LogStreamCore : UdonSharpBehaviour
     {
+        // 1 件の本文と名前の長さの上限。_logLimit 件を埋めても Manual の同期の上限（約 280 KB）に届かないようにする
+        public const int MaxMessageLength = 256;
+        public const int MaxNameLength = 64;
+        public const int MaxLogLimit = 200;
+
         [SerializeField]
         [Tooltip("複数の LogStream を設置する際に指定します")]
         private int _id = 0;
 
         [SerializeField]
-        [Tooltip("ログの最大保持数を指定します")]
+        [Tooltip("ログの最大保持数を指定します（1〜200）")]
+        [Range(1, MaxLogLimit)]
         private int _logLimit = 100;
 
         [SerializeField]
@@ -95,33 +103,33 @@ namespace Kmnk.LogStream.Udon
             _eventListeners = ListenerArray.Append(_eventListeners, listener);
         }
 
+        // ログを足す。owner でなければ owner に送る。playerName が null なら自分の名前にする
         public void AddMessage(LogType type, string message, string playerName)
         {
             if (string.IsNullOrEmpty(message)) { return; }
-            if (!AreSyncedFieldsInitialized()) { return; }
+            message = Truncate(message, MaxMessageLength);
+            playerName = Truncate(playerName ?? Networking.LocalPlayer.displayName, MaxNameLength);
 
-            Networking.SetOwner(Networking.LocalPlayer, gameObject);
-
-            for (var i = _logLimit - 1; i > 0; i--)
+            if (Networking.IsOwner(gameObject))
             {
-                _types[i] = _types[i - 1];
-                _ticks[i] = _ticks[i - 1];
-                _names[i] = _names[i - 1];
-                _messages[i] = _messages[i - 1];
+                Append(type, message, playerName);
+                return;
             }
+            SendCustomNetworkEvent(NetworkEventTarget.Owner, nameof(_AddMessageAsOwner), (int)type, message, playerName);
+        }
 
-            _types[0] = type;
-            _ticks[0] = DateTime.UtcNow.Ticks;
-            _names[0] = playerName ?? Networking.LocalPlayer.displayName;
-            _messages[0] = message;
-
-            RequestSerialization();
-            InvokeOnDisplayAllLogLines();
-            PlaySoundEffect();
+        // owner が、owner でない人から送られたログを足す
+        [NetworkCallable(maxEventsPerSecond: 10)]
+        public void _AddMessageAsOwner(int type, string message, string playerName)
+        {
+            if (!Networking.IsOwner(gameObject)) { return; }
+            if (string.IsNullOrEmpty(message)) { return; }
+            Append((LogType)type, Truncate(message, MaxMessageLength), Truncate(playerName, MaxNameLength));
         }
 
         private void Start()
         {
+            _logLimit = Mathf.Clamp(_logLimit, 1, MaxLogLimit);
             if (!Networking.IsOwner(gameObject)) { return; }
             InitializeSyncedFields();
             RequestSerialization();
@@ -133,6 +141,34 @@ namespace Kmnk.LogStream.Udon
             if (!AreSyncedFieldsInitialized()) { return; }
             InvokeOnDisplayAllLogLines();
             PlaySoundEffect();
+        }
+
+        private void Append(LogType type, string message, string playerName)
+        {
+            if (!AreSyncedFieldsInitialized()) { return; }
+
+            for (var i = _types.Length - 1; i > 0; i--)
+            {
+                _types[i] = _types[i - 1];
+                _ticks[i] = _ticks[i - 1];
+                _names[i] = _names[i - 1];
+                _messages[i] = _messages[i - 1];
+            }
+
+            _types[0] = type;
+            _ticks[0] = Networking.GetNetworkDateTime().Ticks;
+            _names[0] = playerName;
+            _messages[0] = message;
+
+            RequestSerialization();
+            InvokeOnDisplayAllLogLines();
+            PlaySoundEffect();
+        }
+
+        private static string Truncate(string value, int length)
+        {
+            if (value == null || value.Length <= length) { return value; }
+            return value.Substring(0, length);
         }
 
         private void InitializeSyncedFields()
@@ -147,7 +183,7 @@ namespace Kmnk.LogStream.Udon
                 var hasInitialMessage = _initialMessages != null && i < _initialMessages.Length;
                 _types[i] = LogType.None;
                 _ticks[i] = 0;
-                _messages[i] = hasInitialMessage ? _initialMessages[i] : string.Empty;
+                _messages[i] = hasInitialMessage ? Truncate(_initialMessages[i], MaxMessageLength) : string.Empty;
                 _names[i] = hasInitialMessage ? _initialName : string.Empty;
             }
         }

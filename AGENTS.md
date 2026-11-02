@@ -4,7 +4,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 詳しい説明は次にある。
 
-- 作りと、新しいギミックを足すときに手を入れる所: [docs/architecture.md](docs/architecture.md)
+- 作りと、ギミックを足す・変えるときに手を入れる所: [docs/architecture.md](docs/architecture.md)
 - 環境の用意、コマンド、テストと振る舞いの対応: [docs/development.md](docs/development.md)
 - release の作り方: [docs/release.md](docs/release.md)
 
@@ -23,17 +23,20 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 ## 作りの要約
 
-- 設定の層: 親の GameObject の MonoBehaviour（`Scripts/`、名前空間 `Kmnk.LogStream`）が Inspector の値を持つ。CustomEditor（`Scripts/Editor/`、`Kmnk.Core.EditorBase<T>` の派生）が、値を子の UdonSharp のコンポーネントへ写す。ビルドのたびに `LogStreamBuildProcessor` が写し直す。
-- 実行の層: `Udon/` の UdonSharpBehaviour（名前空間 `Kmnk.LogStream.Udon`）。`Udon.LogStreamCore` が型・時刻・名前・本文の 4 本の `[UdonSynced]` 配列を持ち、`AddMessage` で先頭に足す。書く側は `LogWriteBase` の派生、表示は `LogStreamViewer`。
-- 結び方: 各ギミックは `Id` で同じ `Id` の `LogStreamCore` に結ばれる。
+- 設定: 各 prefab の子の `Udon` の UdonSharpBehaviour（`Runtime/`、名前空間 `Kmnk.LogStream.Udon`）が持つ。CustomEditor（`Editor/`、`UdonSettingsEditor` の派生）が設定を描き、複数の選択に書く。
+- 2.x の設定: 親の GameObject の `MonoBehaviour`（`Runtime/Legacy/`、名前空間 `Kmnk.LogStream`）は値を持たず、2.x の scene の値を子の Udon へ 1 度だけ移す読み出し元（`LegacySettingsMigrator`）と、子の Udon の Inspector を描く入口として残している。新しい値を足さない。
+- 実行: `Udon.LogStreamCore` が型・時刻・名前・本文の 4 本の `[UdonSynced]` 配列を持つ。owner だけが書き、owner でない人のログは `[NetworkCallable]` の event で owner に送る。書く側は `LogWriteBase` の派生、表示は `LogStreamEventListener` の派生の `LogStreamViewer`。
+- 結び方: 各ギミックは `_id` で同じ scene の同じ `_id` の `LogStreamCore` に結ばれる。ビルドのたびに `LogStreamBuildProcessor` が結び直す。
+- 詳しくは [docs/architecture.md](docs/architecture.md)。
 
 ## 守る約束
 
-- `Udon/` の下と `Assets/LogStreamDev/TestUdon/` は UdonSharp のスクリプトで、UdonSharp の制約に従う。`List<T>` などのジェネリックのコレクション、LINQ、ラムダ、`try/catch`、`async` を使わず、配列と `for` で書く。`bin/compile` が通っても制約を守ったことにはならない。使わないフィールドに `List<T>` を書いただけではエラーにならなかった。
-- `Scripts/` と `Scripts/Editor/` は通常の C#。
+- `Runtime/` の下と `Assets/LogStreamDev/TestUdon/` は UdonSharp のスクリプトで、UdonSharp の制約に従う。`List<T>` などのジェネリックのコレクション、LINQ、ラムダ、`try/catch`、`async` を使わず、配列と `for` で書く。`bin/compile` が通っても制約を守ったことにはならない。使わないフィールドに `List<T>` を書いただけではエラーにならなかった。`bin/check-udonsharp` が文字列の照合で補う。
+- `Runtime/Legacy/` と `Editor/` は通常の C#。
 - Inspector の tooltip（`[Tooltip]`）は日本語で書く。
 - C# は BOM なしの UTF-8、改行は LF（`.editorconfig`）。UdonSharp の Create > U# Script は BOM つきで書くので、作ったら BOM を外す。`bin/check-encoding` で確かめる。
-- asmdef は `Assets/Kmnk/` の下に足さない。足すと `internal` の `Kmnk.Core.EditorBase` に届かなくなる。
+- asmdef は `Assets/Kmnk/` の下に足さない。2.x から上書きで import した利用者の手元では、スクリプトが 2.x の場所（`Udon/` など）に残り、新しく足した asmdef だけが新しい場所に置かれるので、asmdef がスクリプトを含まなくなる。
+- UI から呼ぶメソッドの名前は `_` で始める（network から呼べないようにするため）。`Runtime/` に `Update` を置かず、1 秒ごとの処理は `SendCustomEventDelayedSeconds` で行う。
 
 ## 資産ファイル
 
@@ -43,7 +46,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 - 新しい `.cs` の `.meta` は自分で書かない。`bin/compile` を動かすと Unity が作る。
 - 新しい U# スクリプトの `UdonSharpProgramAsset`（`.asset`）は `bin/create-program-asset <.cs のパス>` で作る。その後 `bin/check-assets` が出す `Assets/SerializedUdonPrograms/` のファイルを `.gitignore` の例外に足す。
 - Claude Code では `.claude/settings.json` が、これらのファイルの書き換えの前に利用者の確認を求める。`Bash` での書き換えは止まらないので、約束と `bin/check-assets` で守る。
-- `Assets/SerializedUdonPrograms/` と `Udon/*.asset` に出た差分は、UdonSharp のスクリプトのフィールドを変えたときは `.cs` の変更と同じ commit に入れる。`.cs` を変えていないのに出た差分は戻す。SDK を上げた直後の差分は SDK を上げる commit に入れる。
+- `Assets/SerializedUdonPrograms/` と `Runtime/*.asset` に出た差分は、UdonSharp のスクリプトのフィールドを変えたときは `.cs` の変更と同じ commit に入れる。`.cs` を変えていないのに出た差分は戻す。SDK を上げた直後の差分は SDK を上げる commit に入れる。
 
 ## コマンド
 
@@ -52,10 +55,13 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 | コマンド | Unity | 何をするか | 成功 | 失敗 |
 | --- | --- | --- | --- | --- |
 | `bin/setup` | 使う | 新しい clone を検証できる状態にする | 終了コード 0 | 各段の終了コード |
+| `bin/setup-git` | 使わない | clone ごとの git の設定（UdonSharp の生成物の filter）を入れる | 終了コード 0 | 0 以外の終了コード |
 | `bin/compile` | 使う | C# と UdonSharp のコンパイル | 終了コード 0 と `Compile of <n> scripts finished` | 終了コード 1 と `error CS` か `[UdonSharp] <ファイル>(<行>,<列>)` の行 |
 | `bin/test` | 使う | 振る舞いのテスト | 終了コード 0 と `Passed:` の行 | 終了コード 1 と `Failed:` の行と文面 |
 | `bin/check-assets` | 使わない | prefab・scene・asset の GUID の参照の検査 | 終了コード 0 | 終了コード 1 と `ファイル:行: guid`。`bin/setup` の前は終了コード 2 |
 | `bin/check-encoding` | 使わない | C# の BOM と改行の検査 | 終了コード 0 | 終了コード 1 とファイルの一覧 |
+| `bin/check-udonsharp` | 使わない | Udon で動く C# から UdonSharp が受け付けない構文を文字列で探す | 終了コード 0 | 終了コード 1 と `ファイル:行: 理由` |
+| `bin/check-docs` | 使わない | `AGENTS.md`・`README.md`・`docs/` が指すパス・識別子・コマンド・リンクが今のツリーにあるかの検査 | 終了コード 0 | 終了コード 1 と `ファイル:行: 名前（理由）` |
 | `bin/check-core` | 使わない | Core のコピーと `core-version.txt` の比較 | 終了コード 0 | 終了コード 1 と違うファイル |
 | `bin/sync-core [<commit>]` | 使わない | Core のコピーを Core の commit に合わせる | 終了コード 0 | git の終了コード |
 | `bin/create-program-asset <.cs>` | 使う | U# スクリプトの `.asset` を作る | 終了コード 0 | 終了コード 1 |
@@ -63,6 +69,10 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 | `bin/compare-package <新> <旧>` | 使わない | 2 つの unitypackage の項目の比較 | 終了コード 0 | 終了コード 1 と違う項目 |
 
 どのテストがどの振る舞いを確かめるかは [docs/development.md の「テストと振る舞い」](docs/development.md#テストと振る舞い) にある。複数人での同期は ClientSim の 1 人では確かめられないので、変えたときは利用者に VRChat のクライアントでの確認を頼む。
+
+## 文書を直す
+
+振る舞い・設定・ファイルの置き場所・コマンドを変えたら、同じ commit の中で、関わる `AGENTS.md`・`docs/`・利用者向けの README（`Assets/Kmnk/LogStream/README_ja.md` と `README.md`）を直す。どこを直すかは [docs/architecture.md](docs/architecture.md) の「新しいギミックを足すとき」「既存のギミックに設定や機能を足すとき」にある。直したら `bin/check-docs` を動かす。`bin/check-docs` は名前が消えたことしか見つけないので、説明の中身は自分で読み直す。文書とコードが違うのに気づいたら、コードを正として文書を直すか、利用者に伝える。
 
 ## VRChat_Core のコピー
 

@@ -105,6 +105,10 @@ crashlytics-build.properties
 !/Assets/SerializedUdonPrograms/c8df303ceb45ae84f85a11591f741734.asset.meta
 !/Assets/SerializedUdonPrograms/10381fac43e6a4f6caaea8f3fa89ab8d.asset
 !/Assets/SerializedUdonPrograms/10381fac43e6a4f6caaea8f3fa89ab8d.asset.meta
+!/Assets/SerializedUdonPrograms/e7fce7bdc55c9480e9c38d79f84a1128.asset
+!/Assets/SerializedUdonPrograms/e7fce7bdc55c9480e9c38d79f84a1128.asset.meta
+!/Assets/SerializedUdonPrograms/README.md
+!/Assets/SerializedUdonPrograms/README.md.meta
 
 # テストが作る一時的な scene
 /Assets/LogStreamDev/Temp/
@@ -115,3 +119,6 @@ crashlytics-build.properties
 
 # XR の設定の参照だけを持ち、VRChat SDK が環境ごとに乱数の GUID で作る資産を指すので追跡しない
 /ProjectSettings/EditorBuildSettings.asset
+
+# VS Code の Unity 拡張が作る設定
+/.vscode/

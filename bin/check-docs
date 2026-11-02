@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Unity を使わない。開発者向けの文書が指すパス・識別子・リンクがあるかを確かめる。使い方は docs/development.md
+set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd)"
+exec python3 "$root/bin/lib/check_docs.py" "$root" "$@"

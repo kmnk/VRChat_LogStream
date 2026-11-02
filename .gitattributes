@@ -6,6 +6,9 @@
 *.asset  merge=unityyamlmerge eol=lf
 *.meta   merge=unityyamlmerge eol=lf
 
+# UdonSharp の生成物。gzip のヘッダーの OS の byte を揃える filter は bin/setup-git で入れる
+/Assets/SerializedUdonPrograms/*.asset filter=udon-gzip
+
 # バイナリ
 *.png  binary
 *.jpg  binary

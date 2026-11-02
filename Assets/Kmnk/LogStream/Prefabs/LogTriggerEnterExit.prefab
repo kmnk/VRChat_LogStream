@@ -26,12 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6211745742231654924}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6747545804306380080}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-3400548321582070563
 MonoBehaviour:
@@ -55,6 +56,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 6134386203506039898}
+  _id: 0
   _core: {fileID: 0}
   _enterLog: '{{name}} has entered'
   _exitLog: '{{name}} has exited'
@@ -74,6 +76,7 @@ MonoBehaviour:
   interactText: Use
   interactTextGO: {fileID: 0}
   proximity: 2
+  OutlineRenderers: []
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 1
@@ -92,9 +95,17 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6211745742231654924}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 1
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 0.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6747545804306380083
@@ -121,13 +132,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6747545804306380083}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8428937103614270659}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3484502537306027215
 MonoBehaviour:
@@ -141,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bfd9d40c30a1c34081b98179f410500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _migrated: 0
   _id: 0
   _enterLog: '{{name}} has entered'
   _exitLog: '{{name}} has exited'

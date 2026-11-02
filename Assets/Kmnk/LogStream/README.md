@@ -2,7 +2,8 @@
 Simple system to stream text logs to be placed in the VRChat world.
 
 ## Required
-- [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core)
+- VRChat SDK Worlds (includes UdonSharp)
+- Since v3.0.0, [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core) is no longer used. The bundled `Kmnk/Core` is kept for other gimmicks that use the same Core
 
 ## Usage
 The steps to place a board in the world project that displays logs.
@@ -29,7 +30,7 @@ The steps to place a board in the world project that displays logs.
 #### Preparation
 1. Drag and drop the `LogInput` prefab into your scene and place it wherever you want
 2. If you want to change or add a template message, select the `LogInput` object, edit the text file set to `Template Text`, and check the `Use Template Text` checkbox
-3. Check `Pickapable` if you want to make it portable
+3. Check `Pickupable` if you want to make it portable
 
 #### How to use
 - Press the button with the text to add the text to the input field, and press the `SEND` button to send the message. Press `x` to cancel
@@ -38,7 +39,7 @@ The steps to place a board in the world project that displays logs.
 ### Set up a board that displays the same log in various places
 #### Preparation
 1. Drag and drop the `LogStreamViewer` prefab into the scene and place it wherever you want
-2. Check `Pickapable` if you want to make it portable
+2. Check `Pickupable` if you want to make it portable
 
 #### How to use
 - Place it and it will work automatically
@@ -73,7 +74,9 @@ The steps to place a board in the world project that displays logs.
     - You cannot have more than one `LogStreamCore` with the same `Id`. Please note that this will not work as intended
 
 ### Others
-- A sample that implements the minimum functionality to stream any log you want is implemented in the `LogSample` prefab and the script `Kmnk/LogStream/Udon/LogSample.cs`
+- A sample that implements the minimum functionality to stream any log you want is implemented in the `LogSample` prefab and the script `Kmnk/LogStream/Runtime/LogSample.cs` (if you imported over v2, it is at `Kmnk/LogStream/Udon/LogSample.cs`)
+- The settings of each prefab are held by its child `Udon` object. Selecting the parent object shows the settings of the child `Udon` object
+- `Only Master` of the Pomodoro timer lets only the instance master operate the timer. It can be toggled in-game with the lock button
 
 ## Operation check
 - I have confirmed that this works with Unity 2022.3.22f1, VRChat SDK Base 3.10.6, VRChat SDK Worlds 3.10.6
@@ -83,6 +86,15 @@ MIT License
 Copyright (c) 2024 KMNK
 
 ## Updates
+- 2026/11/02 v3.0.0 Rebuilt for UdonSharp (VRChat SDK Worlds 3.10.6). This version has breaking changes
+    - Settings are now held by the child `Udon` object of each prefab. Settings in v2 scenes are moved automatically when the scene is opened or built. You can still select the parent object to edit them
+    - Only the owner of `LogStreamCore` writes logs, and other players send their logs to the owner. Logs are no longer lost when several players post at the same time
+    - Log times and the Pomodoro timer use the network time instead of each device's clock
+    - Master Only of the Pomodoro timer now means only the instance master can operate it (in v2, the player who locked it could)
+    - Event names called from buttons now start with `_` (`_ActivateInput`, `_DeactivateInput`, `_Submit`, `_AppendToInput`, `_Toggle`, `_TogglePomodoro`, `_SkipPomodoro`, `_ResetPomodoro`, `_ToggleOnlyMaster`, `_ToggleAutoContinue`). If you unpacked the prefabs or call these events from your own UI, update the event names
+    - A log message is limited to 256 characters, and the log limit to 200. Pomodoro minutes and the long break interval are at least 1
+    - `Time Format` of `LogStreamCore` now takes effect
+    - Scripts moved to `Runtime` and `Editor`. If you import over v2, files from v2 are updated in their original locations (`Udon`, `Scripts`), and some new files are placed in `Runtime`
 - 2024/06/14 v2.2.3 Add Pomodoro Pause and Resume message
 - 2024/01/08 v2.2.2 Apply Unity and SDK new version changes
 - 2023/10/15 v2.2.1 The button for switching Master Only and Auto Continue on the Pomodoro timer has been changed to an icon

@@ -1,6 +1,6 @@
 {
   "name": "LogStreamDev.Editor",
-  "references": ["UdonSharp.Editor", "UdonSharp.Runtime", "VRC.Udon", "VRC.Udon.Editor"],
+  "references": ["UdonSharp.Editor", "UdonSharp.Runtime", "VRC.Udon", "VRC.Udon.Editor", "UnityEngine.UI"],
   "includePlatforms": ["Editor"],
   "autoReferenced": false
 }

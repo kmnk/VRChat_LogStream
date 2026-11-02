@@ -6,7 +6,8 @@
     "UnityEngine.UI",
     "VRC.Udon",
     "VRC.ClientSim",
-    "UdonSharp.Runtime"
+    "UdonSharp.Runtime",
+    "LogStreamDev.Editor"
   ],
   "includePlatforms": [
     "Editor"

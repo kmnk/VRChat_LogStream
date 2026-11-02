@@ -15,7 +15,8 @@ release の unitypackage と zip を作り、GitHub の Release と Booth に上
    - `bin/check-core` で、Core のコピーが `core-version.txt` の commit と同じかを確かめる
    - `Assets/Kmnk` を丸ごと `LogStream_v<版の . を _ にしたもの>.unitypackage` に書き出す
    - その unitypackage と `README.md`・`README_ja.md`・`LICENSE.md` を `VRChat_LogStream_v<版の . を _ にしたもの>.zip` に固める
-   - GitHub の直前の release の unitypackage を取り、`bin/compare-package` で比べる。直前の release にある項目が同じ `pathname` と GUID で無ければ、終了コード 1 で止まる。既存の利用者が上書きで import できなくなるからである
+   - GitHub の直前の release の unitypackage を取り、`bin/compare-package` で比べる。直前の release にある項目の GUID が無い（`MISSING`）か、同じ `pathname` で GUID が違う（`GUID`）と、終了コード 1 で止まる。消した項目は既存の利用者の手元に古いファイルとして残り、GUID の違う項目は同じパスでぶつかるからである
+   - 同じ GUID で `pathname` が違う項目は `MOVED` と出すだけで止めない。unitypackage の import は GUID で同じアセットかを決め、既にあるアセットはそのパスのまま中身を入れ替えるので、既存の利用者の手元では元のパスのまま更新される（2026-11-02 に batchmode の import で確かめた。Editor の画面の Import のダイアログでは確かめていない）。ファイルやフォルダを動かすときは、`git mv` で `.meta` ごと動かして GUID を保つ
 3. 終了コード 1 で `GUID` や `MISSING` が出たときは、上げずに原因を調べる。Core の同期で GUID が変わったときは、Core の側で `.meta` を戻すかを利用者が決める。
 4. `git tag v<版>` を付けて push し、GitHub の Release を作って 2 つのファイルを上げる。
 5. Booth に zip を上げる。

@@ -33,18 +33,24 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 ## テストと振る舞い
 
-テストは `Assets/LogStreamDev/Tests/LogStreamTests.cs` にあり、`bin/test` が Unity Test Framework の EditMode で動かす。LogStream に asmdef が無く、テストの asmdef から LogStream の型を参照できないので、型は名前で探し、Udon の値は `UdonBehaviour` の変数として読む。実行の層のテストは、テストの中で Play Mode に入り、ClientSim の 1 人のプレイヤーで動かす。ログはテスト用の U# スクリプト `Assets/LogStreamDev/TestUdon/LogStreamTestWriter.cs` で足す。
+テストは `Assets/LogStreamDev/Tests/LogStreamTests.cs` と `LogStreamTests.Gimmicks.cs` にあり、`bin/test` が Unity Test Framework の EditMode で動かす。LogStream に asmdef が無く、テストの asmdef から LogStream の型を参照できないので、型は名前で探し、Udon の値は `UdonBehaviour` の変数として読む。実行の層のテストは、テストの中で Play Mode に入り、ClientSim の 1 人のプレイヤーで動かす。ログはテスト用の U# スクリプト `Assets/LogStreamDev/TestUdon/LogStreamTestWriter.cs` で足す。
 
 | テスト | 確かめる振る舞い | 落ちることを確かめた変更 |
 | --- | --- | --- |
 | `BuildProcessor_CopiesInspectorValuesToUdon` | ビルドのときに、`LogStreamCore` の音の ON/OFF と音量、`LogJoinLeave` のメッセージが子の Udon と `VRCSpatialAudioSource` に写り、`Id` で `_core` が結ばれる | `LogStreamCoreEditor` の音の ON/OFF を写す行、音量を写す行を外す |
 | `AddMessage_ShiftsAndDropsOldest` | ログを足すと配列の先頭に入り、古いものは後ろへずれ、`_logLimit` を超えると最も古いものが落ちる | `Udon/LogStreamCore.cs` の `AddMessage` のずらすループの本文の行を外す |
 | `Viewer_FiltersByLogType` | `LogStreamViewer` は選んだ `LogType` のログだけを描き、`None` ではすべてを描く | `Udon/LogStreamViewer.cs` の `LogType` の比較を外す |
+| `BuildProcessor_AppliesAllSettings` | 2.x の利用者の scene（`Assets/LogStreamDev/Fixtures/V2Overrides.unity`）をビルドの処理に通すと、全ギミックの全ての設定の値が、同じ名前の Udon の field と `AudioSource`・`VRCSpatialAudioSource`・`VRCPickup`・テンプレートのボタンに効く。`LogStreamCore._timeFormat` は 2.x で写らないので除いている | `LogPomodoroEditor` の `_breakName` を写す行の写し先を変える |
+| `Pomodoro_TransitionsAndMessages` | 開始・一時停止・再開・時間切れ・スキップ・リセット・自動で続けることで状態と回数が移り、決まった文面のログが足される。4 回目の後の休憩が長い休憩になる | `Udon/LogPomodoro.cs` の休憩の終わりのメッセージの `- 1` を外す |
+| `JoinLeave_AddsPlayerName` | 入室・退室の event で、プレイヤーの名前を `{{name}}` に入れたログが足される | `Udon/LogJoinLeave.cs` の退室で入室の文を使う |
+| `TriggerEnterExit_AddsPlayerName` | Trigger の enter・exit の event で、同上 | `Udon/LogTriggerEnterExit.cs` の exit で enter の文を使う |
+| `Input_AddsTypedMessage` | 入力欄の文を送ると、送った人の名前でログが足される | `Udon/LogInput.cs` で入力欄の文の代わりに固定の文を送る |
 
 確かめていないこと:
 
 - 複数人での同期（`[UdonSynced]`・所有権）。ClientSim の 1 人では確かめられないので、VRChat のクライアントで確かめる。
-- `LogInput`・`LogTriggerEnterExit`・`LogPomodoro` の振る舞い。
+
+`Assets/LogStreamDev/Fixtures/V2Overrides.unity` は、2.x の prefab を置き、設定のクラスの全ての値に既定と違う上書きを入れた scene で、`Assets/LogStreamDev/Editor/V2Fixture.cs` で作った。2.x の prefab から作ったものなので、作り直さない。
 
 テストを足すときは、この表に行を足し、変更を外すとテストが落ちることを確かめる。
 

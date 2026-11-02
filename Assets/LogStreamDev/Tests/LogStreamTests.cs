@@ -18,7 +18,7 @@ namespace Kmnk.LogStreamDev.Tests
 {
     // LogStream に asmdef が無く型を参照できないので、型は名前で探し、Udon の値は UdonBehaviour の変数として読む。
     // 確かめる振る舞いとテストの対応は docs/development.md にある
-    public class LogStreamTests
+    public partial class LogStreamTests
     {
         const string TempDir = "Assets/LogStreamDev/Temp";
         const string Prefabs = "Assets/Kmnk/LogStream/Prefabs/";
@@ -162,6 +162,18 @@ namespace Kmnk.LogStreamDev.Tests
         // 設定は static に持たれ、Domain Reload で消えるため。戻すのは RestoreEditor
         static IEnumerator InPlayMode(Scene scene, Action body)
         {
+            return InPlayMode(scene, () => Once(body));
+        }
+
+        static IEnumerator Once(Action body)
+        {
+            body();
+            yield break;
+        }
+
+        // body が IEnumerator を返す形。Play Mode の中でフレームを待つテストに使う
+        static IEnumerator InPlayMode(Scene scene, Func<IEnumerator> body)
+        {
             RunBuildProcessor(scene);
             EditorSceneManager.SaveScene(scene);
 
@@ -190,7 +202,7 @@ namespace Kmnk.LogStreamDev.Tests
             Assert.IsNotNull(core.GetProgramVariable("_messages"), "LogStreamCore の配列が初期化されない");
             yield return null;
 
-            body();
+            yield return body();
         }
 
         static Component FindByTypeName(GameObject root, string fullName) =>

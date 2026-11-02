@@ -5,6 +5,9 @@ set -uo pipefail
 source "$(dirname "$0")/lib/unity.sh"
 cd "$root"
 
+echo "== git の設定を入れる"
+"$root/bin/setup-git" || exit 1
+
 echo "== Core のコピーを確かめる"
 "$root/bin/check-core" || exit 1
 

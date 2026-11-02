@@ -19,6 +19,7 @@ mac での手順。Windows で `bin/` を動かすことは確かめていない
 1. Unity Hub で Unity 2022.3.22f1 を入れる。別の場所に入れたときは、環境変数 `UNITY_EDITOR` に Unity の実行ファイルのパスを入れる。
 2. `vrc-get` を入れる（`brew install vrc-get`）。Python 3 と `git` と `gh` も使う。
 3. clone したリポジトリのルートで `bin/setup` を動かす。次を行う。
+   - `bin/setup-git` で clone ごとの git の設定を入れる（[UdonSharp の生成物](#udonsharp-の生成物)）
    - `bin/check-core` で Core のコピーを確かめる
    - `vrc-get resolve` で SDK のパッケージを `Packages/` に入れる
    - Unity を開き、VRChat SDK がエディタの更新の中で行う設定の書き換え（define など）が落ち着くまで待って保存する。保存しないと、テストの途中で再コンパイルが起きてテストが切れる
@@ -91,7 +92,9 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 ## UdonSharp の生成物
 
-`Assets/SerializedUdonPrograms/` には UdonSharp と Udon がコンパイルした結果が入る。LogStream の `Runtime/*.asset` と `Samples/LogStream.unity` はここのファイルを GUID で指すので、指されているものだけを `.gitignore` の例外にして追跡する。SDK の sample の分は clone のたびに乱数の GUID で作られるので追跡しない。U# スクリプトを足したときに、生成物が `.gitignore` で除かれたままだと、`bin/check-assets` がそのファイルを出して終了コード 1 になる。
+`Assets/SerializedUdonPrograms/` には UdonSharp と Udon がコンパイルした結果が入る。LogStream の `Runtime/*.asset` と `Samples/LogStream.unity` はここのファイルを GUID で指すので、指されているものだけを `.gitignore` の例外にして追跡する。SDK の sample の分は clone のたびに乱数の GUID で作られるので追跡しない。
+
+UdonSharp は生成物を gzip で圧縮して 16 進で書き、gzip のヘッダーの OS の byte は mac では `13`、Windows では `0a` になる（2026-11-03 に Windows で更新されたファイルと比べて確かめた）。中身が同じでも、別の OS でコンパイルし直すたびに差分になる。`.gitattributes` でこのファイルに `udon-gzip` の filter を付け、commit と比較のときにだけ `13` にそろえる。filter の設定は commit で配れないので、clone ごとに `bin/setup-git` を 1 度動かす（`bin/setup` も動かす）。Windows では Git Bash で `bash bin/setup-git` とする。設定しないと filter は働かず、前と同じく差分が出る。U# スクリプトを足したときに、生成物が `.gitignore` で除かれたままだと、`bin/check-assets` がそのファイルを出して終了コード 1 になる。
 
 ## SDK を上げるとき
 

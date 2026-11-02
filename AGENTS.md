@@ -55,6 +55,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 | コマンド | Unity | 何をするか | 成功 | 失敗 |
 | --- | --- | --- | --- | --- |
 | `bin/setup` | 使う | 新しい clone を検証できる状態にする | 終了コード 0 | 各段の終了コード |
+| `bin/setup-git` | 使わない | clone ごとの git の設定（UdonSharp の生成物の filter）を入れる | 終了コード 0 | 0 以外の終了コード |
 | `bin/compile` | 使う | C# と UdonSharp のコンパイル | 終了コード 0 と `Compile of <n> scripts finished` | 終了コード 1 と `error CS` か `[UdonSharp] <ファイル>(<行>,<列>)` の行 |
 | `bin/test` | 使う | 振る舞いのテスト | 終了コード 0 と `Passed:` の行 | 終了コード 1 と `Failed:` の行と文面 |
 | `bin/check-assets` | 使わない | prefab・scene・asset の GUID の参照の検査 | 終了コード 0 | 終了コード 1 と `ファイル:行: guid`。`bin/setup` の前は終了コード 2 |

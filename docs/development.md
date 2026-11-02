@@ -45,6 +45,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 | `AddMessage_NonOwnerDoesNotWriteLocally` | ClientSim のリモートのプレイヤーを owner にすると、自分の `AddMessage` は配列を書かず、所有権も取らない | `AddMessage` で所有権を取って自分で書く（2.x の形） |
 | `AddMessage_TruncatesLongMessage` | 本文は 256 文字で切られる | `LogStreamCore.Truncate` で切らない |
 | `Runtime_HasNoUpdate` | `Runtime/` に `Update`・`LateUpdate`・`FixedUpdate` が無い | `Runtime/LogLine.cs` に `Update` を足す |
+| `ProjectSettings_HasVRChatLayers` | `ProjectSettings/` の Layer と衝突の行列が、VRChat SDK がビルドの前に確かめる配置（SDK の `UpdateLayers.AreLayersSetup`・`IsCollisionLayerMatrixSetup`）になっている | `ProjectSettings/TagManager.asset` と `DynamicsManager.asset` を、Layer 3 が `reserved3` だった前の版に戻す |
 | `BuildProcessor_AppliesAllSettings` | 2.x の利用者の scene（`Assets/LogStreamDev/Fixtures/V2Overrides.unity`）を開いてビルドの処理に通すと、2.x の設定のクラスの全ての値が、同じ名前の Udon の field と `AudioSource`・`VRCSpatialAudioSource`・`VRCPickup`・テンプレートのボタンに移る（`_timeFormat` を含む） | `Editor/LegacySettingsMigrator.cs` で `_timeFormat` を写さない |
 | `Migration_RunsOnceAndKeepsUdonEdits` | 2.x の設定を移すのは 1 度だけで、移した後に Udon で変えた値はもう 1 度移す処理を通しても戻らない | `LegacySettingsMigrator.Migrate` の `_migrated` を見る行を外す |
 | `Editor_AppliesToAllSelectedTargets` | 複数を選んだ Inspector で `_id` を変えると、選んだ全ての `_core` が結ばれる | `UdonSettingsEditor.ApplyRelated` で最初の 1 つだけを扱う |
@@ -83,8 +84,9 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 1. `vrc-get install com.vrchat.worlds <版>` で `Packages/vpm-manifest.json` を書き換える。
 2. `bin/setup` を動かす。SDK の設定の書き換えで `ProjectSettings/` に差分が出る。
 3. `bin/compile` と `bin/test` を動かす。`Assets/SerializedUdonPrograms/` の生成物に差分が出る。
-4. 2 と 3 の差分を 1 つの commit にする。もう 1 度 `bin/compile` を動かして差分が出ないことを確かめる。
-5. `Assets/Kmnk/LogStream/` の README の動作確認の版を書き換える。
+4. `bin/test` の `ProjectSettings_HasVRChatLayers` が落ちたときは、SDK が求める Layer の配置が変わっている。Unity の Editor で VRChat SDK の画面の Builder を開き、Setup Layers for VRChat と Set Collision Matrix を押して、`ProjectSettings/TagManager.asset` と `DynamicsManager.asset` の差分を同じ commit に入れる。
+5. 2〜4 の差分を 1 つの commit にする。もう 1 度 `bin/compile` を動かして差分が出ないことを確かめる。
+6. `Assets/Kmnk/LogStream/` の README の動作確認の版を書き換える。
 
 テストと batchmode の実行は、SDK の内部に依る所が 2 つある。SDK を上げてテストが動かなくなったら、ここを見る。
 

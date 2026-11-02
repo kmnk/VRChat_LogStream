@@ -243,6 +243,20 @@ namespace Kmnk.LogStreamDev.Tests
             Assert.IsEmpty(withUpdate, string.Join(", ", withUpdate));
         }
 
+        // VRChat SDK がビルドの前に求める Layer と衝突の行列の設定が、ProjectSettings に入っている。
+        // SDK を上げると求める配置が変わることがあり、そのときは VRChat SDK の画面の Builder の
+        // Setup Layers for VRChat と Set Collision Matrix で直して ProjectSettings を commit する
+        [Test]
+        public void ProjectSettings_HasVRChatLayers()
+        {
+            var type = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => { try { return a.GetTypes(); } catch (System.Reflection.ReflectionTypeLoadException) { return new Type[0]; } })
+                .First(t => t.Name == "UpdateLayers");
+            const System.Reflection.BindingFlags Static = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static;
+            Assert.IsTrue((bool)type.GetMethod("AreLayersSetup", Static).Invoke(null, null), "VRChat の Layer が設定されていない");
+            Assert.IsTrue((bool)type.GetMethod("IsCollisionLayerMatrixSetup", Static).Invoke(null, null), "VRChat の衝突の行列が設定されていない");
+        }
+
         static void AddWorldAndCore(int logLimit)
         {
             Instantiate("Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/VRCWorld.prefab");

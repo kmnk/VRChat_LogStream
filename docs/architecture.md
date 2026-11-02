@@ -10,7 +10,7 @@ LogStream は、VRChat の中で動く UdonSharp のスクリプトと、ワー�
 | `Assets/Kmnk/LogStream/Runtime/Legacy/` | `Kmnk.LogStream` | 2.x で設定を持っていた `MonoBehaviour` 6 本と、その基底 `LegacySettings`。値は持たず、2.x の scene から値を移すための読み出し元と、Inspector の入口として残している |
 | `Assets/Kmnk/LogStream/Editor/` | `Kmnk.LogStream` | Udon の CustomEditor 6 本と基底 `UdonSettingsEditor`、`LegacySettingsEditor`、`LegacySettingsMigrator`、`LogStreamBuildProcessor`、`LogStreamEditorUtility` |
 
-2.x から上書きで import した利用者の手元では、これらは 2.x の場所（`Udon/`・`Scripts/`・`Scripts/Editor/`）のまま更新される。unitypackage の import が GUID で同じアセットかを決めるためで、ファイルは `.meta` ごと動かして GUID を保っている（[release.md](release.md)）。
+2.x から上書きで import した利用者の手元では、2.x からあるファイルは 2.x の場所（`Udon/`・`Scripts/`・`Scripts/Editor/`）のまま更新され、3.0.0 で足したファイルは、Editor のものは `Scripts/Editor/` に、`Runtime/` のものは新しい `Runtime/`・`Runtime/Legacy/` に置かれる（2026-11-02 に 2.2.3 の上に 3.0.0 を batchmode で import して確かめた）。unitypackage の import が GUID で同じアセットかを決めるためで、ファイルは `.meta` ごと動かして GUID を保っている（[release.md](release.md)）。
 
 `Prefabs/` に `LogStream`・`LogStreamCore`・`LogStreamViewer`・`LogInput`・`LogJoinLeave`・`LogTriggerEnterExit`・`LogPomodoro`・`LogSample` の 8 個があり、`Samples/LogStream.unity` がそれらを置いたサンプルの scene である。各 prefab は、親の GameObject に 2.x の設定のクラス、子の `Udon` に UdonSharpBehaviour を持つ。`LogPomodoro` は子の `View` に表示の `LogPomodoroView` も持つ。
 

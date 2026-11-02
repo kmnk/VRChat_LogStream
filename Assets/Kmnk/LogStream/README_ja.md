@@ -94,7 +94,7 @@ Copyright (c) 2024 KMNK
     - ボタンから呼ぶイベントの名前を `_` で始まる名前に変えました（ `_ActivateInput` ・ `_DeactivateInput` ・ `_Submit` ・ `_AppendToInput` ・ `_Toggle` ・ `_TogglePomodoro` ・ `_SkipPomodoro` ・ `_ResetPomodoro` ・ `_ToggleOnlyMaster` ・ `_ToggleAutoContinue` ）。プレハブを Unpack して使っている場合や、自作の UI からこれらのイベントを呼んでいる場合は、呼び先の名前を変えてください
     - ログの本文は 256 文字まで、ログの最大保持数は 200 までになりました。ポモドーロの分数と長い休憩までの回数は 1 以上になります
     - `LogStreamCore` の `Time Format` が反映されるようになりました
-    - スクリプトの置き場所を `Runtime` と `Editor` に変えました。v2 から上書きで Import した場合は、元の場所のまま更新されます
+    - スクリプトの置き場所を `Runtime` と `Editor` に変えました。v2 から上書きで Import した場合は、v2 からあるファイルは元の場所（ `Udon` ・ `Scripts` ）のまま更新され、新しいファイルの一部は `Runtime` に置かれます
 - 2024/06/14 v2.2.3 ポモドーロタイマーの停止と再開でメッセージを表示するようにしました
 - 2024/01/08 v2.2.2 Unity と SDK の新しいバージョンの変更を反映
 - 2023/10/15 v2.2.1 ポモドーロタイマーの Master Only, Auto Continue の切り替えボタンをアイコンに変更しました

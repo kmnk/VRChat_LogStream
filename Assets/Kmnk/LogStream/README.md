@@ -94,7 +94,7 @@ Copyright (c) 2024 KMNK
     - Event names called from buttons now start with `_` (`_ActivateInput`, `_DeactivateInput`, `_Submit`, `_AppendToInput`, `_Toggle`, `_TogglePomodoro`, `_SkipPomodoro`, `_ResetPomodoro`, `_ToggleOnlyMaster`, `_ToggleAutoContinue`). If you unpacked the prefabs or call these events from your own UI, update the event names
     - A log message is limited to 256 characters, and the log limit to 200. Pomodoro minutes and the long break interval are at least 1
     - `Time Format` of `LogStreamCore` now takes effect
-    - Scripts moved to `Runtime` and `Editor`. If you import over v2, files are updated in their original locations
+    - Scripts moved to `Runtime` and `Editor`. If you import over v2, files from v2 are updated in their original locations (`Udon`, `Scripts`), and some new files are placed in `Runtime`
 - 2024/06/14 v2.2.3 Add Pomodoro Pause and Resume message
 - 2024/01/08 v2.2.2 Apply Unity and SDK new version changes
 - 2023/10/15 v2.2.1 The button for switching Master Only and Auto Continue on the Pomodoro timer has been changed to an icon

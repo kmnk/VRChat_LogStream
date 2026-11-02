@@ -2,7 +2,9 @@ using UnityEngine;
 
 namespace Kmnk.LogStream
 {
-    public class LogInput : MonoBehaviour
+    // 2.x の設定のクラス。値は LegacySettingsMigrator が子の Udon へ移す。新しく値を足さない
+    [AddComponentMenu("")]
+    public class LogInput : LegacySettings
     {
 #pragma warning disable CS0414
         [SerializeField]

@@ -1074,6 +1074,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1261234073409962245}
+  _id: 0
   _core: {fileID: 0}
   _pomodoroMinutes: 25
   _shortBreakMinutes: 5
@@ -1123,6 +1124,7 @@ MonoBehaviour:
   interactText: Use
   interactTextGO: {fileID: 0}
   proximity: 2
+  OutlineRenderers: []
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
@@ -1348,6 +1350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31af65dcabb69dd47b951e4f3ea93040, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _migrated: 0
   _id: 0
   _pomodoroMinutes: 25
   _shortBreakMinutes: 5

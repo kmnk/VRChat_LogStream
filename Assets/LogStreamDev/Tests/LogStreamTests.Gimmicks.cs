@@ -8,6 +8,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using VRC.SDK3.Components;
 using VRC.SDKBase;
 using VRC.Udon;
@@ -33,9 +34,79 @@ namespace Kmnk.LogStreamDev.Tests
         {
             var scene = EditorSceneManager.OpenScene(V2Fixture, OpenSceneMode.Single);
             RunBuildProcessor(scene);
-            // _timeFormat は 2.x では Udon に写らない。D1 で直したら除外を外す
-            AssertSettingsApplied(skip: new[] { "LogStreamCore._timeFormat" });
+            AssertSettingsApplied();
         }
+
+        // 2.x の設定を移すのは 1 度だけで、移した後に Udon で変えた値は、scene を開き直しても戻らない
+        [Test]
+        public void Migration_RunsOnceAndKeepsUdonEdits()
+        {
+            var scene = EditorSceneManager.OpenScene(V2Fixture, OpenSceneMode.Single);
+            var legacy = UnityEngine.Object.FindObjectsOfType<MonoBehaviour>(true).First(c => c.GetType().FullName == "Kmnk.LogStream.LogJoinLeave");
+            var udon = new SerializedObject(FindByTypeName(legacy.gameObject, "Kmnk.LogStream.Udon.LogJoinLeave"));
+            Assert.AreEqual("V2 _joinLog {{name}}", udon.FindProperty("_joinLog").stringValue, "scene を開いた時に移らない");
+            Assert.IsTrue(new SerializedObject(legacy).FindProperty("_migrated").boolValue, "移した印が付かない");
+
+            udon.FindProperty("_joinLog").stringValue = "edited";
+            udon.ApplyModifiedPropertiesWithoutUndo();
+            var count = (int)EditorType("Kmnk.LogStream.LegacySettingsMigrator").GetMethod("MigrateScene").Invoke(null, new object[] { scene });
+
+            Assert.AreEqual(0, count, "2 度目にも移す");
+            udon.Update();
+            Assert.AreEqual("edited", udon.FindProperty("_joinLog").stringValue);
+        }
+
+        // 複数を選んだ Inspector で Id を変えると、選んだ全てが LogStreamCore に結ばれる
+        [Test]
+        public void Editor_AppliesToAllSelectedTargets()
+        {
+            GameObject core = null, a = null, b = null;
+            NewSavedScene("MultiEdit", () =>
+            {
+                core = Instantiate(Prefabs + "LogStreamCore.prefab");
+                SetProp(FindByTypeName(core, "Kmnk.LogStream.Udon.LogStreamCore"), "_id", p => p.intValue = 1);
+                a = Instantiate(Prefabs + "LogJoinLeave.prefab");
+                b = Instantiate(Prefabs + "LogJoinLeave.prefab");
+            });
+            var udons = new[] { a, b }.Select(o => (UnityEngine.Object)FindByTypeName(o, "Kmnk.LogStream.Udon.LogJoinLeave")).ToArray();
+            // 型を渡さないと UdonSharp の既定の Inspector が作られる
+            var editor = Editor.CreateEditor(udons, EditorType("Kmnk.LogStream.LogJoinLeaveEditor"));
+            editor.serializedObject.FindProperty("_id").intValue = 1;
+            editor.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+            editor.GetType().GetMethod("ApplyRelated").Invoke(editor, null);
+            UnityEngine.Object.DestroyImmediate(editor);
+
+            var coreUdon = FindByTypeName(core, "Kmnk.LogStream.Udon.LogStreamCore");
+            foreach (var u in udons)
+            {
+                Assert.AreSame(coreUdon, new SerializedObject(u).FindProperty("_core").objectReferenceValue, "選んだ 2 つ目以降が結ばれない");
+            }
+        }
+
+        // ビルドの処理は、処理する scene の中の LogStreamCore にだけ結ぶ。どちらの scene を処理しても、その scene の LogStreamCore に結ぶ
+        [Test]
+        public void BuildProcessor_LinksWithinProcessedScene()
+        {
+            GameObject coreA = null, joinLeaveA = null;
+            var sceneA = NewSavedScene("SceneA", () =>
+            {
+                coreA = Instantiate(Prefabs + "LogStreamCore.prefab");
+                joinLeaveA = Instantiate(Prefabs + "LogJoinLeave.prefab");
+            });
+            var sceneB = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+            var coreB = Instantiate(Prefabs + "LogStreamCore.prefab");
+            var joinLeaveB = Instantiate(Prefabs + "LogJoinLeave.prefab");
+            EditorSceneManager.SaveScene(sceneB, $"{TempDir}/SceneB.unity");
+
+            RunBuildProcessor(sceneA);
+            RunBuildProcessor(sceneB);
+
+            Assert.AreSame(FindByTypeName(coreA, "Kmnk.LogStream.Udon.LogStreamCore"), LinkedCore(joinLeaveA), "A が別の scene の LogStreamCore に結ばれる");
+            Assert.AreSame(FindByTypeName(coreB, "Kmnk.LogStream.Udon.LogStreamCore"), LinkedCore(joinLeaveB), "B が別の scene の LogStreamCore に結ばれる");
+        }
+
+        static UnityEngine.Object LinkedCore(GameObject joinLeave) =>
+            new SerializedObject(FindByTypeName(joinLeave, "Kmnk.LogStream.Udon.LogJoinLeave")).FindProperty("_core").objectReferenceValue;
 
         // Pomodoro: 操作と時間切れで状態が移り、移るたびに決まった文面のログが足される
         [UnityTest]
@@ -223,7 +294,7 @@ namespace Kmnk.LogStreamDev.Tests
         }
 
         // 2.x の設定のクラスの値が、同じ名前の Udon の field と、音・pickup のコンポーネントに入っているか
-        static void AssertSettingsApplied(string[] skip)
+        static void AssertSettingsApplied()
         {
             var failures = new List<string>();
             foreach (var settings in UnityEngine.Object.FindObjectsOfType<MonoBehaviour>(true)
@@ -238,7 +309,6 @@ namespace Kmnk.LogStreamDev.Tests
                 while (p.NextVisible(false))
                 {
                     var key = name + "." + p.name;
-                    if (skip.Contains(key)) { continue; }
                     var actual = Actual(settings, udonSo, p.name);
                     if (actual == null) { continue; }
                     var expected = Value(p);
@@ -276,6 +346,10 @@ namespace Kmnk.LogStreamDev.Tests
                 .Where(u => u.programSource != null && u.programSource.name == "LogInputTemplateButton")
                 .Select(u => u.GetComponentInChildren<Text>(true).text));
         }
+
+        // LogStream に asmdef が無く参照できない型を名前で探す
+        static Type EditorType(string fullName) =>
+            AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(fullName)).First(t => t != null);
 
         static object Value(SerializedProperty p)
         {

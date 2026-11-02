@@ -8,9 +8,11 @@ namespace Kmnk.LogStream.Udon
     public class LogJoinLeave : LogWriteBase
     {
         [SerializeField]
+        [Tooltip("入室時のメッセージを設定します。 {{name}} には入室した人の名前が入ります")]
         private string _joinLog = "<color='green'>>>JOIN>></color> {{name}}";
 
         [SerializeField]
+        [Tooltip("退室時のメッセージを設定します。 {{name}} には退室した人の名前が入ります")]
         private string _leaveLog = "<color='red'><LEAVE</color> {{name}}";
 
         public override void OnPlayerJoined(VRCPlayerApi player)

@@ -57,6 +57,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 3942491935627893744}
+  _id: 0
   _logLimit: 100
   _timeFormat: HH:mm:ss
   _initialMessages:
@@ -80,6 +81,7 @@ MonoBehaviour:
   interactText: Use
   interactTextGO: {fileID: 0}
   proximity: 2
+  OutlineRenderers: []
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 1
@@ -249,6 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02fdd2aa68be95142b34089df1feed76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _migrated: 0
   _id: 0
   _soundEffectAudioClip: {fileID: 8300000, guid: db11a2b50655abd4894cac5f854a1c05,
     type: 3}

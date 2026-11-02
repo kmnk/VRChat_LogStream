@@ -1,62 +1,19 @@
 using UnityEditor;
-using UnityEngine;
-
-using Kmnk.Core;
 
 namespace Kmnk.LogStream
 {
-    [CustomEditor(typeof(LogTriggerEnterExit))]
+    [CustomEditor(typeof(Udon.LogTriggerEnterExit))]
     [CanEditMultipleObjects]
-    class LogTriggerEnterExitEditor : EditorBase<LogTriggerEnterExit>
+    internal class LogTriggerEnterExitEditor : UdonSettingsEditor
     {
-        SerializedProperty _idProperty;
-        SerializedProperty _enterLogProperty;
-        SerializedProperty _exitLogProperty;
-
-        protected override void FindProperties()
+        protected override void DrawSettings()
         {
-            _target = target as LogTriggerEnterExit;
-            _idProperty = serializedObject.FindProperty("_id");
-            _enterLogProperty = serializedObject.FindProperty("_enterLog");
-            _exitLogProperty = serializedObject.FindProperty("_exitLog");
-        }
-
-        protected override void LayoutGUI()
-        {
-            using (new GUILayout.VerticalScope(GUI.skin.box))
+            Box("Core", () => Field("_id"));
+            Box("Option", () =>
             {
-                EditorGUILayout.LabelField("Core", BoxTitleStyle());
-                EditorGUILayout.PropertyField(_idProperty);
-            }
-
-            EditorGUILayout.Space();
-
-            using (new GUILayout.VerticalScope(GUI.skin.box))
-            {
-                EditorGUILayout.LabelField("Option", BoxTitleStyle());
-                EditorGUILayout.PropertyField(_enterLogProperty);
-                EditorGUILayout.PropertyField(_exitLogProperty);
-            }
+                Field("_enterLog");
+                Field("_exitLog");
+            });
         }
-
-        internal override void ApplyModifiedProperties()
-        {
-            FindProperties();
-
-            var core = LogStreamCoreEditor.GetCore(_idProperty.intValue);
-
-            if (core == null) { return; }
-
-            var udon = _target.GetComponentInChildren<Udon.LogTriggerEnterExit>();
-            var udonSerializedObject = new SerializedObject(udon);
-            udonSerializedObject.FindProperty("_core").objectReferenceValue
-                = core.GetComponentInChildren<Udon.LogStreamCore>();
-            udonSerializedObject.FindProperty("_enterLog").stringValue
-                = _enterLogProperty.stringValue;
-            udonSerializedObject.FindProperty("_exitLog").stringValue
-                = _exitLogProperty.stringValue;
-            udonSerializedObject.ApplyModifiedProperties();
-        }
-
     }
 }

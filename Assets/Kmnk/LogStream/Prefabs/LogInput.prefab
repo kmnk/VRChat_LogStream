@@ -324,9 +324,11 @@ MonoBehaviour:
   DropEventName: 
   ThrowVelocityBoostMinSpeed: 0
   ThrowVelocityBoostScale: 0
+  OutlineRenderers: []
   currentlyHeldBy: {fileID: 0}
   pickupable: 1
   proximity: 0.2
+  version: 0
 --- !u!65 &7932667846244483416
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1199,6 +1201,7 @@ MonoBehaviour:
   interactText: Use
   interactTextGO: {fileID: 0}
   proximity: 2
+  OutlineRenderers: []
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
@@ -1775,6 +1778,7 @@ MonoBehaviour:
   m_Script: {fileID: -1533785930, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowFocusView: 1
 --- !u!114 &5959065412036461249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1797,7 +1801,23 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5436923817463648550}
+  _id: 0
   _core: {fileID: 0}
+  _templateMessages:
+  - "\u3053\u3093\u306B\u3061\u306F\u3002"
+  - "\u3053\u3093\u3070\u3093\u306F\u3002"
+  - "\u304A\u3064\u304B\u308C\u3055\u307E\u3067\u3059\u3002"
+  - "\u304A\u3084\u3059\u307F\u306A\u3055\u3044\u3002"
+  - "\u79FB\u52D5\u3057\u307E\u3059\u3002"
+  - "\u843D\u3061\u307E\u3059\u3002"
+  - "\u4F5C\u696D\u3057\u307E\u3059\u3002"
+  - "\u96E2\u5E2D\u3057\u307E\u3059\u3002"
+  - "VC\u3042\u308A\u307E\u3059\u3002"
+  - "VC\u306A\u3044\u3067\u3059\u3002"
+  _useTemplateText: 0
+  _templateText: {fileID: 4900000, guid: 5d6cc02ecab289843a5421bce7ee5e0e, type: 3}
+  _templateButtonsTransform: {fileID: 8925445924524548306}
+  _templateButtonOrigin: {fileID: 5305204913815755787}
   _activateButton: {fileID: 1494213625234622448}
   _inputParent: {fileID: 1759682240790458124}
   _inputField: {fileID: 4606916785681559584}
@@ -1817,6 +1837,7 @@ MonoBehaviour:
   interactText: Use
   interactTextGO: {fileID: 0}
   proximity: 2
+  OutlineRenderers: []
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
@@ -1875,6 +1896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ba8fa2a5b294f840b6716142978f67d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _migrated: 0
   _id: 0
   _pickupable: 1
   _templateMessages:

@@ -1,40 +1,28 @@
 using System.Linq;
-using UnityEditor;
+using UdonSharp;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEngine;
-
-using Kmnk.Core;
+using UnityEngine.SceneManagement;
 
 namespace Kmnk.LogStream
 {
-    class LogStreamBuildProcessor : IProcessSceneWithReport
+    // scene のビルドのたびに、その scene の中だけで、2.x の設定を移し、Id から LogStreamCore を結び、テンプレートのボタンを作り直す
+    internal class LogStreamBuildProcessor : IProcessSceneWithReport
     {
         public int callbackOrder => 0;
 
-        public void OnProcessScene(UnityEngine.SceneManagement.Scene scene, BuildReport report)
+        public void OnProcessScene(Scene scene, BuildReport report)
         {
-            Reapply<LogStreamCore, LogStreamCoreEditor>();
-            Reapply<LogJoinLeave, LogJoinLeaveEditor>();
-            Reapply<LogInput, LogInputEditor>();
-            Reapply<LogStreamViewer, LogStreamViewerEditor>();
-            Reapply<LogTriggerEnterExit, LogTriggerEnterExitEditor>();
-            Reapply<LogPomodoro, LogPomodoroEditor>();
-        }
+            LegacySettingsMigrator.MigrateScene(scene);
 
-        void Reapply<TBehaviour, TEditor>()
-            where TBehaviour : MonoBehaviour
-            where TEditor : EditorBase<TBehaviour>
-        {
-            var behaviours
-                = Resources.FindObjectsOfTypeAll<TBehaviour>()
-                    .Where(x => AssetDatabase.GetAssetOrScenePath(x).EndsWith(".unity"))
-                    .ToArray();
-
-            foreach (var behaviour in behaviours)
+            var roots = scene.GetRootGameObjects();
+            foreach (var udon in roots.SelectMany(o => o.GetComponentsInChildren<UdonSharpBehaviour>(true)))
             {
-                var editor = Editor.CreateEditor(behaviour, typeof(TEditor)) as TEditor;
-                editor.ApplyModifiedProperties();
+                LogStreamEditorUtility.LinkCore(udon);
+            }
+            foreach (var input in roots.SelectMany(o => o.GetComponentsInChildren<Udon.LogInput>(true)))
+            {
+                LogInputEditor.RebuildTemplateButtons(input, false);
             }
         }
     }

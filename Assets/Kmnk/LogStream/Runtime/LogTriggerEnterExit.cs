@@ -8,9 +8,11 @@ namespace Kmnk.LogStream.Udon
     public class LogTriggerEnterExit : LogWriteBase
     {
         [SerializeField]
+        [Tooltip("Trigger Enter 時のメッセージを設定します。 {{name}} には入った人の名前が入ります")]
         private string _enterLog = "{{name}} has entered";
 
         [SerializeField]
+        [Tooltip("Trigger Exit 時のメッセージを設定します。 {{name}} には出た人の名前が入ります")]
         private string _exitLog = "{{name}} has exited";
 
         public override void OnPlayerTriggerEnter(VRCPlayerApi player)

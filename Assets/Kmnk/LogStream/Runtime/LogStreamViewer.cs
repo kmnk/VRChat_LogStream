@@ -12,6 +12,10 @@ namespace Kmnk.LogStream.Udon
     public class LogStreamViewer : LogStreamEventListener
     {
         [SerializeField]
+        [Tooltip("複数の LogStream を設置する際に、対象の LogStream の id を指定します")]
+        private int _id = 0;
+
+        [SerializeField]
         private LogStreamCore _core = null;
 
         [SerializeField]

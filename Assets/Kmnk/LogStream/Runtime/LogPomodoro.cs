@@ -11,55 +11,71 @@ namespace Kmnk.LogStream.Udon
     public class LogPomodoro : LogWriteBase
     {
         [SerializeField]
+        [Tooltip("ポモドーロの時間を分単位で指定します")]
         private int _pomodoroMinutes = 25;
 
         [SerializeField]
+        [Tooltip("短い休憩の時間を分単位で指定します")]
         private int _shortBreakMinutes = 5;
 
         [SerializeField]
+        [Tooltip("長い休憩の時間を分単位で指定します")]
         private int _longBreakMinutes = 15;
 
         [SerializeField]
+        [Tooltip("長い休憩までのポモドーロ数を指定します")]
         private int _longBreakInterval = 4;
 
         [SerializeField]
+        [Tooltip("タイマー終了後、自動で次のタイマーを開始するかを指定します")]
         private bool _autoContinue = false;
 
         [SerializeField]
+        [Tooltip("自動で次のタイマーを開始するまでの間の秒数を指定します。 0 を指定しても最低 1 秒が間に挟まります")]
         private int _autoContinueIntervalSeconds = 5;
 
         [SerializeField]
         private AudioSource _soundEffectAudioSource = null;
 
         [SerializeField]
+        [Tooltip("タイマーが 0 になった時に効果音を流す場合に ON にします")]
         private bool _soundEffectEnabled = false;
 
         [SerializeField]
+        [Tooltip("マスターのみ操作できるようにするかどうかを指定します")]
         private bool _onlyMaster = false;
 
         [SerializeField]
-        private string _pomodoroName = "";
+        [Tooltip("ポモドーロの名前を設定します")]
+        private string _pomodoroName = "<color='red'>Pomodoro</color>";
 
         [SerializeField]
-        private string _breakName = "";
+        [Tooltip("休憩の名前を設定します")]
+        private string _breakName = "<color='green'>Break</color>";
 
         [SerializeField]
-        private string _startTimerLog = "";
+        [Tooltip("タイマー開始のメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が、 {{count}} にはポモドーロ数が、 {{m}} にはタイマーの分数が入ります")]
+        private string _startTimerLog = "<color='#ff9900'>[START]</color> {{status}} #{{count}} : {{m}} minutes";
 
         [SerializeField]
-        private string _endTimerLog = "";
+        [Tooltip("タイマー終了のメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が、 {{count}} にはポモドーロ数が入ります")]
+        private string _endTimerLog = "<color='#ff9900'>[END]</color> {{status}} #{{count}}";
 
         [SerializeField]
-        private string _skipTimerLog = "";
+        [Tooltip("タイマースキップのメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が、 {{count}} にはポモドーロ数が入ります")]
+        private string _skipTimerLog = "<color='#ff9900'>[SKIP]</color> {{status}} #{{count}}";
 
         [SerializeField]
-        private string _resetTimerLog = "";
+        [Tooltip("タイマーリセットのメッセージを設定します。 {{status}} にはポモドーロの名前が入ります")]
+        private string _resetTimerLog = "<color='#ff9900'>[RESET]</color> {{status}}";
 
         [SerializeField]
-        private string _pauseTimerLog = "";
+        [Tooltip("タイマーポーズのメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が入ります")]
+        private string _pauseTimerLog = "<color='#ff9900'>[PAUSE]</color> {{status}}";
 
         [SerializeField]
-        private string _resumeTimerLog = "";
+        [Tooltip("タイマー再開のメッセージを設定します。 {{status}} にはポモドーロ or 休憩の名前が入ります")]
+        private string _resumeTimerLog = "<color='#ff9900'>[RESUME]</color> {{status}}";
 
         [SerializeField]
         private Button _toggleButton = null;

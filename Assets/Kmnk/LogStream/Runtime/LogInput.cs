@@ -8,6 +8,26 @@ namespace Kmnk.LogStream.Udon
     public class LogInput : LogWriteBase
     {
         [SerializeField]
+        [Tooltip("テンプレートメッセージ指定（旧方式）")]
+        private string[] _templateMessages = null;
+
+        [SerializeField]
+        [Tooltip("テキストファイルからテンプレートメッセージを読み込みます")]
+        private bool _useTemplateText = false;
+
+        [SerializeField]
+        [Tooltip("テンプレートメッセージを改行区切りで指定したテキストファイル")]
+        private TextAsset _templateText = null;
+
+        [SerializeField]
+        [Tooltip("テンプレートメッセージのボタンが入るオブジェクト")]
+        private Transform _templateButtonsTransform = null;
+
+        [SerializeField]
+        [Tooltip("テンプレートメッセージを増やした時に複製するボタンのオブジェクト")]
+        private GameObject _templateButtonOrigin = null;
+
+        [SerializeField]
         private Button _activateButton = null;
 
         [SerializeField]

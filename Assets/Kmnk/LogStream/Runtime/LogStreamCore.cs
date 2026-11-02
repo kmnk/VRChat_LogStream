@@ -10,21 +10,30 @@ namespace Kmnk.LogStream.Udon
     public class LogStreamCore : UdonSharpBehaviour
     {
         [SerializeField]
+        [Tooltip("複数の LogStream を設置する際に指定します")]
+        private int _id = 0;
+
+        [SerializeField]
+        [Tooltip("ログの最大保持数を指定します")]
         private int _logLimit = 100;
 
         [SerializeField]
+        [Tooltip("ログの時間部分のフォーマットを指定します")]
         private string _timeFormat = "HH:mm:ss";
 
         [SerializeField]
+        [Tooltip("ワールド作成時に最初から入れておくメッセージを指定します")]
         private string[] _initialMessages = null;
 
         [SerializeField]
+        [Tooltip("ワールド作成時に最初から入れておくメッセージの名前部分を指定します")]
         private string _initialName = "";
 
         [SerializeField]
         private AudioSource _soundEffectAudioSource = null;
 
         [SerializeField]
+        [Tooltip("ログが更新された時に効果音を流す場合に ON にします")]
         private bool _soundEffectEnabled = false;
 
         [UdonSynced]
@@ -40,6 +49,11 @@ namespace Kmnk.LogStream.Udon
         private string[] _messages = null;
 
         private UdonSharpBehaviour[] _eventListeners = null;
+
+        public int GetId()
+        {
+            return _id;
+        }
 
         public int GetLogLimit()
         {

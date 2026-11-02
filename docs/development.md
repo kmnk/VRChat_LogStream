@@ -41,7 +41,10 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 | `AddMessage_ShiftsAndDropsOldest` | ログを足すと配列の先頭に入り、古いものは後ろへずれ、`_logLimit` を超えると最も古いものが落ちる | `Runtime/LogStreamCore.cs` の `AddMessage` のずらすループの本文の行を外す |
 | `Viewer_FiltersByLogType` | `LogStreamViewer` は選んだ `LogType` のログだけを描き、`None` ではすべてを描く | `Runtime/LogStreamViewer.cs` の `LogType` の比較を外す |
 | `ToggleTypeButton_FiltersAndNotifiesButtons` | 絞り込みのボタンを押すと Viewer がその `LogType` に絞り込み、別のボタンを押すと先のボタンが Viewer からの `OnChangeType` で外れる | `Runtime/LogStreamViewer.cs` の `ChangeType` の `InvokeOnChangeType()` を外す |
-| `BuildProcessor_AppliesAllSettings` | 2.x の利用者の scene（`Assets/LogStreamDev/Fixtures/V2Overrides.unity`）をビルドの処理に通すと、全ギミックの全ての設定の値が、同じ名前の Udon の field と `AudioSource`・`VRCSpatialAudioSource`・`VRCPickup`・テンプレートのボタンに効く。`LogStreamCore._timeFormat` は 2.x で写らないので除いている | `LogPomodoroEditor` の `_breakName` を写す行の写し先を変える |
+| `BuildProcessor_AppliesAllSettings` | 2.x の利用者の scene（`Assets/LogStreamDev/Fixtures/V2Overrides.unity`）を開いてビルドの処理に通すと、2.x の設定のクラスの全ての値が、同じ名前の Udon の field と `AudioSource`・`VRCSpatialAudioSource`・`VRCPickup`・テンプレートのボタンに移る（`_timeFormat` を含む） | `Editor/LegacySettingsMigrator.cs` で `_timeFormat` を写さない |
+| `Migration_RunsOnceAndKeepsUdonEdits` | 2.x の設定を移すのは 1 度だけで、移した後に Udon で変えた値はもう 1 度移す処理を通しても戻らない | `LegacySettingsMigrator.Migrate` の `_migrated` を見る行を外す |
+| `Editor_AppliesToAllSelectedTargets` | 複数を選んだ Inspector で `_id` を変えると、選んだ全ての `_core` が結ばれる | `UdonSettingsEditor.ApplyRelated` で最初の 1 つだけを扱う |
+| `BuildProcessor_LinksWithinProcessedScene` | 2 つの scene を開いた状態で、どちらをビルドの処理に通しても、その scene の `LogStreamCore` に結ぶ | `LogStreamEditorUtility.GetCore` で読み込まれた全ての object から探す |
 | `Pomodoro_TransitionsAndMessages` | 開始・一時停止・再開・時間切れ・スキップ・リセット・自動で続けることで状態と回数が移り、決まった文面のログが足される。4 回目の後の休憩が長い休憩になる | `Runtime/LogPomodoro.cs` の休憩の終わりのメッセージの `- 1` を外す |
 | `JoinLeave_AddsPlayerName` | 入室・退室の event で、プレイヤーの名前を `{{name}}` に入れたログが足される | `Runtime/LogJoinLeave.cs` の退室で入室の文を使う |
 | `TriggerEnterExit_AddsPlayerName` | Trigger の enter・exit の event で、同上 | `Runtime/LogTriggerEnterExit.cs` の exit で enter の文を使う |

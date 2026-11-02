@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -5,140 +6,85 @@ using UnityEngine.UI;
 using VRC.SDK3.Components;
 using VRC.Udon;
 
-using Kmnk.Core;
-
 namespace Kmnk.LogStream
 {
-    [CustomEditor(typeof(LogInput))]
+    [CustomEditor(typeof(Udon.LogInput))]
     [CanEditMultipleObjects]
-    class LogInputEditor : EditorBase<LogInput>
+    internal class LogInputEditor : UdonSettingsEditor
     {
-        SerializedProperty _idProperty;
-        SerializedProperty _pickupableProperty;
-        SerializedProperty _templateMessagesProperty;
-        SerializedProperty _useTemplateTextProperty;
-        SerializedProperty _templateTextProperty;
-        SerializedProperty _templateButtonsTransformProperty;
-        SerializedProperty _templateButtonOriginProperty;
-
-        protected override void FindProperties()
+        protected override void DrawSettings()
         {
-            _target = target as LogInput;
-            _idProperty = serializedObject.FindProperty("_id");
-            _pickupableProperty = serializedObject.FindProperty("_pickupable");
-            _templateMessagesProperty = serializedObject.FindProperty("_templateMessages");
-            _useTemplateTextProperty = serializedObject.FindProperty("_useTemplateText");
-            _templateTextProperty = serializedObject.FindProperty("_templateText");
-            _templateButtonsTransformProperty = serializedObject.FindProperty("_templateButtonsTransform");
-            _templateButtonOriginProperty = serializedObject.FindProperty("_templateButtonOrigin");
+            Box("Core", () => Field("_id"));
+            Box("Option", () =>
+            {
+                RelatedField<VRCPickup>("pickupable", "Pickupable", "ボードのピックアップ ON/OFF を切り替えます");
+                Field("_templateMessages");
+                Field("_useTemplateText");
+                Field("_templateText");
+            });
+            Box("Template Buttons", () =>
+            {
+                Field("_templateButtonsTransform");
+                Field("_templateButtonOrigin");
+            });
         }
 
-        protected override void LayoutGUI()
+        public override void ApplyRelated()
         {
-            using (new GUILayout.VerticalScope(GUI.skin.box))
+            base.ApplyRelated();
+            foreach (var t in targets)
             {
-                EditorGUILayout.LabelField("Core", BoxTitleStyle());
-                EditorGUILayout.PropertyField(_idProperty);
-            }
-
-            EditorGUILayout.Space();
-
-            using (new GUILayout.VerticalScope(GUI.skin.box))
-            {
-                EditorGUILayout.LabelField("Option", BoxTitleStyle());
-                EditorGUILayout.PropertyField(_pickupableProperty);
-                EditorGUILayout.PropertyField(_templateMessagesProperty);
-                EditorGUILayout.PropertyField(_useTemplateTextProperty);
-                EditorGUILayout.PropertyField(_templateTextProperty);
-            }
-
-            EditorGUILayout.Space();
-
-            using (new GUILayout.VerticalScope(GUI.skin.box))
-            {
-                EditorGUILayout.LabelField("System", BoxTitleStyle());
-                EditorGUILayout.PropertyField(_templateButtonsTransformProperty);
-                EditorGUILayout.PropertyField(_templateButtonOriginProperty);
+                RebuildTemplateButtons((Udon.LogInput)t, true);
             }
         }
 
-        internal override void ApplyModifiedProperties()
+        // テンプレートのメッセージの数だけ、元のボタンを複製して並べ直す。prefab の編集中と、無効な object では行わない
+        public static void RebuildTemplateButtons(Udon.LogInput input, bool recordUndo)
         {
-            FindProperties();
+            if (!input.gameObject.activeInHierarchy) { return; }
+            if (UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() != null) { return; }
 
-            var core = LogStreamCoreEditor.GetCore(_idProperty.intValue);
+            var so = new SerializedObject(input);
+            var parent = so.FindProperty("_templateButtonsTransform").objectReferenceValue as Transform;
+            var origin = so.FindProperty("_templateButtonOrigin").objectReferenceValue as GameObject;
+            if (parent == null || origin == null) { return; }
 
-            if (core == null) { return; }
-
-            string[] templateMessages;
-            if (_useTemplateTextProperty.boolValue
-                && _templateTextProperty.objectReferenceValue != null)
+            foreach (var button in parent.GetComponentsInChildren<UdonBehaviour>(true)
+                         .Select(u => u.gameObject)
+                         .Where(o => o != origin)
+                         .Distinct()
+                         .ToArray())
             {
-                templateMessages
-                    = (_templateTextProperty.objectReferenceValue as TextAsset)
-                        .text
-                        .Split(
-                            new string[] {"\r\n", "\r", "\n"},
-                            System.StringSplitOptions.RemoveEmptyEntries
-                        );
-            }
-            else
-            {
-                templateMessages = Enumerable.Range(0, _templateMessagesProperty.arraySize)
-                    .Select(x => _templateMessagesProperty.GetArrayElementAtIndex(x))
-                    .Select(x => x.stringValue)
-                    .ToArray();
+                if (recordUndo) { Undo.DestroyObjectImmediate(button); }
+                else { DestroyImmediate(button); }
             }
 
-
-            var pickup = _target.GetComponentInChildren<VRCPickup>();
-            pickup.pickupable = _pickupableProperty.boolValue;
-
-            var udon = _target.GetComponentInChildren<Udon.LogInput>();
-            var udonSerializedObject = new SerializedObject(udon);
-            udonSerializedObject.FindProperty("_core").objectReferenceValue
-                = core.GetComponentInChildren<Udon.LogStreamCore>();
-            udonSerializedObject.ApplyModifiedProperties();
-
-            if (IsActiveInHierarchy() && !IsInPrefabMode())
+            foreach (var message in TemplateMessages(so))
             {
-                ResetTemplateButtons(
-                    templateMessages,
-                    _templateButtonsTransformProperty.objectReferenceValue as Transform,
-                    _templateButtonOriginProperty.objectReferenceValue as GameObject
-                );
+                var button = Instantiate(origin, parent);
+                button.name = origin.name;
+                button.SetActive(true);
+                button.transform.localScale = Vector3.one;
+                button.transform.localPosition = Vector3.zero;
+                button.transform.localRotation = Quaternion.identity;
+                button.GetComponentInChildren<Text>(true).text = message;
+                if (recordUndo) { Undo.RegisterCreatedObjectUndo(button, "Rebuild template buttons"); }
             }
+
+            origin.SetActive(false);
         }
 
-        private void ResetTemplateButtons(
-            string[] templateMessages,
-            Transform templateButtonsTransform,
-            GameObject templateButtonOrigin
-        )
+        private static string[] TemplateMessages(SerializedObject so)
         {
-            // clean current buttons
-            foreach (var t in templateButtonsTransform.GetComponentsInChildren<UdonBehaviour>(true))
+            var text = so.FindProperty("_templateText").objectReferenceValue as TextAsset;
+            if (so.FindProperty("_useTemplateText").boolValue && text != null)
             {
-                if (t.gameObject == templateButtonOrigin) { continue; }
-                DestroyImmediate(t.gameObject);
+                return text.text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             }
-
-            // create new buttons
-            foreach (var templateMessage in templateMessages)
-            {
-                var o = Instantiate(templateButtonOrigin);
-                o.SetActive(true);
-                o.transform.SetParent(templateButtonsTransform);
-                o.transform.localScale = Vector3.one;
-                o.transform.localPosition = Vector3.zero;
-                o.transform.localRotation = Quaternion.identity;
-
-                var buttonText = o.GetComponentInChildren<Text>();
-                buttonText.text = templateMessage;
-            }
-
-            // hide original button
-            templateButtonOrigin.SetActive(false);
+            var messages = so.FindProperty("_templateMessages");
+            return Enumerable.Range(0, messages.arraySize)
+                .Select(i => messages.GetArrayElementAtIndex(i).stringValue)
+                .ToArray();
         }
     }
 }

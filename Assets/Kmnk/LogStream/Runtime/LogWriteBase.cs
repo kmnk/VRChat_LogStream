@@ -8,6 +8,10 @@ namespace Kmnk.LogStream.Udon
     public abstract class LogWriteBase : UdonSharpBehaviour
     {
         [SerializeField]
+        [Tooltip("複数の LogStream を設置する際に、対象の LogStream の id を指定します")]
+        private int _id = 0;
+
+        [SerializeField]
         private LogStreamCore _core = null;
 
         protected void AddMessage(LogType type, string message, string playerName)

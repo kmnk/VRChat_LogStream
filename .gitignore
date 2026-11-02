@@ -117,3 +117,6 @@ crashlytics-build.properties
 
 # XR の設定の参照だけを持ち、VRChat SDK が環境ごとに乱数の GUID で作る資産を指すので追跡しない
 /ProjectSettings/EditorBuildSettings.asset
+
+# VS Code の Unity 拡張が作る設定
+/.vscode/

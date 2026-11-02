@@ -2,4 +2,8 @@
 # Unity を使わない。使い方は docs/development.md
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
+# UdonSharp の生成物の filter（bin/setup-git）が無い clone では、別の OS でコンパイルし直すたびに差分が出る
+if [ -z "$(git -C "$root" config --get filter.udon-gzip.clean || true)" ]; then
+  echo "警告: git の filter.udon-gzip が設定されていない。bin/setup-git を動かす（docs/development.md の「UdonSharp の生成物」）" >&2
+fi
 exec python3 "$root/bin/lib/check_assets.py" "$root" "$@"

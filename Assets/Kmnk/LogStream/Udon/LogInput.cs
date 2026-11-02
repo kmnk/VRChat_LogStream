@@ -7,20 +7,18 @@ namespace Kmnk.LogStream.Udon
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LogInput : LogWriteBase
     {
-        LogType _type = LogType.Message;
+        [SerializeField]
+        private Button _activateButton = null;
 
         [SerializeField]
-        Button _activateButton = null;
+        private GameObject _inputParent = null;
 
         [SerializeField]
-        GameObject _inputParent = null;
-
-        [SerializeField]
-        InputField _inputField = null;
+        private InputField _inputField = null;
 
         public void AddMessage()
         {
-            AddMessage(_type, _inputField.text, null);
+            AddMessage(LogType.Message, _inputField.text, null);
         }
 
         public void DeactivateInput()

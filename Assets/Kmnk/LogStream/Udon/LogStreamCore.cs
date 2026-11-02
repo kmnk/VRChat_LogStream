@@ -3,30 +3,29 @@ using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 
-using Kmnk.Core.Udon;
-
 namespace Kmnk.LogStream.Udon
 {
+    // ログを型・時刻・名前・本文の 4 本の配列で持ち、同期する。新しいログは先頭に入り、最も古いものが落ちる
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class LogStreamCore : UdonSharpBehaviour
     {
         [SerializeField]
-        int _logLimit = 100;
+        private int _logLimit = 100;
 
         [SerializeField]
-        string _timeFormat = "HH:mm:ss";
+        private string _timeFormat = "HH:mm:ss";
 
         [SerializeField]
-        string[] _initialMessages = null;
+        private string[] _initialMessages = null;
 
         [SerializeField]
-        string _initialName = "";
+        private string _initialName = "";
 
         [SerializeField]
-        AudioSource _soundEffectAudioSource = null;
+        private AudioSource _soundEffectAudioSource = null;
 
         [SerializeField]
-        bool _soundEffectEnabled = false;
+        private bool _soundEffectEnabled = false;
 
         [UdonSynced]
         private LogType[] _types = null;
@@ -39,6 +38,8 @@ namespace Kmnk.LogStream.Udon
 
         [UdonSynced]
         private string[] _messages = null;
+
+        private UdonSharpBehaviour[] _eventListeners = null;
 
         public int GetLogLimit()
         {
@@ -70,96 +71,22 @@ namespace Kmnk.LogStream.Udon
             return _ticks;
         }
 
-        private void Start()
+        public bool AreSyncedFieldsInitialized()
         {
-            if (Util.AmIOwner(gameObject))
-            {
-                InitializeUdonSyncedFields();
-                RequestSerialization();
-                InvokeOnDisplayAllLogLines();
-            }
+            return _types != null && _ticks != null && _names != null && _messages != null;
         }
 
-        public override void OnDeserialization()
+        public void AddEventListener(LogStreamEventListener listener)
         {
-            base.OnDeserialization();
-            if (!HasAllUdonSyncedFieldInitialized()) { return; }
-            InvokeOnDisplayAllLogLines();
-            PlaySoundEffect();
-        }
-
-        protected LogStreamEventListener[] _eventListeners;
-        public void AddEventListener(UdonSharpBehaviour listener)
-        {
-            if (_eventListeners == null)
-            {
-                _eventListeners
-                    = new LogStreamEventListener[]
-                    {
-                         (LogStreamEventListener)listener
-                    };
-            }
-            else
-            {
-                var newArray
-                    = new LogStreamEventListener[_eventListeners.Length + 1];
-                _eventListeners.CopyTo(newArray, 0);
-                newArray[newArray.Length - 1]
-                    = (LogStreamEventListener)listener;
-                _eventListeners = newArray;
-            }
-        }
-
-        protected virtual void InvokeOnDisplayAllLogLines()
-        {
-            if (_eventListeners != null)
-            {
-                foreach (var listener in _eventListeners)
-                {
-                    listener.OnDisplayAllLogLines();
-                }
-            }
-        }
-
-        private void InitializeUdonSyncedFields()
-        {
-            _types = new LogType[_logLimit];
-            _ticks = new long[_logLimit];
-            _names = new string[_logLimit];
-            _messages = new string[_logLimit];
-
-            for (var i = 0; i < _logLimit; i++)
-            {
-                _types[i] = LogType.None;
-                _ticks[i] = 0;
-                if (_initialMessages != null && _initialMessages.Length > i)
-                {
-                    _messages[i] = _initialMessages[i];
-                    _names[i] = _initialName;
-                }
-                else
-                {
-                    _messages[i] = string.Empty;
-                    _names[i] = string.Empty;
-                }
-            }
-        }
-
-        public bool HasAllUdonSyncedFieldInitialized()
-        {
-            if (_types == null) { return false; }
-            if (_ticks == null) { return false; }
-            if (_names == null) { return false; }
-            if (_messages == null) { return false; }
-            return true;
+            _eventListeners = ListenerArray.Append(_eventListeners, listener);
         }
 
         public void AddMessage(LogType type, string message, string playerName)
         {
             if (string.IsNullOrEmpty(message)) { return; }
-            if (!HasAllUdonSyncedFieldInitialized()) { return; }
+            if (!AreSyncedFieldsInitialized()) { return; }
 
-            Util.TakeOwner(gameObject);
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
 
             for (var i = _logLimit - 1; i > 0; i--)
             {
@@ -177,6 +104,47 @@ namespace Kmnk.LogStream.Udon
             RequestSerialization();
             InvokeOnDisplayAllLogLines();
             PlaySoundEffect();
+        }
+
+        private void Start()
+        {
+            if (!Networking.IsOwner(gameObject)) { return; }
+            InitializeSyncedFields();
+            RequestSerialization();
+            InvokeOnDisplayAllLogLines();
+        }
+
+        public override void OnDeserialization()
+        {
+            if (!AreSyncedFieldsInitialized()) { return; }
+            InvokeOnDisplayAllLogLines();
+            PlaySoundEffect();
+        }
+
+        private void InitializeSyncedFields()
+        {
+            _types = new LogType[_logLimit];
+            _ticks = new long[_logLimit];
+            _names = new string[_logLimit];
+            _messages = new string[_logLimit];
+
+            for (var i = 0; i < _logLimit; i++)
+            {
+                var hasInitialMessage = _initialMessages != null && i < _initialMessages.Length;
+                _types[i] = LogType.None;
+                _ticks[i] = 0;
+                _messages[i] = hasInitialMessage ? _initialMessages[i] : string.Empty;
+                _names[i] = hasInitialMessage ? _initialName : string.Empty;
+            }
+        }
+
+        private void InvokeOnDisplayAllLogLines()
+        {
+            if (_eventListeners == null) { return; }
+            for (var i = 0; i < _eventListeners.Length; i++)
+            {
+                ((LogStreamEventListener)_eventListeners[i]).OnDisplayAllLogLines();
+            }
         }
 
         private void PlaySoundEffect()

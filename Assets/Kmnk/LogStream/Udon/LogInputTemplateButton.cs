@@ -8,10 +8,10 @@ namespace Kmnk.LogStream.Udon
     public class LogInputTemplateButton : UdonSharpBehaviour
     {
         [SerializeField]
-        Udon.LogInput _logInput;
+        private LogInput _logInput = null;
 
         [SerializeField]
-        Text _buttonText;
+        private Text _buttonText = null;
 
         public void AppendToInput()
         {

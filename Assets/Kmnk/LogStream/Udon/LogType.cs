@@ -5,6 +5,6 @@ namespace Kmnk.LogStream.Udon
         None = 0,
         Message,
         Notification,
-        Others = System.Int32.MaxValue,
+        Others = int.MaxValue,
     }
 }

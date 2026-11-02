@@ -120,6 +120,44 @@ namespace Kmnk.LogStreamDev.Tests
             });
         }
 
+        // 実行の層: 絞り込みのボタンを押すと Viewer がその LogType に絞り込み、全てのボタンに今の絞り込みが伝わる
+        [UnityTest]
+        public IEnumerator ToggleTypeButton_FiltersAndNotifiesButtons()
+        {
+            var scene = NewSavedScene("ToggleLayer", () =>
+            {
+                AddWorldAndCore(logLimit: 10);
+                Instantiate(Prefabs + "LogStreamViewer.prefab");
+                AddTestWriter();
+            });
+            return InPlayMode(scene, () =>
+            {
+                var core = FindUdon("LogStreamCore");
+                Write(core, Message, "m1");
+                Write(core, Notification, "n1");
+
+                var viewer = FindUdon("LogStreamViewer");
+                var buttons = viewer.GetComponentsInChildren<UdonBehaviour>(true)
+                    .Where(u => u.programSource != null && u.programSource.name == "LogStreamToggleTypeButton")
+                    .ToArray();
+                var notificationButton = buttons.First(b => Convert.ToInt32(b.GetProgramVariable("_type")) == Notification);
+                var messageButton = buttons.First(b => Convert.ToInt32(b.GetProgramVariable("_type")) == Message);
+                notificationButton.SendCustomEvent(ToggleTypeEvent);
+                CollectionAssert.AreEqual(new[] { "n1", "" }, DisplayedMessages(viewer, 2));
+
+                // 別のボタンを押すと、先に押したボタンは Viewer からの通知で外れる
+                messageButton.SendCustomEvent(ToggleTypeEvent);
+                CollectionAssert.AreEqual(new[] { "m1", "" }, DisplayedMessages(viewer, 2));
+                foreach (var b in buttons)
+                {
+                    Assert.AreEqual(b == messageButton, b.GetProgramVariable("_isActive"), "ボタンに絞り込みが伝わらない");
+                }
+            });
+        }
+
+        // UI から呼ぶ event の名前。D5 で変える
+        const string ToggleTypeEvent = "Toggle";
+
         static void AddWorldAndCore(int logLimit)
         {
             Instantiate("Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/VRCWorld.prefab");

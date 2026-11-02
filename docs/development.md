@@ -40,6 +40,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 | `BuildProcessor_CopiesInspectorValuesToUdon` | ビルドのときに、`LogStreamCore` の音の ON/OFF と音量、`LogJoinLeave` のメッセージが子の Udon と `VRCSpatialAudioSource` に写り、`Id` で `_core` が結ばれる | `LogStreamCoreEditor` の音の ON/OFF を写す行、音量を写す行を外す |
 | `AddMessage_ShiftsAndDropsOldest` | ログを足すと配列の先頭に入り、古いものは後ろへずれ、`_logLimit` を超えると最も古いものが落ちる | `Udon/LogStreamCore.cs` の `AddMessage` のずらすループの本文の行を外す |
 | `Viewer_FiltersByLogType` | `LogStreamViewer` は選んだ `LogType` のログだけを描き、`None` ではすべてを描く | `Udon/LogStreamViewer.cs` の `LogType` の比較を外す |
+| `ToggleTypeButton_FiltersAndNotifiesButtons` | 絞り込みのボタンを押すと Viewer がその `LogType` に絞り込み、別のボタンを押すと先のボタンが Viewer からの `OnChangeType` で外れる | `Udon/LogStreamViewer.cs` の `ChangeType` の `InvokeOnChangeType()` を外す |
 | `BuildProcessor_AppliesAllSettings` | 2.x の利用者の scene（`Assets/LogStreamDev/Fixtures/V2Overrides.unity`）をビルドの処理に通すと、全ギミックの全ての設定の値が、同じ名前の Udon の field と `AudioSource`・`VRCSpatialAudioSource`・`VRCPickup`・テンプレートのボタンに効く。`LogStreamCore._timeFormat` は 2.x で写らないので除いている | `LogPomodoroEditor` の `_breakName` を写す行の写し先を変える |
 | `Pomodoro_TransitionsAndMessages` | 開始・一時停止・再開・時間切れ・スキップ・リセット・自動で続けることで状態と回数が移り、決まった文面のログが足される。4 回目の後の休憩が長い休憩になる | `Udon/LogPomodoro.cs` の休憩の終わりのメッセージの `- 1` を外す |
 | `JoinLeave_AddsPlayerName` | 入室・退室の event で、プレイヤーの名前を `{{name}}` に入れたログが足される | `Udon/LogJoinLeave.cs` の退室で入室の文を使う |

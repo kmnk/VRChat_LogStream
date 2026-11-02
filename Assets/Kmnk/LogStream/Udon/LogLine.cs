@@ -8,34 +8,29 @@ namespace Kmnk.LogStream.Udon
     public class LogLine : UdonSharpBehaviour
     {
         [SerializeField]
-        Text _messageText = null;
+        private Text _messageText = null;
 
         [SerializeField]
-        Text _nameText = null;
+        private Text _nameText = null;
 
         [SerializeField]
-        Text _timeText = null;
+        private Text _timeText = null;
 
         public void Initialize()
         {
-            this._messageText.text = string.Empty;
-            this._nameText.text = string.Empty;
-            this._timeText.text = string.Empty;
+            Display(string.Empty, string.Empty, string.Empty);
         }
 
-        public bool HasInitialized()
+        public bool HasTextReferences()
         {
-            if (this._messageText == null) { return false; }
-            if (this._nameText == null) { return false; }
-            if (this._timeText == null) { return false; }
-            return true;
+            return _messageText != null && _nameText != null && _timeText != null;
         }
 
-        public void Display(string message, string name, string time)
+        public void Display(string message, string playerName, string time)
         {
-            this._messageText.text = message;
-            this._nameText.text = name;
-            this._timeText.text = time;
+            _messageText.text = message;
+            _nameText.text = playerName;
+            _timeText.text = time;
         }
     }
 }

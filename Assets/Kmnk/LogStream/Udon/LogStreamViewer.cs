@@ -7,106 +7,36 @@ using VRC.SDKBase;
 
 namespace Kmnk.LogStream.Udon
 {
+    // LogStreamCore のログを、子の LogLine に新しい順に描く。_currentType が None でなければ、その型のログだけを描く
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class LogStreamViewer : UdonSharpBehaviour
+    public class LogStreamViewer : LogStreamEventListener
     {
         [SerializeField]
-        protected LogStreamCore _core = null;
+        private LogStreamCore _core = null;
 
         [SerializeField]
-        GameObject _logLinesParent = null;
+        private GameObject _logLinesParent = null;
 
         [SerializeField]
-        Text _dateText = null;
+        private Text _dateText = null;
 
         [SerializeField]
-        Text _timeText = null;
+        private Text _timeText = null;
 
         [SerializeField]
-        Text _playersCountText = null;
+        private Text _playersCountText = null;
 
         private LogLine[] _logLines = null;
 
         private DateTime _dateTime;
 
-        protected LogType _currentType = LogType.None;
+        private LogType _currentType = LogType.None;
 
-        private void Start()
+        private UdonSharpBehaviour[] _eventListeners = null;
+
+        public override void OnDisplayAllLogLines()
         {
-            _logLines = _logLinesParent.GetComponentsInChildren<LogLine>();
-            InitializeLogLines();
-
-            _dateTime = DateTime.UtcNow;
-            UpdateHeader();
-
-            _core.AddEventListener(this);
-        }
-
-        protected void UpdateHeader()
-        {
-            var d = DateTime.UtcNow;
-            _dateText.text = d.ToLocalTime().ToString("yyyy/MM/dd");
-            _timeText.text = d.ToLocalTime().ToString("HH:mm:ss");
-            _playersCountText.text = VRCPlayerApi.GetPlayerCount().ToString();
-        }
-
-        protected virtual void Update()
-        {
-            if (_dateTime.Second != DateTime.UtcNow.Second)
-            {
-                UpdateHeader();
-            }
-            _dateTime = DateTime.UtcNow;
-        }
-
-        private void InitializeLogLines()
-        {
-            foreach (var l in _logLines)
-            {
-                l.Initialize();
-            }
-        }
-
-        protected bool HasAllLogLinesInitialized()
-        {
-            foreach (var l in _logLines)
-            {
-                if (!l.HasInitialized()) { return false; }
-            }
-            return true;
-        }
-
-        protected virtual void DisplayAllLogLines()
-        {
-            if (!HasAllLogLinesInitialized()) { return; }
-            if (!_core.HasAllUdonSyncedFieldInitialized()) { return; }
-
-            // maybe can write cooler
-            var logIndex = -1;
-            for (var i = 0; i < _logLines.Length; i++)
-            {
-                for (++logIndex; logIndex < _core.GetLogLimit(); logIndex++)
-                {
-                    if (_currentType == LogType.None
-                        || _core.GetTypes()[logIndex] == _currentType)
-                    {
-                        break;
-                    }
-                }
-                DisplayLogLine(
-                    i,
-                    logIndex < _core.GetLogLimit() ? logIndex : -1
-                );
-            }
-        }
-
-        private void DisplayLogLine(int lineIndex, int logIndex)
-        {
-            _logLines[lineIndex].Display(
-                logIndex >= 0 ? _core.GetMessages()[logIndex] : string.Empty,
-                logIndex >= 0 ? _core.GetNames()[logIndex] : string.Empty,
-                FormatTicks(logIndex >= 0 ? _core.GetTicks()[logIndex] : 0)
-            );
+            DisplayAllLogLines();
         }
 
         public void ChangeType(LogType type)
@@ -116,54 +46,97 @@ namespace Kmnk.LogStream.Udon
             InvokeOnChangeType();
         }
 
-        private string FormatTicks(long ticks)
+        public void AddEventListener(LogStreamViewerEventListener listener)
+        {
+            _eventListeners = ListenerArray.Append(_eventListeners, listener);
+        }
+
+        private void Start()
+        {
+            _logLines = _logLinesParent.GetComponentsInChildren<LogLine>();
+            for (var i = 0; i < _logLines.Length; i++)
+            {
+                _logLines[i].Initialize();
+            }
+
+            _dateTime = DateTime.UtcNow;
+            UpdateHeader();
+
+            _core.AddEventListener(this);
+        }
+
+        private void Update()
+        {
+            var now = DateTime.UtcNow;
+            if (_dateTime.Second != now.Second)
+            {
+                UpdateHeader();
+            }
+            _dateTime = now;
+        }
+
+        private void UpdateHeader()
+        {
+            var now = DateTime.UtcNow.ToLocalTime();
+            _dateText.text = now.ToString("yyyy/MM/dd");
+            _timeText.text = now.ToString("HH:mm:ss");
+            _playersCountText.text = VRCPlayerApi.GetPlayerCount().ToString();
+        }
+
+        private bool HasAllLogLineReferences()
+        {
+            for (var i = 0; i < _logLines.Length; i++)
+            {
+                if (!_logLines[i].HasTextReferences()) { return false; }
+            }
+            return true;
+        }
+
+        private void DisplayAllLogLines()
+        {
+            if (!HasAllLogLineReferences()) { return; }
+            if (!_core.AreSyncedFieldsInitialized()) { return; }
+
+            // 別のビヘイビアへの呼び出しは遅いので、ループの前に 1 度だけ受け取る
+            var logLimit = _core.GetLogLimit();
+            var types = _core.GetTypes();
+            var messages = _core.GetMessages();
+            var names = _core.GetNames();
+            var ticks = _core.GetTicks();
+            var timeFormat = _core.GetTimeFormat();
+
+            var logIndex = 0;
+            for (var lineIndex = 0; lineIndex < _logLines.Length; lineIndex++)
+            {
+                while (logIndex < logLimit && _currentType != LogType.None && types[logIndex] != _currentType)
+                {
+                    logIndex++;
+                }
+
+                if (logIndex < logLimit)
+                {
+                    _logLines[lineIndex].Display(messages[logIndex], names[logIndex], FormatTicks(ticks[logIndex], timeFormat));
+                    logIndex++;
+                }
+                else
+                {
+                    _logLines[lineIndex].Display(string.Empty, string.Empty, string.Empty);
+                }
+            }
+        }
+
+        private string FormatTicks(long ticks, string timeFormat)
         {
             if (ticks == 0) { return string.Empty; }
-            return (new DateTime(ticks))
-                .ToLocalTime()
-                .ToString(_core.GetTimeFormat(), CultureInfo.InvariantCulture);
+            return new DateTime(ticks).ToLocalTime().ToString(timeFormat, CultureInfo.InvariantCulture);
         }
 
-        public void OnDisplayAllLogLines()
+        private void InvokeOnChangeType()
         {
-            DisplayAllLogLines();
-        }
-
-        public void OnChangeType()
-        {
-            InvokeOnChangeType();
-        }
-
-        protected LogStreamViewerEventListener[] _eventListeners;
-        public void AddEventListener(UdonSharpBehaviour listener)
-        {
-            if (_eventListeners == null)
+            if (_eventListeners == null) { return; }
+            for (var i = 0; i < _eventListeners.Length; i++)
             {
-                _eventListeners
-                    = new LogStreamViewerEventListener[]
-                    {
-                         (LogStreamViewerEventListener)listener
-                    };
-            }
-            else
-            {
-                var newArray
-                    = new LogStreamViewerEventListener[_eventListeners.Length + 1];
-                _eventListeners.CopyTo(newArray, 0);
-                newArray[newArray.Length - 1]
-                    = (LogStreamViewerEventListener)listener;
-                _eventListeners = newArray;
-            }
-        }
-
-        protected virtual void InvokeOnChangeType()
-        {
-            if (_eventListeners != null)
-            {
-                foreach (var listener in _eventListeners)
-                {
-                    listener.OnChangeType(_currentType);
-                }
+                ((LogStreamViewerEventListener)_eventListeners[i]).OnChangeType(_currentType);
             }
         }
     }

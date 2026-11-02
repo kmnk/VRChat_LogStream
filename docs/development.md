@@ -64,6 +64,8 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 `Assets/LogStreamDev/Fixtures/V2Overrides.unity` は、2.x の prefab を置き、設定のクラスの全ての値に既定と違う上書きを入れた scene で、`Assets/LogStreamDev/Editor/V2Fixture.cs` で作った。2.x の prefab から作ったものなので、作り直さない。
 
+`Assets/LogStreamDev/Editor/V3Assets.cs` は、3.0.0 で配る prefab と `Samples/LogStream.unity` を Unity の Editor の API で書き換えたスクリプトで、2.x の設定の値を子の Udon に揃え（`_migrated` は false のまま）、Pomodoro の表示を `View` の子の `LogPomodoroView` に分け、UI の event の名前を `_` で始まる名前にし、入力欄の文字数の上限を 256 にした。何度動かしても同じ結果になる。動かすときは `bash -c 'source bin/lib/unity.sh; run_unity "$root/Logs/v3assets.log" -quit -executeMethod Kmnk.LogStreamDev.V3Assets.Apply'` とする。
+
 テストを足すときは、この表に行を足し、変更を外すとテストが落ちることを確かめる。
 
 ## UdonSharp の制約の検査

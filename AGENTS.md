@@ -23,9 +23,11 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 ## 作りの要約
 
-- 設定の層: 親の GameObject の MonoBehaviour（`Runtime/Legacy/`、名前空間 `Kmnk.LogStream`）が Inspector の値を持つ。CustomEditor（`Editor/`、`Kmnk.Core.EditorBase<T>` の派生）が、値を子の UdonSharp のコンポーネントへ写す。ビルドのたびに `LogStreamBuildProcessor` が写し直す。
-- 実行の層: `Runtime/` の UdonSharpBehaviour（名前空間 `Kmnk.LogStream.Udon`）。`Udon.LogStreamCore` が型・時刻・名前・本文の 4 本の `[UdonSynced]` 配列を持ち、`AddMessage` で先頭に足す。書く側は `LogWriteBase` の派生、表示は `LogStreamViewer`。
-- 結び方: 各ギミックは `Id` で同じ `Id` の `LogStreamCore` に結ばれる。
+- 設定: 各 prefab の子の `Udon` の UdonSharpBehaviour（`Runtime/`、名前空間 `Kmnk.LogStream.Udon`）が持つ。CustomEditor（`Editor/`、`UdonSettingsEditor` の派生）が設定を描き、複数の選択に書く。
+- 2.x の設定: 親の GameObject の `MonoBehaviour`（`Runtime/Legacy/`、名前空間 `Kmnk.LogStream`）は値を持たず、2.x の scene の値を子の Udon へ 1 度だけ移す読み出し元（`LegacySettingsMigrator`）と、子の Udon の Inspector を描く入口として残している。新しい値を足さない。
+- 実行: `Udon.LogStreamCore` が型・時刻・名前・本文の 4 本の `[UdonSynced]` 配列を持つ。owner だけが書き、owner でない人のログは `[NetworkCallable]` の event で owner に送る。書く側は `LogWriteBase` の派生、表示は `LogStreamEventListener` の派生の `LogStreamViewer`。
+- 結び方: 各ギミックは `_id` で同じ scene の同じ `_id` の `LogStreamCore` に結ばれる。ビルドのたびに `LogStreamBuildProcessor` が結び直す。
+- 詳しくは [docs/architecture.md](docs/architecture.md)。
 
 ## 守る約束
 
@@ -33,7 +35,8 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 - `Runtime/Legacy/` と `Editor/` は通常の C#。
 - Inspector の tooltip（`[Tooltip]`）は日本語で書く。
 - C# は BOM なしの UTF-8、改行は LF（`.editorconfig`）。UdonSharp の Create > U# Script は BOM つきで書くので、作ったら BOM を外す。`bin/check-encoding` で確かめる。
-- asmdef は `Assets/Kmnk/` の下に足さない。足すと `internal` の `Kmnk.Core.EditorBase` に届かなくなる。
+- asmdef は `Assets/Kmnk/` の下に足さない。2.x から上書きで import した利用者の手元では、スクリプトが 2.x の場所（`Udon/` など）に残り、新しく足した asmdef だけが新しい場所に置かれるので、asmdef がスクリプトを含まなくなる。
+- UI から呼ぶメソッドの名前は `_` で始める（network から呼べないようにするため）。`Runtime/` に `Update` を置かず、1 秒ごとの処理は `SendCustomEventDelayedSeconds` で行う。
 
 ## 資産ファイル
 

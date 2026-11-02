@@ -1,6 +1,6 @@
 # LogStream の作り
 
-LogStream は、VRChat の中で動く UdonSharp のスクリプトと、ワールドの作者が Inspector で設定するための Editor のコードでできている。この文書は、両者の役割と値の流れ、2.x から移すための仕組み、新しいギミックを足すときに手を入れる所を書く。
+LogStream は、VRChat の中で動く UdonSharp のスクリプトと、ワールドの作者が Inspector で設定するための Editor のコードでできている。この文書は、両者の役割と値の流れ、2.x から移すための仕組み、新しいギミックを足すときと既存のギミックを変えるときに手を入れる所を書く。
 
 ## 置き場所
 
@@ -44,11 +44,25 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 
 ## 新しいギミックを足すとき
 
-次の 4 か所に手を入れる。
+次の 5 か所に手を入れる。
 
 1. `Runtime/` に `LogWriteBase` の派生の U# スクリプトを足し、`bin/create-program-asset` で `.asset` を作る。設定は `[SerializeField]` の field に、日本語の `[Tooltip]` を付けて持つ。UI から呼ぶメソッドの名前は `_` で始める。
 2. `Editor/` に `UdonSettingsEditor` の派生の CustomEditor を足し、`DrawSettings` で設定を描く。
 3. prefab を Unity の Editor で作る。親の GameObject の下に `Udon` という子を置き、1 の UdonBehaviour を付ける。新しいギミックには 2.x の設定のクラスは要らない。
 4. `docs/development.md` のテストの表に行を足し、振る舞いのテストを足す。
+5. 利用者向けの `Assets/Kmnk/LogStream/README_ja.md` と `README.md` の「その他の機能の準備と使い方」（Preparing and using other features）に、準備と使い方の節を足す。
+
+## 既存のギミックに設定や機能を足すとき
+
+例えば `LogPomodoro` に設定を 1 つ足すときは、次の 6 か所に手を入れる。
+
+1. `Runtime/LogPomodoro.cs` に `[SerializeField]` の field を、日本語の `[Tooltip]` を付けて足す。field を変えると `Runtime/LogPomodoro.asset` と `Assets/SerializedUdonPrograms/` に差分が出るので、同じ commit に入れる。
+2. `Editor/LogPomodoroEditor.cs` の `DrawSettings` に、その field を描く行を足す。
+3. `Runtime/Legacy/LogPomodoro.cs`（2.x の設定のクラス）には足さない。2.x の scene に無い値なので、移す処理（`LegacySettingsMigrator`）も変えない。
+4. `Prefabs/LogPomodoro.prefab` の既定の値や UI を変えるときは、Unity の Editor を通す（[AGENTS.md の「資産ファイル」](../AGENTS.md#資産ファイル)）。
+5. `docs/development.md` のテストの表に行を足し、振る舞いのテストを足す。
+6. 利用者向けの `Assets/Kmnk/LogStream/README_ja.md` と `README.md` の、そのギミックの「準備」「使い方」の節を直す。英語と日本語の両方を直す。
+
+設定を足さずに振る舞いだけを変えるときは、1・5・6 のうち当たるものを行う。同期する値（`[UdonSynced]`）や所有権に触れたときは、ClientSim の 1 人では確かめられないので、利用者に VRChat のクライアントでの確認を頼む。
 
 `Runtime/` のスクリプトの制約と、資産ファイルの扱いは [AGENTS.md](../AGENTS.md) にある。

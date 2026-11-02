@@ -4,7 +4,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 詳しい説明は次にある。
 
-- 作りと、新しいギミックを足すときに手を入れる所: [docs/architecture.md](docs/architecture.md)
+- 作りと、ギミックを足す・変えるときに手を入れる所: [docs/architecture.md](docs/architecture.md)
 - 環境の用意、コマンド、テストと振る舞いの対応: [docs/development.md](docs/development.md)
 - release の作り方: [docs/release.md](docs/release.md)
 
@@ -60,6 +60,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 | `bin/check-assets` | 使わない | prefab・scene・asset の GUID の参照の検査 | 終了コード 0 | 終了コード 1 と `ファイル:行: guid`。`bin/setup` の前は終了コード 2 |
 | `bin/check-encoding` | 使わない | C# の BOM と改行の検査 | 終了コード 0 | 終了コード 1 とファイルの一覧 |
 | `bin/check-udonsharp` | 使わない | Udon で動く C# から UdonSharp が受け付けない構文を文字列で探す | 終了コード 0 | 終了コード 1 と `ファイル:行: 理由` |
+| `bin/check-docs` | 使わない | `AGENTS.md`・`README.md`・`docs/` が指すパス・識別子・コマンド・リンクが今のツリーにあるかの検査 | 終了コード 0 | 終了コード 1 と `ファイル:行: 名前（理由）` |
 | `bin/check-core` | 使わない | Core のコピーと `core-version.txt` の比較 | 終了コード 0 | 終了コード 1 と違うファイル |
 | `bin/sync-core [<commit>]` | 使わない | Core のコピーを Core の commit に合わせる | 終了コード 0 | git の終了コード |
 | `bin/create-program-asset <.cs>` | 使う | U# スクリプトの `.asset` を作る | 終了コード 0 | 終了コード 1 |
@@ -67,6 +68,10 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 | `bin/compare-package <新> <旧>` | 使わない | 2 つの unitypackage の項目の比較 | 終了コード 0 | 終了コード 1 と違う項目 |
 
 どのテストがどの振る舞いを確かめるかは [docs/development.md の「テストと振る舞い」](docs/development.md#テストと振る舞い) にある。複数人での同期は ClientSim の 1 人では確かめられないので、変えたときは利用者に VRChat のクライアントでの確認を頼む。
+
+## 文書を直す
+
+振る舞い・設定・ファイルの置き場所・コマンドを変えたら、同じ commit の中で、関わる `AGENTS.md`・`docs/`・利用者向けの README（`Assets/Kmnk/LogStream/README_ja.md` と `README.md`）を直す。どこを直すかは [docs/architecture.md](docs/architecture.md) の「新しいギミックを足すとき」「既存のギミックに設定や機能を足すとき」にある。直したら `bin/check-docs` を動かす。`bin/check-docs` は名前が消えたことしか見つけないので、説明の中身は自分で読み直す。文書とコードが違うのに気づいたら、コードを正として文書を直すか、利用者に伝える。
 
 ## VRChat_Core のコピー
 

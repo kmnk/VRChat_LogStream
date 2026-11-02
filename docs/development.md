@@ -89,6 +89,17 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 `.editorconfig` は、波括弧・可視性・`this.`・型のキーワード・定数と private field の名前の規則を持つ。Rider・Visual Studio が読み、警告として出す。`Assets/Kmnk/Core/` は Core のリポジトリが書き方を決めるので、可視性と field の名前の規則を切っている。
 
+## 文書の検査
+
+`bin/check-docs`（`bin/lib/check_docs.py`）は、`AGENTS.md`・`README.md`・`docs/*.md` のバッククォートの中と Markdown のリンクから、次が今のツリーにあるかを確かめる。
+
+- パス: リポジトリのルート、文書のディレクトリ、`Assets/Kmnk/LogStream/` からの相対か、追跡しているファイルのパスの末尾に一致するもの。`.gitignore` に当たるパス（`Logs/`・`Build/`・`UserSettings/`・SDK のパッケージ）は手元の状態で変わるので見ない
+- `bin/` のコマンド
+- 識別子: `_` で始まるか途中に大文字を持つ語（`LegacySettingsMigrator`・`_AddMessageAsOwner` など）が、追跡している `.cs`・`.py`・`.sh`・`.json` と `bin/` のどれかに語として出るか
+- リンク: 文書からの相対のファイル。`http` と `#` だけのリンクは見ない
+
+2.x の置き場所（`Udon/`・`Scripts/`・`Scripts/Editor/`）や SDK の型のように、意図して今のツリーに無いものを書くときは、`bin/lib/check_docs.py` の `IGNORE` に理由と一緒に足す。説明の中身が古いこと（数や振る舞いの説明）は見つけない。識別子の名前を全ての `.cs` で変える、`bin/check-core` の名前を変える、文書のリンク先を無い名前にする、のどれでも終了コード 1 になることを確かめた。
+
 ## UdonSharp の生成物
 
 `Assets/SerializedUdonPrograms/` には UdonSharp と Udon がコンパイルした結果が入る。LogStream の `Runtime/*.asset` と `Samples/LogStream.unity` はここのファイルを GUID で指すので、指されているものだけを `.gitignore` の例外にして追跡する。SDK の sample の分は clone のたびに乱数の GUID で作られるので追跡しない。U# スクリプトを足したときに、生成物が `.gitignore` で除かれたままだと、`bin/check-assets` がそのファイルを出して終了コード 1 になる。

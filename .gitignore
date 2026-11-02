@@ -105,6 +105,8 @@ crashlytics-build.properties
 !/Assets/SerializedUdonPrograms/c8df303ceb45ae84f85a11591f741734.asset.meta
 !/Assets/SerializedUdonPrograms/10381fac43e6a4f6caaea8f3fa89ab8d.asset
 !/Assets/SerializedUdonPrograms/10381fac43e6a4f6caaea8f3fa89ab8d.asset.meta
+!/Assets/SerializedUdonPrograms/e7fce7bdc55c9480e9c38d79f84a1128.asset
+!/Assets/SerializedUdonPrograms/e7fce7bdc55c9480e9c38d79f84a1128.asset.meta
 
 # テストが作る一時的な scene
 /Assets/LogStreamDev/Temp/

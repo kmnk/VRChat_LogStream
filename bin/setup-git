@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# clone ごとの git の設定を入れる。Unity を使わない。Windows では Git Bash で動かす
+# UdonSharp の生成物（Assets/SerializedUdonPrograms/*.asset）は、gzip のヘッダーの OS の byte が
+# mac では 13、Windows では 0a になる。commit と比較のときにだけ 13 にそろえ、中身が同じなら差分にしない
+set -euo pipefail
+cd "$(dirname "$0")/.."
+git config filter.udon-gzip.clean \
+  "sed -E 's/^(  serializedProgramCompressedBytes: 1f8b08[0-9a-f]{12})[0-9a-f]{2}/\\113/'"
+git config filter.udon-gzip.smudge cat
+echo "設定した: filter.udon-gzip.clean = $(git config filter.udon-gzip.clean)"

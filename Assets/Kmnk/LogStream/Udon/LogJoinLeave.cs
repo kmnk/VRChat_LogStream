@@ -17,7 +17,7 @@ namespace Kmnk.LogStream.Udon
         [SerializeField]
         string _leaveLog = "<color='red'><LEAVE<</color> {{name}}";
 
-        public override void OnPlayerJoined(VRCPlayerApi player)  
+        public override void OnPlayerJoined(VRCPlayerApi player)
         {
             if (!Util.AmIOwner(gameObject)) { return; }
             AddMessage(
@@ -27,7 +27,7 @@ namespace Kmnk.LogStream.Udon
             );
         }
 
-        public override void OnPlayerLeft(VRCPlayerApi player)  
+        public override void OnPlayerLeft(VRCPlayerApi player)
         {
             if (!Util.AmIOwner(gameObject)) { return; }
             AddMessage(

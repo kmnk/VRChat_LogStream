@@ -24,7 +24,7 @@ namespace Kmnk.LogStream
 
         void Reapply<TBehaviour, TEditor>()
             where TBehaviour : MonoBehaviour
-            where TEditor : EditorBase<TBehaviour> 
+            where TEditor : EditorBase<TBehaviour>
         {
             var behaviours
                 = Resources.FindObjectsOfTypeAll<TBehaviour>()

@@ -70,7 +70,7 @@ namespace Kmnk.LogStream
 
             if (core == null) { return; }
 
-            string[] templateMessages; 
+            string[] templateMessages;
             if (_useTemplateTextProperty.boolValue
                 && _templateTextProperty.objectReferenceValue != null)
             {

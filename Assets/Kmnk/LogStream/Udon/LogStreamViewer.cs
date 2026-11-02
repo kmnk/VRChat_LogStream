@@ -50,7 +50,8 @@ namespace Kmnk.LogStream.Udon
             _playersCountText.text = VRCPlayerApi.GetPlayerCount().ToString();
         }
 
-        protected virtual void Update() {
+        protected virtual void Update()
+        {
             if (_dateTime.Second != DateTime.UtcNow.Second)
             {
                 UpdateHeader();
@@ -108,9 +109,9 @@ namespace Kmnk.LogStream.Udon
             );
         }
 
-        public void ChangeType(LogType type) 
+        public void ChangeType(LogType type)
         {
-            _currentType = type;        
+            _currentType = type;
             DisplayAllLogLines();
             InvokeOnChangeType();
         }
@@ -127,7 +128,7 @@ namespace Kmnk.LogStream.Udon
         {
             DisplayAllLogLines();
         }
-        
+
         public void OnChangeType()
         {
             InvokeOnChangeType();

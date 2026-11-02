@@ -70,7 +70,8 @@ namespace Kmnk.LogStream.Udon
             return _ticks;
         }
 
-        private void Start() {
+        private void Start()
+        {
             if (Util.AmIOwner(gameObject))
             {
                 InitializeUdonSyncedFields();
@@ -160,7 +161,8 @@ namespace Kmnk.LogStream.Udon
 
             Util.TakeOwner(gameObject);
 
-            for (var i = _logLimit-1; i > 0; i--) {
+            for (var i = _logLimit - 1; i > 0; i--)
+            {
                 _types[i] = _types[i - 1];
                 _ticks[i] = _ticks[i - 1];
                 _names[i] = _names[i - 1];

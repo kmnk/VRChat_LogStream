@@ -1,6 +1,22 @@
 # release の作り方
 
-3.0.0 から、release は VPM のパッケージ `dev.kmnk.log-stream` として GitHub Actions の workflow で作る。workflow はまだ作っている途中で、できるまでは release を出さない。
+3.0.0 から、release は VPM のパッケージ `dev.kmnk.log-stream` として GitHub Actions の workflow（`.github/workflows/release.yml`、Build Release）で作る。形は VRChat の template-package の `release.yml` と同じで、Unity は使わない。
+
+## release を出す
+
+1. 版を上げる commit を作る。`Packages/dev.kmnk.log-stream/package.json` の `version` を上げ、`CHANGELOG.md` と `CHANGELOG_ja.md` の `## [Unreleased]` を `## [<版>] - <日付>` にする。直前の tag からの commit と見比べ、利用者に見える変更の書き漏らしが無いかを見る。`main` に入れる。
+2. dry run で通す: `gh workflow run release.yml -R kmnk/VRChat_LogStream -f dry_run=true`。`gh run watch` で終わりを待ち、`gh run download` で artifact を取る。dry run は tag・Release・listing を作らない。
+3. artifact の zip と unitypackage を `bin/check-install` で確かめる（下の「配るものを確かめる」）。
+4. 本番: `gh workflow run release.yml -R kmnk/VRChat_LogStream -f dry_run=false`。tag（`v` を付けない版、例 `3.0.0`）と Release を作り、`VPM_REPOS_TOKEN` が secrets にあれば kmnk/vpm-repos の listing を作り直す。無ければ `gh workflow run build-listing.yml -R kmnk/vpm-repos` を動かす。
+5. Release の `VRChat_LogStream_v<版の . を _ にしたもの>.zip` を Booth の「最新バージョン」に手で上げる。説明文の更新履歴は更新しない。
+
+workflow は次を順に行い、どこかで止まれば後は行わない。
+
+- `package.json` から版を読む。本番では、同じ tag が既にあれば止まる
+- `CHANGELOG.md` の版の節を Release の本文にする（`bin/lib/changelog_section.py`）。dry run で版の節がまだ無ければ `[Unreleased]` を使う
+- パッケージのフォルダを VPM の zip にし、`.meta` の一覧から `pCYSl5EDgo/create-unitypackage` で unitypackage を作る
+- unitypackage と `README.md`・`README_ja.md`・`LICENSE.md` を `VRChat_LogStream_v<版>.zip` に固める。`package.json` を入れないので listing には載らない
+- 直前の release（pre-release を除く）の unitypackage と `bin/compare-package` で比べる
 
 ## 配るもの
 

@@ -9,7 +9,15 @@
 
 ## 直前の release と比べる
 
-`bin/compare-package <新> <旧>` は、2 つの unitypackage の項目を比べる。直前の release にある項目の GUID が無い（`MISSING`）か、同じ `pathname` で GUID が違う（`GUID`）と終了コード 1 になる。消した項目は既存の利用者の手元に古いファイルとして残り、GUID の違う項目は同じパスでぶつかるからである。同じ GUID で `pathname` が違う項目は `MOVED` と出すだけで止めない。3.0.0 では置き場所が `Packages/dev.kmnk.log-stream/` に変わるので、v2.2.3 の項目はすべて `MOVED` になる。
+`bin/compare-package <新> <旧>` は、2 つの unitypackage の項目を比べる。直前の release にある項目の GUID が無い（`MISSING`）か、同じ `pathname` で GUID が違う（`GUID`）と終了コード 1 になる。消した項目は既存の利用者の手元に古いファイルとして残り、GUID の違う項目は同じパスでぶつかるからである。同じ GUID で `pathname` が違う項目は `MOVED` と出すだけで止めない。3.0.0 では置き場所が `Packages/dev.kmnk.log-stream/` に変わるので、v2.2.3 の LogStream の項目はすべて `MOVED` になる。
+
+3.0.0 から配らない Core と、VPM のパッケージのルートが持たない 2.x のルートのフォルダは、比べる対象から除く。
+
+```
+bin/compare-package --ignore Assets/Kmnk/Core --ignore-item Assets/Kmnk/LogStream <新> <旧>
+```
+
+`--ignore <パス>` はそのパスとその下と、それを中に持つ親のフォルダ（`Assets/Kmnk`）を除く。Core は利用者の手元に残るので、消えても困らない。`--ignore-item <pathname>` はその 1 項目だけを除き、`Assets/Kmnk/LogStream` は `legacyFolders`（unitypackage では利用者）が消す。その下の項目は比べ続けるので、LogStream のファイルが消えると `MISSING` で止まる。
 
 ## 配るものを確かめる
 

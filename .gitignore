@@ -77,7 +77,7 @@ crashlytics-build.properties
 *.zip
 
 # UdonSharp の生成物。SDK の sample の分は clone のたびに乱数の GUID で作られるので除き、
-# Assets/Kmnk と Assets/LogStreamDev の U# 資産が指すものだけを追跡する。U# スクリプトを足したら、bin/check-assets が出すファイルをここに足す
+# Packages/dev.kmnk.log-stream・Assets/Kmnk・Assets/LogStreamDev の U# 資産が指すものだけを追跡する。U# スクリプトを足したら、bin/check-assets が出すファイルをここに足す
 /Assets/SerializedUdonPrograms/*
 !/Assets/SerializedUdonPrograms/180610b7903460b43977ceb543bcba42.asset
 !/Assets/SerializedUdonPrograms/180610b7903460b43977ceb543bcba42.asset.meta

@@ -14,8 +14,8 @@ namespace Kmnk.LogStreamDev
     // 動かし方: bin/lib/unity.sh の run_unity で -executeMethod Kmnk.LogStreamDev.V3Assets.Apply
     public static class V3Assets
     {
-        const string Prefabs = "Assets/Kmnk/LogStream/Prefabs/";
-        const string SampleScene = "Assets/Kmnk/LogStream/Samples/LogStream.unity";
+        const string Prefabs = "Packages/dev.kmnk.log-stream/Prefabs/";
+        const string SampleScene = "Packages/dev.kmnk.log-stream/Samples/LogStream.unity";
 
         // 入れ子の LogStream.prefab は、中の prefab を先に書き換えてから開く
         static readonly string[] PrefabOrder =

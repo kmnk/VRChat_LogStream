@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+# 使い方: bin/check-install [--keep] <VPM の zip か unitypackage> <fresh|over-v2|over-v2-unitypackage>
+#
+# 配るパッケージを、利用者と同じ入り方で使い捨てのプロジェクトに入れ、コンパイル・scene の参照・2.x の設定の移し替えを確かめる。
+#   fresh                 LogStream の無いプロジェクトに、VPM の zip を vrc-get で listing から入れる
+#   over-v2               v2.2.3 の unitypackage と 2.x の scene（V2Overrides.unity）を入れた上に、VPM の zip を vrc-get で listing から入れる。
+#                         vrc-get が package.json の legacyFolders で古い Assets/Kmnk/LogStream を消す（VCC・ALCOM で入れる人と同じ）
+#   over-v2-unitypackage  同じく 2.x の上に、README の案内どおり Assets/Kmnk/LogStream を消してから unitypackage を import する
+#
+# 成功: 終了コード 0 と「成功」。失敗: 終了コード 1 と NG の行。使い方の誤りは終了コード 2
+# 証拠: Build/check-install/<場合>-<時刻>/ に Unity のログと result.json を残す。--keep を付けると使い捨てのプロジェクトも残す
+#
+# 稼働中のものに触れない理由:
+#   - 書くのは Build/check-install/ の下だけ。このリポジトリの Assets・Packages と利用者の他のプロジェクトには書かない
+#   - vrc-get は HOME を実行のディレクトリの中に向けて動かすので、利用者の VCC・ALCOM の設定（足した listing）は読みも書きもしない
+#   - listing と zip は 127.0.0.1 の http.server で出し、本番の listing（kmnk/vpm-repos）と GitHub の Release には触れない。http.server は自分が起こしたものだけを止める
+# Unity を使うので、sandbox の外で単独で動かす。v2.2.3 の unitypackage は CHECK_INSTALL_V2_PACKAGE で渡せる。無ければ gh release download で取る
+set -uo pipefail
+source "$(dirname "$0")/lib/unity.sh"
+
+usage() { sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; }
+
+keep=0
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then usage; exit 0; fi
+if [ "${1:-}" = "--keep" ]; then keep=1; shift; fi
+input="${1:-}"
+mode="${2:-}"
+case "$mode" in
+  fresh|over-v2) want_ext=zip ;;
+  over-v2-unitypackage) want_ext=unitypackage ;;
+  *) usage >&2; exit 2 ;;
+esac
+if [ ! -f "$input" ]; then
+  echo "入れるファイルが無い: ${input}" >&2
+  exit 2
+fi
+if [ "${input##*.}" != "$want_ext" ]; then
+  echo "${mode} には .${want_ext} を渡す: ${input}" >&2
+  exit 2
+fi
+input="$(cd "$(dirname "$input")" && pwd)/$(basename "$input")"
+
+base="$root/Build/check-install"
+run="${CHECK_INSTALL_WORK:-$base/${mode}-$(date +%Y%m%d-%H%M%S)}"
+# 作る前に、Build/check-install の下かを確かめる（外なら何も作らずに止まる）
+run="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$run")"
+base_real="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$base")"
+case "$run/" in
+  "$base_real"/?*) ;;
+  *) echo "実行のディレクトリは ${base} の下に置く: ${run}" >&2; exit 2 ;;
+esac
+mkdir -p "$run"
+proj="$run/project"
+vghome="$run/vrc-get-home"
+serve="$run/listing"
+server_pid=""
+cleanup() {
+  if [ -n "$server_pid" ]; then kill "$server_pid" 2>/dev/null; wait "$server_pid" 2>/dev/null; fi
+  if [ $keep -eq 0 ]; then rm -rf "$proj" "$vghome" "$serve"; fi
+}
+trap cleanup EXIT
+
+fail() {
+  local l
+  for l in "$run"/unity-*.log; do unity_license_hint "$l"; done
+  echo "NG $*" >&2; echo "失敗（証拠: ${run}）" >&2; exit 1
+}
+
+echo "== 使い捨てのプロジェクトを作る: ${proj}"
+mkdir -p "$proj"
+for d in Assets Packages ProjectSettings Library; do
+  [ -e "$root/$d" ] && cp -cR "$root/$d" "$proj/$d"
+done
+rm -rf "$proj/Assets/Kmnk/LogStream" "$proj/Assets/Kmnk/LogStream.meta" "$proj/Packages/dev.kmnk.log-stream" \
+  "$proj/Assets/LogStreamDev" "$proj/Assets/LogStreamDev.meta" \
+  "$proj/Assets/SerializedUdonPrograms" "$proj/Assets/SerializedUdonPrograms.meta"
+mkdir -p "$proj/Assets/CheckInstall/Editor"
+cp "$root/bin/lib/check_install/CheckInstall.cs" "$root/Assets/LogStreamDev/Editor/BatchmodeHarmonyGuard.cs" "$proj/Assets/CheckInstall/Editor/"
+
+if [ "$mode" != fresh ]; then
+  v2="${CHECK_INSTALL_V2_PACKAGE:-}"
+  if [ -z "$v2" ]; then
+    v2="$base/cache/LogStream_v2_2_3.unitypackage"
+    if [ ! -f "$v2" ]; then
+      mkdir -p "$base/cache"
+      gh release download v2.2.3 -R kmnk/VRChat_LogStream --pattern 'LogStream_v2_2_3.unitypackage' --dir "$base/cache" || fail "v2.2.3 の unitypackage を取れない。CHECK_INSTALL_V2_PACKAGE で渡す"
+    fi
+  fi
+  echo "== 2.x の利用者のプロジェクトにする（${v2} と V2Overrides.unity）"
+  mkdir -p "$proj/Assets/Scenes"
+  cp "$root/Assets/LogStreamDev/Fixtures/V2Overrides.unity" "$root/Assets/LogStreamDev/Fixtures/V2Overrides.unity.meta" "$proj/Assets/Scenes/"
+  run_unity_at "$proj" "$run/unity-import-v2.log" -importPackage "$v2" -quit || fail "v2.2.3 を import できない（${run}/unity-import-v2.log）"
+  [ -d "$proj/Assets/Kmnk/LogStream" ] || fail "v2.2.3 を import した後に Assets/Kmnk/LogStream が無い"
+  scene="Assets/Scenes/V2Overrides.unity"
+else
+  scene="Packages/dev.kmnk.log-stream/Samples/LogStream.unity"
+fi
+
+if [ "$want_ext" = zip ]; then
+  echo "== テスト用の listing を 127.0.0.1 で出し、vrc-get で入れる"
+  mkdir -p "$serve" "$vghome"
+  port="$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')"
+  meta="$(python3 "$root/bin/lib/check_install_listing.py" "$input" "http://127.0.0.1:${port}" "$serve")" || fail "テスト用の listing を作れない"
+  name="$(echo "$meta" | sed -n 1p)"
+  version="$(echo "$meta" | sed -n 2p)"
+  python3 -m http.server --bind 127.0.0.1 "$port" --directory "$serve" >"$run/http-server.log" 2>&1 &
+  server_pid=$!
+  for _ in 1 2 3 4 5 6 7 8 9 10; do curl -sf "http://127.0.0.1:${port}/index.json" >/dev/null && break; sleep 0.5; done
+  HOME="$vghome" vrc-get repo add "http://127.0.0.1:${port}/index.json" >"$run/vrc-get.log" 2>&1 || fail "vrc-get repo add に失敗（${run}/vrc-get.log）"
+  HOME="$vghome" vrc-get install -y -p "$proj" "$name" "$version" >>"$run/vrc-get.log" 2>&1 || fail "vrc-get install に失敗（${run}/vrc-get.log）"
+  kill "$server_pid" 2>/dev/null; wait "$server_pid" 2>/dev/null; server_pid=""
+  echo "入れた: ${name} ${version}"
+else
+  echo "== Assets/Kmnk/LogStream を消してから unitypackage を import する"
+  rm -rf "$proj/Assets/Kmnk/LogStream" "$proj/Assets/Kmnk/LogStream.meta"
+  run_unity_at "$proj" "$run/unity-import.log" -importPackage "$input" -quit || fail "unitypackage を import できない（${run}/unity-import.log）"
+fi
+
+echo "== Unity で開いて確かめる"
+result="$run/result.json"
+if ! CHECK_INSTALL_SCENE="$scene" CHECK_INSTALL_RESULT="$result" run_unity_at "$proj" "$run/unity-check.log" -executeMethod CheckInstall.Probe.Run; then
+  compile_errors "$run/unity-check.log" | head -20 >&2
+  fail "Unity で開けない・コンパイルできない（${run}/unity-check.log）"
+fi
+[ -f "$result" ] || fail "結果の ${result} が無い（${run}/unity-check.log）"
+
+python3 - "$result" "$mode" <<'EOF'
+import json, sys
+r = json.load(open(sys.argv[1])); mode = sys.argv[2]
+pkg = 'Packages/dev.kmnk.log-stream/'
+checks = [
+    ('エディタスクリプトが最後まで動いた', r.get('ok') is True),
+    ('パッケージが Packages/dev.kmnk.log-stream にある', r.get('package_folder_exists') is True),
+    ('LogStreamCore のスクリプトがパッケージの中にある', str(r.get('core_script_path', '')).startswith(pkg)),
+    ('UdonSharp のコンパイルにエラーが無い', r.get('udonsharp_error') is False),
+    ('パッケージの UdonSharp の program がある', (r.get('udonsharp_programs') or 0) > 0),
+    ('scene の欠けたスクリプトが 0', r.get('missing_scripts') == 0),
+    ('scene の元の prefab が無いものが 0', r.get('missing_prefabs') == 0),
+    ('program の無い UdonBehaviour が 0', r.get('udon_without_program') == 0),
+]
+if mode != 'fresh':
+    checks += [
+        ('古い Assets/Kmnk/LogStream が無い', r.get('legacy_folder_exists') is False),
+        ('Assets/Kmnk/Core が残っている', r.get('core_folder_exists') is True),
+        ('scene の LogStream の prefab がすべてパッケージを指す', bool(r.get('prefab_sources')) and all(p.startswith(pkg) for p in r['prefab_sources'])),
+        ('2.x の設定 6 件が移った', r.get('legacy_settings') == 6 and r.get('legacy_migrated') == 6),
+        ('LogJoinLeave の Join Log に 2.x の上書きの値が入った', r.get('join_log') == 'V2 _joinLog {{name}}'),
+    ]
+bad = 0
+for name, ok in checks:
+    print(('OK ' if ok else 'NG ') + name)
+    bad += 0 if ok else 1
+print(json.dumps(r, ensure_ascii=False))
+sys.exit(1 if bad else 0)
+EOF
+code=$?
+if [ $code -ne 0 ]; then fail "確かめた項目に NG がある（${result}）"; fi
+echo "成功（証拠: ${run}）"

@@ -26,6 +26,31 @@ namespace Kmnk.LogStreamDev
             }
         }
 
+        // LOGSTREAM_ASMDEF の asmdef の隣に、それを sourceAssembly で指す U# Assembly Definition（.asset）を作る。
+        // asmdef に属する U# スクリプトは、これが無いと UdonSharp が「does not belong to a U# assembly」で止まる
+        // 動かし方: bin/lib/unity.sh の run_unity で -executeMethod Kmnk.LogStreamDev.Verify.CreateUdonSharpAssemblyDefinition
+        public static void CreateUdonSharpAssemblyDefinition()
+        {
+            var asmdefPath = Environment.GetEnvironmentVariable("LOGSTREAM_ASMDEF");
+            var source = AssetDatabase.LoadAssetAtPath<UnityEditorInternal.AssemblyDefinitionAsset>(asmdefPath);
+            if (source == null)
+            {
+                Debug.LogError("[LogStreamDev] asmdef not found: " + asmdefPath);
+                EditorApplication.Exit(1);
+                return;
+            }
+            var assetPath = System.IO.Path.ChangeExtension(asmdefPath, ".asset");
+            if (AssetDatabase.LoadAssetAtPath<UdonSharpAssemblyDefinition>(assetPath) == null)
+            {
+                var asset = ScriptableObject.CreateInstance<UdonSharpAssemblyDefinition>();
+                asset.sourceAssembly = source;
+                AssetDatabase.CreateAsset(asset, assetPath);
+                AssetDatabase.SaveAssets();
+                Debug.Log("[LogStreamDev] created " + assetPath);
+            }
+            EditorApplication.Exit(0);
+        }
+
         // bin/create-program-asset が呼ぶ。LOGSTREAM_SCRIPT の U# スクリプトの隣に UdonSharpProgramAsset を作り、コンパイルする
         public static void CreateProgramAsset()
         {

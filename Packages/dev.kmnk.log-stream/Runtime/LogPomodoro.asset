@@ -132,7 +132,7 @@ MonoBehaviour:
       Data: 8|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: Kmnk.LogStream.Udon.LogStreamCore, Assembly-CSharp
+      Data: Kmnk.LogStream.Udon.LogStreamCore, Kmnk.LogStream.Runtime
     - Name: 
       Entry: 8
       Data: 
@@ -1338,7 +1338,7 @@ MonoBehaviour:
       Data: 89|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: Kmnk.LogStream.Udon.LogPomodoroView, Assembly-CSharp
+      Data: Kmnk.LogStream.Udon.LogPomodoroView, Kmnk.LogStream.Runtime
     - Name: 
       Entry: 8
       Data: 
@@ -1452,7 +1452,7 @@ MonoBehaviour:
       Data: 96|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: Kmnk.LogStream.Udon.PomodoroStatus, Assembly-CSharp
+      Data: Kmnk.LogStream.Udon.PomodoroStatus, Kmnk.LogStream.Runtime
     - Name: 
       Entry: 8
       Data: 

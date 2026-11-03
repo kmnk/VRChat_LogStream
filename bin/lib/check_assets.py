@@ -2,7 +2,7 @@
 
 既知の GUID は、Assets/・Packages/・Library/PackageCache/ の .meta の guid と、Unity の組み込みの資産の GUID。
 解決しない参照を「ファイル:行: guid」で出し、1 件でもあれば終了コード 1。
-Assets/Kmnk と Assets/LogStreamDev の資産が指す Assets/SerializedUdonPrograms の生成物が .gitignore で除かれていれば、
+Packages/dev.kmnk.log-stream・Assets/Kmnk・Assets/LogStreamDev の資産が指す Assets/SerializedUdonPrograms の生成物が .gitignore で除かれていれば、
 それも出して終了コード 1（clone のたびに GUID が変わり、資産の参照が書き換わるため）。
 SDK のパッケージが入っていない（bin/setup の前）ときは終了コード 2。
 """
@@ -15,7 +15,7 @@ BUILTIN = {'0000000000000000e000000000000000', '0000000000000000f000000000000000
 GUID_LINE = re.compile(r'^guid: ([0-9a-f]{32})\s*$')
 REF = re.compile(r'guid: ([0-9a-f]{32})')
 PROGRAM_REF = re.compile(r'serialized(?:Udon)?ProgramAsset: \{fileID: \d+, guid: ([0-9a-f]{32})')
-OWN = (os.path.join('Assets', 'Kmnk'), os.path.join('Assets', 'LogStreamDev'))
+OWN = (os.path.join('Packages', 'dev.kmnk.log-stream'), os.path.join('Assets', 'Kmnk'), os.path.join('Assets', 'LogStreamDev'))
 ASSET_EXT = ('.prefab', '.unity', '.asset')
 
 
@@ -81,4 +81,4 @@ def check_programs_tracked(root, known):
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1], sys.argv[2:] or ['Assets']))
+    sys.exit(main(sys.argv[1], sys.argv[2:] or ['Assets', os.path.join('Packages', 'dev.kmnk.log-stream')]))

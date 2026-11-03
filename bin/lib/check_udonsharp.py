@@ -4,13 +4,13 @@ bin/compile は、使われない field に書いた List<T> などを止めな�
 文字列の照合なので、コメントと文字列の中身は外してから探す。見ない構文（ラムダ、local function、タプル）は
 docs/development.md の「UdonSharp の制約の検査」にある。
 
-対象は Assets/Kmnk/LogStream と Assets/LogStreamDev/TestUdon の .cs のうち、Editor/ の下に無いもの。
+対象は Packages/dev.kmnk.log-stream と Assets/LogStreamDev/TestUdon の .cs のうち、Editor/ の下に無いもの。
 """
 import os
 import re
 import sys
 
-TARGETS = [os.path.join('Assets', 'Kmnk', 'LogStream'), os.path.join('Assets', 'LogStreamDev', 'TestUdon')]
+TARGETS = [os.path.join('Packages', 'dev.kmnk.log-stream'), os.path.join('Assets', 'LogStreamDev', 'TestUdon')]
 
 RULES = [
     (re.compile(r'\b(List|Dictionary|HashSet|Queue|Stack)\s*<'), 'generic のコレクション'),

@@ -34,7 +34,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 ## テストと振る舞い
 
-テストは `Assets/LogStreamDev/Tests/LogStreamTests.cs` と `LogStreamTests.Gimmicks.cs` にあり、`bin/test` が Unity Test Framework の EditMode で動かす。LogStream に asmdef が無く、テストの asmdef から LogStream の型を参照できないので、型は名前で探し、Udon の値は `UdonBehaviour` の変数として読む。実行の層のテストは、テストの中で Play Mode に入り、ClientSim の 1 人のプレイヤーで動かす。ログはテスト用の U# スクリプト `Assets/LogStreamDev/TestUdon/LogStreamTestWriter.cs` で足す。
+テストは `Assets/LogStreamDev/Tests/LogStreamTests.cs` と `LogStreamTests.Gimmicks.cs` にあり、`bin/test` が Unity Test Framework の EditMode で動かす。テストの asmdef（`LogStreamDev.Tests`）は LogStream の asmdef を参照しないので、型は名前で探し、Udon の値は `UdonBehaviour` の変数として読む。実行の層のテストは、テストの中で Play Mode に入り、ClientSim の 1 人のプレイヤーで動かす。ログはテスト用の U# スクリプト `Assets/LogStreamDev/TestUdon/LogStreamTestWriter.cs` で足す。
 
 | テスト | 確かめる振る舞い | 落ちることを確かめた変更 |
 | --- | --- | --- |
@@ -86,7 +86,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 ## UdonSharp の制約の検査
 
-`bin/check-udonsharp`（`bin/lib/check_udonsharp.py`）は、`Assets/Kmnk/LogStream/` と `Assets/LogStreamDev/TestUdon/` の `.cs` のうち `Editor/` の下に無いものから、generic のコレクション、LINQ、`try`/`catch`/`throw`、`async`/`await`/`yield`、`?.`、`interface`、`is`・`as`、`switch` 式、`new()`、`goto`/`lock`/`checked`、static field、多次元配列、入れ子の型を探す。コメントと文字列の中身は外してから探す。ラムダ・local function・タプルは、property の式の形（`get => _x`）や通常の括弧と文字列で見分けられないので見ない。2.x の設定のクラス（通常の `MonoBehaviour`）も対象に入るが、これらの構文を使っていないので外していない。
+`bin/check-udonsharp`（`bin/lib/check_udonsharp.py`）は、`Packages/dev.kmnk.log-stream/` と `Assets/LogStreamDev/TestUdon/` の `.cs` のうち `Editor/` の下に無いものから、generic のコレクション、LINQ、`try`/`catch`/`throw`、`async`/`await`/`yield`、`?.`、`interface`、`is`・`as`、`switch` 式、`new()`、`goto`/`lock`/`checked`、static field、多次元配列、入れ子の型を探す。コメントと文字列の中身は外してから探す。ラムダ・local function・タプルは、property の式の形（`get => _x`）や通常の括弧と文字列で見分けられないので見ない。2.x の設定のクラス（通常の `MonoBehaviour`）も対象に入るが、これらの構文を使っていないので外していない。
 
 `.editorconfig` は、波括弧・可視性・`this.`・型のキーワード・定数と private field の名前の規則を持つ。Rider・Visual Studio が読み、警告として出す。`Assets/Kmnk/Core/` は Core のリポジトリが書き方を決めるので、可視性と field の名前の規則を切っている。
 
@@ -94,12 +94,50 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 `bin/check-docs`（`bin/lib/check_docs.py`）は、`AGENTS.md`・`README.md`・`docs/*.md` のバッククォートの中と Markdown のリンクから、次が今のツリーにあるかを確かめる。
 
-- パス: リポジトリのルート、文書のディレクトリ、`Assets/Kmnk/LogStream/` からの相対か、追跡しているファイルのパスの末尾に一致するもの。`.gitignore` に当たるパス（`Logs/`・`Build/`・`UserSettings/`・SDK のパッケージ）は手元の状態で変わるので見ない
+- パス: リポジトリのルート、文書のディレクトリ、`Packages/dev.kmnk.log-stream/` からの相対か、追跡しているファイルのパスの末尾に一致するもの。`.gitignore` に当たるパス（`Logs/`・`Build/`・`UserSettings/`・SDK のパッケージ）は手元の状態で変わるので見ない
 - `bin/` のコマンド
 - 識別子: `_` で始まるか途中に大文字を持つ語（`LegacySettingsMigrator`・`_AddMessageAsOwner` など）が、追跡している `.cs`・`.py`・`.sh`・`.json` と `bin/` のどれかに語として出るか
 - リンク: 文書からの相対のファイル。`http` と `#` だけのリンクは見ない
 
 2.x の置き場所（`Udon/`・`Scripts/`・`Scripts/Editor/`）や SDK の型のように、意図して今のツリーに無いものを書くときは、`bin/lib/check_docs.py` の `IGNORE` に理由と一緒に足す。説明の中身が古いこと（数や振る舞いの説明）は見つけない。識別子の名前を全ての `.cs` で変える、`bin/check-core` の名前を変える、文書のリンク先を無い名前にする、のどれでも終了コード 1 になることを確かめた。
+
+## 配るパッケージを入れて確かめる
+
+`bin/check-install <VPM の zip か unitypackage> <場合>` は、配るパッケージを利用者と同じ入り方で使い捨てのプロジェクトに入れて確かめる。`bin/test` はこのリポジトリのプロジェクトの中で振る舞いを確かめるもので、利用者のプロジェクトに入れたときの置き場所・GUID・`legacyFolders` は確かめない。
+
+使う場面は、配るパッケージの形（置き場所、`package.json`、asmdef、U# Assembly Definition、program の `.asset`）を変えたときと、release の workflow が作った zip と unitypackage を確かめるとき。
+
+| 場合 | 利用者の入り方 | 入れるもの | 成功と分かる出力 |
+| --- | --- | --- | --- |
+| `fresh` | LogStream の無いプロジェクトに VCC・ALCOM で入れる | VPM の zip | `OK` の 8 行と `成功` |
+| `over-v2` | 2.x を unitypackage で入れた人が VCC・ALCOM で入れる。`legacyFolders` が古い `Assets/Kmnk/LogStream` を消す | VPM の zip | `OK` の 13 行と `成功`。`2.x の設定 6 件が移った` と `LogJoinLeave の Join Log に 2.x の上書きの値が入った` が、2.x の scene が使えることを示す |
+| `over-v2-unitypackage` | 2.x の人が README の案内どおり `Assets/Kmnk/LogStream` を消してから unitypackage を入れる | unitypackage | `over-v2` と同じ 13 行 |
+
+コマンドがすること:
+
+1. `Build/check-install/<場合>-<時刻>/project` に、このリポジトリの `Assets`・`Packages`・`ProjectSettings`・`Library` を `cp -cR` で写す。LogStream と `Assets/LogStreamDev` を除いて、確かめのエディタスクリプト（`bin/lib/check_install/CheckInstall.cs`）を置く。
+2. `over-v2*` では、v2.2.3 の unitypackage と、2.x の 6 つの prefab の全ての設定に上書きを入れた `Assets/LogStreamDev/Fixtures/V2Overrides.unity` を入れる。
+3. zip は、`bin/lib/check_install_listing.py` が作るテスト用の listing を 127.0.0.1 の `http.server` で出し、`vrc-get repo add` と `vrc-get install` で入れる。`vrc-get` は `HOME` を実行のディレクトリの中に向けて動かすので、利用者の VCC・ALCOM の設定は変わらない。
+4. Unity を batchmode で開き、`CheckInstall.Probe.Run` が scene を開いて確かめた値を `Build/check-install/<場合>-<時刻>/result.json` に書く。
+
+動かす前の確認:
+
+- Unity を使うので sandbox の外で単独で動かす。
+- `over-v2*` で v2.2.3 の unitypackage が `Build/check-install/cache/` に無ければ、`gh release download` で取る。`gh` のログインが要る。`CHECK_INSTALL_V2_PACKAGE` で手元のファイルを渡してもよい。
+- `vrc-get` が要る（Homebrew の `vrc-get`）。`vrc-get install` は依存の `com.vrchat.worlds` を確かめるために VRChat の公式の listing を取るので、ネットワークが要る。
+- 使い捨てのプロジェクトは書き出し先（`-buildTarget Win64`）を `bin/compile` と同じにしてある。
+
+落とし穴:
+
+- `fresh` は scene にパッケージの `Samples/LogStream.unity` を使うので、2.x の設定の移し替えは確かめない。
+- 確かめは batchmode で、Editor の画面・Windows・VCC 本体（ソースが非公開）・ClientSim での動きは見ない。
+- Unity がライセンスを取れずに止まると、`UNITY_LICENSING_IPC` に渡す Hub の窓口の名前を出す。その値を付けて動かし直す。
+
+証拠: `Build/check-install/<場合>-<時刻>/` に `Build/check-install/<場合>-<時刻>/unity-*.log`・`Build/check-install/<場合>-<時刻>/vrc-get.log`・`Build/check-install/<場合>-<時刻>/result.json` が残る。報告には、出力の `OK`・`NG` の行と `成功` の行を貼る。
+
+片付け: 終わると使い捨てのプロジェクトと `vrc-get` の設定と listing を消し、証拠は残す。`--keep` を付けるとプロジェクトも残す。`Build/check-install/` は git で追跡しないので、要らなくなったら `rm -rf Build/check-install` で消す。
+
+2026-11-03 に、VPM の形に組み直した試しの版で 3 つの場合がすべて `成功` になることを確かめた。`legacyFolders` を外した zip では、`over-v2` が CS0433 で止まって終了コード 1 になることも確かめた。
 
 ## UdonSharp の生成物
 
@@ -120,7 +158,7 @@ VRChat SDK でビルド（Build & Test、Build & Upload）すると、OS に関�
 3. `bin/compile` と `bin/test` を動かす。`Assets/SerializedUdonPrograms/` の生成物に差分が出る。
 4. `bin/test` の `ProjectSettings_HasVRChatLayers` が落ちたときは、SDK が求める Layer の配置が変わっている。Unity の Editor で VRChat SDK の画面の Builder を開き、Setup Layers for VRChat と Set Collision Matrix を押して、`ProjectSettings/TagManager.asset` と `DynamicsManager.asset` の差分を同じ commit に入れる。
 5. 2〜4 の差分を 1 つの commit にする。もう 1 度 `bin/compile` を動かして差分が出ないことを確かめる。
-6. `Assets/Kmnk/LogStream/` の README の動作確認の版を書き換える。
+6. `Packages/dev.kmnk.log-stream/` の README の動作確認の版を書き換える。
 
 テストと batchmode の実行は、SDK の内部に依る所が 2 つある。SDK を上げてテストが動かなくなったら、ここを見る。
 

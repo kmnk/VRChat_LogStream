@@ -5,7 +5,7 @@ Assets/Kmnk/Core/ は VRChat_Core のコピーで、中身は Core のリポジ�
 import os
 import sys
 
-TARGETS = [os.path.join('Assets', 'Kmnk', 'LogStream'), os.path.join('Assets', 'LogStreamDev')]
+TARGETS = [os.path.join('Packages', 'dev.kmnk.log-stream'), os.path.join('Assets', 'LogStreamDev')]
 
 
 def main(root):

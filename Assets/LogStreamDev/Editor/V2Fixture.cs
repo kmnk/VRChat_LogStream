@@ -15,7 +15,7 @@ namespace Kmnk.LogStreamDev
     {
         public const string ScenePath = "Assets/LogStreamDev/Fixtures/V2Overrides.unity";
 
-        const string Prefabs = "Assets/Kmnk/LogStream/Prefabs/";
+        const string Prefabs = "Packages/dev.kmnk.log-stream/Prefabs/";
 
         static readonly string[] Gimmicks =
         {
@@ -74,11 +74,11 @@ namespace Kmnk.LogStreamDev
                 case SerializedPropertyType.ObjectReference:
                     if (p.name == "_soundEffectAudioClip")
                     {
-                        p.objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Kmnk/LogStream/AudioClip/chi-n2.mp3");
+                        p.objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Packages/dev.kmnk.log-stream/AudioClip/chi-n2.mp3");
                     }
                     else if (p.name == "_templateText")
                     {
-                        p.objectReferenceValue = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Kmnk/LogStream/TemplateText/SampleTemplateText.txt");
+                        p.objectReferenceValue = AssetDatabase.LoadAssetAtPath<TextAsset>("Packages/dev.kmnk.log-stream/TemplateText/SampleTemplateText.txt");
                     }
                     break;
                 case SerializedPropertyType.Generic:

@@ -1,2 +1,4 @@
 /*/
 !com.vrchat.core.*/
+# 配る LogStream のパッケージ
+!dev.kmnk.log-stream/

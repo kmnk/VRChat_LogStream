@@ -1,0 +1,6 @@
+{
+  "name": "Kmnk.LogStream.Editor",
+  "references": ["Kmnk.LogStream.Runtime", "UdonSharp.Editor", "UdonSharp.Runtime", "VRC.Udon", "VRC.Udon.Editor", "UnityEngine.UI"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

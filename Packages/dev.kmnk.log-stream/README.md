@@ -2,19 +2,29 @@
 Simple system to stream text logs to be placed in the VRChat world.
 
 ## Required
-- VRChat SDK Worlds (includes UdonSharp)
-- Since v3.0.0, [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core) is no longer used. The bundled `Kmnk/Core` is kept for other gimmicks that use the same Core
+- VRChat SDK Worlds 3.10.6 or later (includes UdonSharp)
+- Since v3.0.0, [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core) is no longer used. An `Assets/Kmnk/Core` installed with v2 or earlier stays as it is for other gimmicks that use the same Core
+
+## Install
+### With VCC or ALCOM (recommended)
+1. Open [Add to VCC](vcc://vpm/addRepo?url=https://kmnk.github.io/vpm-repos/index.json), or add `https://kmnk.github.io/vpm-repos/index.json` under Packages in the VCC or ALCOM settings
+2. Add `LogStream` in Manage Project of your world project
+
+You can add it to a project that has v2 or earlier from a unitypackage. The old `Assets/Kmnk/LogStream` is removed automatically, and prefabs in your scenes keep working with the new version.
+
+### With the unitypackage
+1. Get the LogStream unitypackage from [GitHub Releases](https://github.com/kmnk/VRChat_LogStream/releases) or Booth
+2. In a project that has v2 or earlier, delete `Assets/Kmnk/LogStream` in the Project tab first. Importing over it breaks script compilation (you can keep `Assets/Kmnk/Core`)
+3. Import the unitypackage
 
 ## Usage
 The steps to place a board in the world project that displays logs.
 
-0. Prepare LogStream unitypackage from Booth or github repository zip file
-1. Prepare a Unity project with VRChat SDK Worlds (UdonSharp is included in VRChat SDK Worlds 3.4.0 and later)
-2. Import LogStream unitypackage into the same Unity project
-3. Drag and drop `LogStream` prefabs under `Kmnk/LogStream/Prefabs` in the Project tab to the scene and place them wherever you want
+1. Install LogStream as above
+2. Drag and drop the `LogStream` prefab under `Packages/LogStream/Prefabs` in the Project tab to the scene and place it wherever you want
 
 ## Preparing and using other features
-- Basically, just drag and drop any prefab under `Kmnk/LogStream/Prefabs` into your scene
+- Basically, just drag and drop any prefab under `Packages/LogStream/Prefabs` into your scene
 - For a detailed explanation of the adjustment fields, hover the cursor over each value label on the `Inspector` tab and tips will pop up
 
 ### Log Join/Leave to world instances
@@ -74,7 +84,7 @@ The steps to place a board in the world project that displays logs.
     - You cannot have more than one `LogStreamCore` with the same `Id`. Please note that this will not work as intended
 
 ### Others
-- A sample that implements the minimum functionality to stream any log you want is implemented in the `LogSample` prefab and the script `Kmnk/LogStream/Runtime/LogSample.cs` (if you imported over v2, it is at `Kmnk/LogStream/Udon/LogSample.cs`)
+- A sample that implements the minimum functionality to stream any log you want is implemented in the `LogSample` prefab and the script `Packages/LogStream/Runtime/LogSample.cs`. Files in the package are replaced on update, so copy it under `Assets` before you edit it
 - The settings of each prefab are held by its child `Udon` object. Selecting the parent object shows the settings of the child `Udon` object
 - `Only Master` of the Pomodoro timer lets only the instance master operate the timer. It can be toggled in-game with the lock button
 
@@ -86,28 +96,7 @@ MIT License
 Copyright (c) 2024 KMNK
 
 ## Updates
-- 2026/11/02 v3.0.0 Rebuilt for UdonSharp (VRChat SDK Worlds 3.10.6). This version has breaking changes
-    - Settings are now held by the child `Udon` object of each prefab. Settings in v2 scenes are moved automatically when the scene is opened or built. You can still select the parent object to edit them
-    - Only the owner of `LogStreamCore` writes logs, and other players send their logs to the owner. Logs are no longer lost when several players post at the same time
-    - Log times and the Pomodoro timer use the network time instead of each device's clock
-    - Master Only of the Pomodoro timer now means only the instance master can operate it (in v2, the player who locked it could)
-    - Event names called from buttons now start with `_` (`_ActivateInput`, `_DeactivateInput`, `_Submit`, `_AppendToInput`, `_Toggle`, `_TogglePomodoro`, `_SkipPomodoro`, `_ResetPomodoro`, `_ToggleOnlyMaster`, `_ToggleAutoContinue`). If you unpacked the prefabs or call these events from your own UI, update the event names
-    - A log message is limited to 256 characters, and the log limit to 200. Pomodoro minutes and the long break interval are at least 1
-    - `Time Format` of `LogStreamCore` now takes effect
-    - Scripts moved to `Runtime` and `Editor`. If you import over v2, files from v2 are updated in their original locations (`Udon`, `Scripts`), and some new files are placed in `Runtime`
-- 2024/06/14 v2.2.3 Add Pomodoro Pause and Resume message
-- 2024/01/08 v2.2.2 Apply Unity and SDK new version changes
-- 2023/10/15 v2.2.1 The button for switching Master Only and Auto Continue on the Pomodoro timer has been changed to an icon
-- 2023/10/09 v2.2.0 Template messages for LogInput assets can now be read from text files
-- 2023/10/08 v2.1.0 Pomodoro Timer Master Only and Auto Continue can now be toggled in-game
-- 2023/05/03 v2.0.0 Refactored the base implementation so that it is no longer backward compatible. Changed log template variables from C# defaults to named ones
-- 2023/04/15 v1.3.2 Master only mode is now displayed on button
-- 2023/03/11 v1.3.1 Send message when resetting Pomodoro. Also, did some refactoring
-- 2023/01/22 v1.3.0 Pomodoro timer function ( LogPomodoro ) added
-- 2023/01/15 v1.2.0 Change to UdonSharp v1.1.0 dependent
-- 2022/11/11 v1.1.0 Play sound effect on update log
-- 2022/07/10 v1.0.1 Modify README
-- 2022/07/10 v1.0.0 Released
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Credit
 - [ICOOON MONO](https://icooon-mono.com/)

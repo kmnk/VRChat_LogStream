@@ -2,19 +2,29 @@
 VRChat のワールドに設置する、任意のテキストログを流す簡単な仕組みです。
 
 ## 必要なもの
-- VRChat SDK Worlds（UdonSharp を含む）
-- v3.0.0 から [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core) は使っていません。同梱の `Kmnk/Core` は、同じ Core を使う他のギミックのために残しています
+- VRChat SDK Worlds 3.10.6 以降（UdonSharp を含む）
+- v3.0.0 から [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core) は使っていません。v2 までに入れた `Assets/Kmnk/Core` は、同じ Core を使う他のギミックのためにそのまま残ります
+
+## 入れ方
+### VCC・ALCOM で入れる（おすすめ）
+1. [VCC に追加](vcc://vpm/addRepo?url=https://kmnk.github.io/vpm-repos/index.json) を開くか、VCC・ALCOM の設定の Packages で `https://kmnk.github.io/vpm-repos/index.json` を追加する
+2. ワールドのプロジェクトの Manage Project で `LogStream` を追加する
+
+v2 までを unitypackage で入れていたプロジェクトでも、そのまま追加できます。古い `Assets/Kmnk/LogStream` は自動で消え、シーンに置いたプレハブはそのまま新しい版を使います。
+
+### unitypackage で入れる
+1. [GitHub の Releases](https://github.com/kmnk/VRChat_LogStream/releases) か Booth から、LogStream の unitypackage を用意する
+2. v2 までを入れたプロジェクトでは、先に Project タブで `Assets/Kmnk/LogStream` を消す。消さずに Import すると、スクリプトがコンパイルできなくなります（`Assets/Kmnk/Core` は消さなくて大丈夫です）
+3. unitypackage を Import する
 
 ## 使い方
-ログを表示するボードをワールドプロジェクトに置くまでの手順です。
+ログを表示するボードをワールドのプロジェクトに置くまでの手順です。
 
-0. LogStream の unitypackage を Booth や github のリポジトリの zip ファイル等から用意する
-1. VRChat SDK Worlds を入れた Unity プロジェクトを用意する（UdonSharp は VRChat SDK Worlds 3.4.0 以降に含まれています）
-2. 同 Unity プロジェクトに LogStream の unitypackage を Import する
-3. Project タブの `Kmnk/LogStream/Prefabs` 下の `LogStream` プレハブをシーンにドラッグ＆ドロップして、好きな場所に配置する
+1. 上の入れ方で LogStream を入れる
+2. Project タブの `Packages/LogStream/Prefabs` 下の `LogStream` プレハブをシーンにドラッグ＆ドロップして、好きな場所に配置する
 
 ## その他の機能の準備と使い方
-- 基本的に `Kmnk/LogStream/Prefabs` 下の任意のプレハブをシーンにドラッグ＆ドロップするだけで使うことができます
+- 基本的に `Packages/LogStream/Prefabs` 下の任意のプレハブをシーンにドラッグ＆ドロップするだけで使うことができます
 - 細かい調整欄の説明は、 `Inspector` タブの各値のラベル部分にカーソルを合わせると Tips がポップアップします
 
 ### ワールドインスタンスへの Join/Leave をログへ流す
@@ -75,7 +85,7 @@ VRChat のワールドに設置する、任意のテキストログを流す簡�
     - `LogStreamCore` は同じ `Id` で複数設置することはできません。意図した動作をしなくなるので、注意してください
 
 ### その他
-- 好きなログを流すための最低限の機能を実装したサンプルを `LogSample` プレハブと `Kmnk/LogStream/Runtime/LogSample.cs` のスクリプトに実装しています（v2 から上書きで Import した場合は `Kmnk/LogStream/Udon/LogSample.cs` にあります）
+- 好きなログを流すための最低限の機能を実装したサンプルを `LogSample` プレハブと `Packages/LogStream/Runtime/LogSample.cs` のスクリプトに実装しています。パッケージの中のファイルは更新で置き換わるので、書き換えるときは `Assets` の下に写してから使ってください
 - 各プレハブの設定は、子の `Udon` オブジェクトが持っています。親のオブジェクトを選択すると、子の `Udon` オブジェクトの設定が表示されます
 
 ## 動作確認
@@ -86,28 +96,7 @@ MIT License
 Copyright (c) 2024 KMNK
 
 ## 更新履歴
-- 2026/11/02 v3.0.0 UdonSharp（VRChat SDK Worlds 3.10.6）向けに作り直しました。後方互換が無い変更があります
-    - 設定の値は各プレハブの子の `Udon` オブジェクトが持つようになりました。v2 のシーンは、開いた時・ビルドした時に設定が自動で移ります。親のオブジェクトを選択して設定する方法はそのまま使えます
-    - ログを書くのは `LogStreamCore` の owner だけになり、他の人のログは owner に送るようにしました。同時にログを流しても消えなくなります
-    - ログの時刻とポモドーロタイマーの時間は、端末の時計でなくネットワークの時刻で決めるようにしました
-    - ポモドーロタイマーの Master Only は、インスタンスのマスターだけが操作できる意味になりました（v2 ではロックした人が操作できました）
-    - ボタンから呼ぶイベントの名前を `_` で始まる名前に変えました（ `_ActivateInput` ・ `_DeactivateInput` ・ `_Submit` ・ `_AppendToInput` ・ `_Toggle` ・ `_TogglePomodoro` ・ `_SkipPomodoro` ・ `_ResetPomodoro` ・ `_ToggleOnlyMaster` ・ `_ToggleAutoContinue` ）。プレハブを Unpack して使っている場合や、自作の UI からこれらのイベントを呼んでいる場合は、呼び先の名前を変えてください
-    - ログの本文は 256 文字まで、ログの最大保持数は 200 までになりました。ポモドーロの分数と長い休憩までの回数は 1 以上になります
-    - `LogStreamCore` の `Time Format` が反映されるようになりました
-    - スクリプトの置き場所を `Runtime` と `Editor` に変えました。v2 から上書きで Import した場合は、v2 からあるファイルは元の場所（ `Udon` ・ `Scripts` ）のまま更新され、新しいファイルの一部は `Runtime` に置かれます
-- 2024/06/14 v2.2.3 ポモドーロタイマーの停止と再開でメッセージを表示するようにしました
-- 2024/01/08 v2.2.2 Unity と SDK の新しいバージョンの変更を反映
-- 2023/10/15 v2.2.1 ポモドーロタイマーの Master Only, Auto Continue の切り替えボタンをアイコンに変更しました
-- 2023/10/09 v2.2.0 LogInput アセットのテンプレートメッセージをテキストファイルから読み込めるようにしました
-- 2023/10/08 v2.1.0 ポモドーロタイマーの Master Only と Auto Continue をゲーム内で切り替えられるようにしました
-- 2023/05/03 v2.0.0 ベース実装のリファクタリングを行って後方互換が無くなりました。ログのテンプレートの変数を C# デフォルトのものから名前付きの物に変更しました
-- 2023/04/15 v1.3.2 Master Only モードをボタンに表示するようにしました
-- 2023/01/11 v1.3.1 Pomodoro をリセットする時にメッセージを流すようにしました。また、幾つかのリファクタリングをしました
-- 2023/01/22 v1.3.0 ポモドーロタイマー機能（ LogPomodoro ）を追加
-- 2023/01/15 v1.2.0 UdonSharp v1.1.0 依存に変更
-- 2022/11/11 v1.1.0 ログが更新された時に効果音を流すようにしました
-- 2022/07/10 v1.0.1 README 修正
-- 2022/07/10 v1.0.0 公開
+[CHANGELOG_ja.md](CHANGELOG_ja.md) にあります。
 
 ## クレジット
 - [ICOOON MONO](https://icooon-mono.com/)

@@ -7,7 +7,7 @@
 1. 版を上げる commit を作る。`Packages/dev.kmnk.log-stream/package.json` の `version` を上げ、`CHANGELOG.md` と `CHANGELOG_ja.md` の `## [Unreleased]` を `## [<版>] - <日付>` にする。直前の tag からの commit と見比べ、利用者に見える変更の書き漏らしが無いかを見る。`main` に入れる。
 2. dry run で通す: `gh workflow run release.yml -R kmnk/VRChat_LogStream -f dry_run=true`。`gh run watch` で終わりを待ち、`gh run download` で artifact を取る。dry run は tag・Release・listing を作らない。
 3. artifact の zip と unitypackage を `bin/check-install` で確かめる（下の「配るものを確かめる」）。
-4. 本番: `gh workflow run release.yml -R kmnk/VRChat_LogStream -f dry_run=false`。tag（`v` を付けない版、例 `3.0.0`）と Release を作り、`VPM_REPOS_TOKEN` が secrets にあれば kmnk/vpm-repos の listing を作り直す。無ければ `gh workflow run build-listing.yml -R kmnk/vpm-repos` を動かす。
+4. 本番: `gh workflow run release.yml -R kmnk/VRChat_LogStream -f dry_run=false`。tag（`v` を付けない版、例 `3.0.0`）と Release を作る。kmnk/vpm-repos の listing は、そちらの workflow が 1 日 1 回作り直すので、VCC・ALCOM に出るまで最大 1 日ほどかかる。急ぐなら `gh workflow run build-listing.yml -R kmnk/vpm-repos` を動かす。
 5. Release の `VRChat_LogStream_v<版の . を _ にしたもの>.zip` を Booth の「最新バージョン」に手で上げる。説明文の更新履歴は更新しない。
 
 workflow は次を順に行い、どこかで止まれば後は行わない。

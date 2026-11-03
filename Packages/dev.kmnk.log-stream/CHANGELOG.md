@@ -4,6 +4,8 @@ All notable changes to LogStream are recorded here, newest first. The format is 
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-11-03
+
 - Rebuilt for UdonSharp (VRChat SDK Worlds 3.10.6). This version has breaking changes
 - Settings are now held by the child `Udon` object of each prefab. Settings in v2 scenes are moved automatically when the scene is opened or built. You can still select the parent object to edit them
 - Only the owner of `LogStreamCore` writes logs, and other players send their logs to the owner. Logs are no longer lost when several players post at the same time
@@ -14,7 +16,9 @@ All notable changes to LogStream are recorded here, newest first. The format is 
 - `Time Format` of `LogStreamCore` now takes effect
 - LogStream is now a VPM package (`dev.kmnk.log-stream`) that you can add from VCC or ALCOM. It is placed in `Packages/dev.kmnk.log-stream`. When installed from VCC or ALCOM, the v2 folder `Assets/Kmnk/LogStream` is removed automatically, and prefabs in your scenes keep working with the new version
 - If you use the unitypackage, delete `Assets/Kmnk/LogStream` before importing it. Importing over the old folder breaks script compilation
+- `Assets/Kmnk/LogStream` is removed with everything in it. If you keep your own scenes or files there, move them elsewhere under `Assets` before installing
 - The bundled `Kmnk/Core` is no longer included. An existing `Assets/Kmnk/Core` is not removed
+- The sample scene no longer contains a world ID. Uploading the sample creates a new world of your own
 
 ## [2.2.3] - 2024-06-14
 

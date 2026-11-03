@@ -10,7 +10,7 @@ Simple system to stream text logs to be placed in the VRChat world.
 1. Open [Add to VCC](vcc://vpm/addRepo?url=https://kmnk.github.io/vpm-repos/index.json), or add `https://kmnk.github.io/vpm-repos/index.json` under Packages in the VCC or ALCOM settings
 2. Add `LogStream` in Manage Project of your world project
 
-You can add it to a project that has v2 or earlier from a unitypackage. The old `Assets/Kmnk/LogStream` is removed automatically, and prefabs in your scenes keep working with the new version.
+You can add it to a project that has v2 or earlier from a unitypackage. The old `Assets/Kmnk/LogStream` is removed automatically with everything in it, and prefabs in your scenes keep working with the new version. If you keep your own scenes or files in `Assets/Kmnk/LogStream`, move them elsewhere under `Assets` before adding the package.
 
 ### With the unitypackage
 1. Get the LogStream unitypackage from [GitHub Releases](https://github.com/kmnk/VRChat_LogStream/releases) or Booth

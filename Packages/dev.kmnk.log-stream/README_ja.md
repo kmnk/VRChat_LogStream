@@ -10,7 +10,7 @@ VRChat のワールドに設置する、任意のテキストログを流す簡�
 1. [VCC に追加](vcc://vpm/addRepo?url=https://kmnk.github.io/vpm-repos/index.json) を開くか、VCC・ALCOM の設定の Packages で `https://kmnk.github.io/vpm-repos/index.json` を追加する
 2. ワールドのプロジェクトの Manage Project で `LogStream` を追加する
 
-v2 までを unitypackage で入れていたプロジェクトでも、そのまま追加できます。古い `Assets/Kmnk/LogStream` は自動で消え、シーンに置いたプレハブはそのまま新しい版を使います。
+v2 までを unitypackage で入れていたプロジェクトでも、そのまま追加できます。古い `Assets/Kmnk/LogStream` は中身ごと自動で消え、シーンに置いたプレハブはそのまま新しい版を使います。`Assets/Kmnk/LogStream` の中に自分のシーンやファイルを置いている場合は、追加する前に `Assets` の別の場所へ移してください。
 
 ### unitypackage で入れる
 1. [GitHub の Releases](https://github.com/kmnk/VRChat_LogStream/releases) か Booth から、LogStream の unitypackage を用意する

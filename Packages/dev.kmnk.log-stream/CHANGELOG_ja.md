@@ -4,6 +4,8 @@ LogStream の変更を、新しい版から順に書きます。書き方は [Ke
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-11-03
+
 - UdonSharp（VRChat SDK Worlds 3.10.6）向けに作り直しました。後方互換が無い変更があります
 - 設定の値は各プレハブの子の `Udon` オブジェクトが持つようになりました。v2 のシーンは、開いた時・ビルドした時に設定が自動で移ります。親のオブジェクトを選択して設定する方法はそのまま使えます
 - ログを書くのは `LogStreamCore` の owner だけになり、他の人のログは owner に送るようにしました。同時にログを流しても消えなくなります
@@ -14,7 +16,9 @@ LogStream の変更を、新しい版から順に書きます。書き方は [Ke
 - `LogStreamCore` の `Time Format` が反映されるようになりました
 - VPM のパッケージ（ `dev.kmnk.log-stream` ）になり、VCC・ALCOM から入れられるようになりました。置き場所は `Packages/dev.kmnk.log-stream` です。VCC・ALCOM で入れると、v2 までの `Assets/Kmnk/LogStream` は自動で消え、シーンに置いたプレハブはそのまま新しい版を使います
 - unitypackage で入れる場合は、先に `Assets/Kmnk/LogStream` を消してから Import してください。消さずに Import すると、スクリプトがコンパイルできなくなります
+- `Assets/Kmnk/LogStream` は中身ごと消えます。この中に自分のシーンやファイルを置いている場合は、入れる前に `Assets` の別の場所へ移してください
 - 同梱していた `Kmnk/Core` は入れなくなりました。既に入っている `Assets/Kmnk/Core` は消えません
+- サンプルのシーンにワールドの ID を入れないようにしました。サンプルをアップロードすると、自分の新しいワールドになります
 
 ## [2.2.3] - 2024-06-14
 

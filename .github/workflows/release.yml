@@ -1,6 +1,7 @@
 # LogStream の release を作る。VRChat の template-package の release.yml と同じ形で、Unity は使わない。
 # 手で起こし、版は Packages/dev.kmnk.log-stream/package.json の version から読む。手順は docs/release.md。
-# dry_run が true（既定）のときは、tag・Release・listing の作り直しをせず、作ったものを artifact に上げるだけにする。
+# dry_run が true（既定）のときは、tag と Release を作らず、作ったものを artifact に上げるだけにする。
+# VPM の listing（kmnk/vpm-repos）は、そちらの workflow が 1 日 1 回作り直す。
 name: Build Release
 
 on:
@@ -17,8 +18,6 @@ permissions:
 env:
   packageName: dev.kmnk.log-stream
   packagePath: Packages/dev.kmnk.log-stream
-  # secrets は if で読めないので、有無だけを env に移す
-  hasVpmReposToken: ${{ secrets.VPM_REPOS_TOKEN != '' }}
 
 jobs:
   build:
@@ -120,14 +119,6 @@ jobs:
             ${{ env.boothZip }}
             ${{ env.packagePath }}/package.json
 
-      - name: Rebuild the VPM listing
-        if: ${{ !inputs.dry_run && env.hasVpmReposToken == 'true' }}
-        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
-        with:
-          token: ${{ secrets.VPM_REPOS_TOKEN }}
-          repository: kmnk/vpm-repos
-          event-type: build-listing
-
-      - name: Remind to rebuild the listing by hand
-        if: ${{ !inputs.dry_run && env.hasVpmReposToken != 'true' }}
-        run: echo "::notice::VPM_REPOS_TOKEN が無いので listing を作り直していない。gh workflow run build-listing.yml -R kmnk/vpm-repos を動かす"
+      - name: Tell how the VPM listing is rebuilt
+        if: ${{ !inputs.dry_run }}
+        run: echo "::notice::kmnk/vpm-repos の listing は 1 日 1 回作り直される。急ぐなら gh workflow run build-listing.yml -R kmnk/vpm-repos を動かす"

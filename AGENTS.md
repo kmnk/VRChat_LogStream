@@ -1,6 +1,6 @@
 # VRChat_LogStream
 
-VRChat のワールドに置く、テキストのログを流すギミック集。UdonSharp で書いた prefab の集まりで、unitypackage と zip で配る。リポジトリのルートが Unity 2022.3.22f1 のプロジェクトで、配るのは `Assets/Kmnk/` の下だけである。
+VRChat のワールドに置く、テキストのログを流すギミック集。UdonSharp で書いた prefab の集まりで、VPM のパッケージ `dev.kmnk.log-stream`（listing は kmnk/vpm-repos）と unitypackage で配る。リポジトリのルートが Unity 2022.3.22f1 のプロジェクトで、配るのは `Packages/dev.kmnk.log-stream/` の下だけである。
 
 詳しい説明は次にある。
 
@@ -12,14 +12,14 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 | パス | 中身 |
 | --- | --- |
-| `Assets/Kmnk/LogStream/` | LogStream 本体。配る |
-| `Assets/Kmnk/Core/` | VRChat_Core のコピー。配る。直接書き換えない（下の「VRChat_Core のコピー」） |
+| `Packages/dev.kmnk.log-stream/` | LogStream 本体。VPM のパッケージ（`package.json`）として配る |
+| `Assets/Kmnk/Core/` | VRChat_Core のコピー。3.0.0 から配らない（LogStream は使わない）。直接書き換えない（下の「VRChat_Core のコピー」） |
 | `Assets/LogStreamDev/` | 開発のためのエディタスクリプト、テスト、テスト用の U# スクリプト。配らない |
 | `Assets/SerializedUdonPrograms/`・`Assets/UdonSharp/` | UdonSharp の生成物 |
 | `bin/` | 検証・release・Core の同期のコマンド |
 | `core-version.txt` | Core のコピーを写した Core の commit |
 
-`Assets/Kmnk/` の下には LogStream と Core のほかに何も置かない。release は `Assets/Kmnk` を丸ごと書き出す。
+配るのは `Packages/dev.kmnk.log-stream/` の中身だけで、release はこのフォルダを VPM の zip と unitypackage にする。2.x までの置き場所 `Assets/Kmnk/LogStream/` は、`package.json` の `legacyFolders` で VCC・ALCOM が利用者の手元から消す。
 
 ## 作りの要約
 
@@ -35,7 +35,8 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 - `Runtime/Legacy/` と `Editor/` は通常の C#。
 - Inspector の tooltip（`[Tooltip]`）は日本語で書く。
 - C# は BOM なしの UTF-8、改行は LF（`.editorconfig`）。UdonSharp の Create > U# Script は BOM つきで書くので、作ったら BOM を外す。`bin/check-encoding` で確かめる。
-- asmdef は `Assets/Kmnk/` の下に足さない。2.x から上書きで import した利用者の手元では、スクリプトが 2.x の場所（`Udon/` など）に残り、新しく足した asmdef だけが新しい場所に置かれるので、asmdef がスクリプトを含まなくなる。
+- asmdef は `Runtime/` の `Kmnk.LogStream.Runtime` と `Editor/` の `Kmnk.LogStream.Editor` の 2 つ。`Runtime/` の U# スクリプトは、`Runtime/Kmnk.LogStream.Runtime.asset`（U# Assembly Definition）で UdonSharp に結ぶ。無いと UdonSharp が `does not belong to a U# assembly` で止まる。asmdef を足すときは、隣に U# Assembly Definition を `Kmnk.LogStreamDev.Verify.CreateUdonSharpAssemblyDefinition` で作る。
+- 2.x を unitypackage で入れた利用者が unitypackage で更新するときは、先に `Assets/Kmnk/LogStream` を消してもらう。消さずに入れると、2.x と同じ GUID のファイルが元の場所に残って asmdef に入らず、コンパイルが壊れる（`bin/check-install` の `over-v2-unitypackage` が確かめる形）。利用者向けの README にこの手順を書く。
 - UI から呼ぶメソッドの名前は `_` で始める（network から呼べないようにするため）。`Runtime/` に `Update` を置かず、1 秒ごとの処理は `SendCustomEventDelayedSeconds` で行う。
 
 ## 資産ファイル
@@ -65,7 +66,6 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 | `bin/check-core` | 使わない | Core のコピーと `core-version.txt` の比較 | 終了コード 0 | 終了コード 1 と違うファイル |
 | `bin/sync-core [<commit>]` | 使わない | Core のコピーを Core の commit に合わせる | 終了コード 0 | git の終了コード |
 | `bin/create-program-asset <.cs>` | 使う | U# スクリプトの `.asset` を作る | 終了コード 0 | 終了コード 1 |
-| `bin/release <版>` | 使う | release の unitypackage と zip を作り、直前の release と比べる | 終了コード 0 とファイルのパス | 終了コード 1 と違う項目 |
 | `bin/compare-package <新> <旧>` | 使わない | 2 つの unitypackage の項目の比較 | 終了コード 0 | 終了コード 1 と違う項目 |
 | `bin/check-install <zip か unitypackage> <場合>` | 使う | 配るパッケージを使い捨てのプロジェクトに利用者と同じ入り方で入れ、コンパイル・scene の参照・2.x の設定の移し替えを確かめる | 終了コード 0 と `成功` | 終了コード 1 と `NG` の行 |
 
@@ -73,7 +73,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 ## 文書を直す
 
-振る舞い・設定・ファイルの置き場所・コマンドを変えたら、同じ commit の中で、関わる `AGENTS.md`・`docs/`・利用者向けの README（`Assets/Kmnk/LogStream/README_ja.md` と `README.md`）を直す。どこを直すかは [docs/architecture.md](docs/architecture.md) の「新しいギミックを足すとき」「既存のギミックに設定や機能を足すとき」にある。直したら `bin/check-docs` を動かす。`bin/check-docs` は名前が消えたことしか見つけないので、説明の中身は自分で読み直す。文書とコードが違うのに気づいたら、コードを正として文書を直すか、利用者に伝える。
+振る舞い・設定・ファイルの置き場所・コマンドを変えたら、同じ commit の中で、関わる `AGENTS.md`・`docs/`・利用者向けの README（`Packages/dev.kmnk.log-stream/README_ja.md` と `README.md`）を直す。どこを直すかは [docs/architecture.md](docs/architecture.md) の「新しいギミックを足すとき」「既存のギミックに設定や機能を足すとき」にある。直したら `bin/check-docs` を動かす。`bin/check-docs` は名前が消えたことしか見つけないので、説明の中身は自分で読み直す。文書とコードが違うのに気づいたら、コードを正として文書を直すか、利用者に伝える。
 
 ## VRChat_Core のコピー
 

@@ -34,7 +34,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 ## テストと振る舞い
 
-テストは `Assets/LogStreamDev/Tests/LogStreamTests.cs` と `LogStreamTests.Gimmicks.cs` にあり、`bin/test` が Unity Test Framework の EditMode で動かす。LogStream に asmdef が無く、テストの asmdef から LogStream の型を参照できないので、型は名前で探し、Udon の値は `UdonBehaviour` の変数として読む。実行の層のテストは、テストの中で Play Mode に入り、ClientSim の 1 人のプレイヤーで動かす。ログはテスト用の U# スクリプト `Assets/LogStreamDev/TestUdon/LogStreamTestWriter.cs` で足す。
+テストは `Assets/LogStreamDev/Tests/LogStreamTests.cs` と `LogStreamTests.Gimmicks.cs` にあり、`bin/test` が Unity Test Framework の EditMode で動かす。テストの asmdef（`LogStreamDev.Tests`）は LogStream の asmdef を参照しないので、型は名前で探し、Udon の値は `UdonBehaviour` の変数として読む。実行の層のテストは、テストの中で Play Mode に入り、ClientSim の 1 人のプレイヤーで動かす。ログはテスト用の U# スクリプト `Assets/LogStreamDev/TestUdon/LogStreamTestWriter.cs` で足す。
 
 | テスト | 確かめる振る舞い | 落ちることを確かめた変更 |
 | --- | --- | --- |
@@ -86,7 +86,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 ## UdonSharp の制約の検査
 
-`bin/check-udonsharp`（`bin/lib/check_udonsharp.py`）は、`Assets/Kmnk/LogStream/` と `Assets/LogStreamDev/TestUdon/` の `.cs` のうち `Editor/` の下に無いものから、generic のコレクション、LINQ、`try`/`catch`/`throw`、`async`/`await`/`yield`、`?.`、`interface`、`is`・`as`、`switch` 式、`new()`、`goto`/`lock`/`checked`、static field、多次元配列、入れ子の型を探す。コメントと文字列の中身は外してから探す。ラムダ・local function・タプルは、property の式の形（`get => _x`）や通常の括弧と文字列で見分けられないので見ない。2.x の設定のクラス（通常の `MonoBehaviour`）も対象に入るが、これらの構文を使っていないので外していない。
+`bin/check-udonsharp`（`bin/lib/check_udonsharp.py`）は、`Packages/dev.kmnk.log-stream/` と `Assets/LogStreamDev/TestUdon/` の `.cs` のうち `Editor/` の下に無いものから、generic のコレクション、LINQ、`try`/`catch`/`throw`、`async`/`await`/`yield`、`?.`、`interface`、`is`・`as`、`switch` 式、`new()`、`goto`/`lock`/`checked`、static field、多次元配列、入れ子の型を探す。コメントと文字列の中身は外してから探す。ラムダ・local function・タプルは、property の式の形（`get => _x`）や通常の括弧と文字列で見分けられないので見ない。2.x の設定のクラス（通常の `MonoBehaviour`）も対象に入るが、これらの構文を使っていないので外していない。
 
 `.editorconfig` は、波括弧・可視性・`this.`・型のキーワード・定数と private field の名前の規則を持つ。Rider・Visual Studio が読み、警告として出す。`Assets/Kmnk/Core/` は Core のリポジトリが書き方を決めるので、可視性と field の名前の規則を切っている。
 
@@ -94,7 +94,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 `bin/check-docs`（`bin/lib/check_docs.py`）は、`AGENTS.md`・`README.md`・`docs/*.md` のバッククォートの中と Markdown のリンクから、次が今のツリーにあるかを確かめる。
 
-- パス: リポジトリのルート、文書のディレクトリ、`Assets/Kmnk/LogStream/` からの相対か、追跡しているファイルのパスの末尾に一致するもの。`.gitignore` に当たるパス（`Logs/`・`Build/`・`UserSettings/`・SDK のパッケージ）は手元の状態で変わるので見ない
+- パス: リポジトリのルート、文書のディレクトリ、`Packages/dev.kmnk.log-stream/` からの相対か、追跡しているファイルのパスの末尾に一致するもの。`.gitignore` に当たるパス（`Logs/`・`Build/`・`UserSettings/`・SDK のパッケージ）は手元の状態で変わるので見ない
 - `bin/` のコマンド
 - 識別子: `_` で始まるか途中に大文字を持つ語（`LegacySettingsMigrator`・`_AddMessageAsOwner` など）が、追跡している `.cs`・`.py`・`.sh`・`.json` と `bin/` のどれかに語として出るか
 - リンク: 文書からの相対のファイル。`http` と `#` だけのリンクは見ない
@@ -158,7 +158,7 @@ VRChat SDK でビルド（Build & Test、Build & Upload）すると、OS に関�
 3. `bin/compile` と `bin/test` を動かす。`Assets/SerializedUdonPrograms/` の生成物に差分が出る。
 4. `bin/test` の `ProjectSettings_HasVRChatLayers` が落ちたときは、SDK が求める Layer の配置が変わっている。Unity の Editor で VRChat SDK の画面の Builder を開き、Setup Layers for VRChat と Set Collision Matrix を押して、`ProjectSettings/TagManager.asset` と `DynamicsManager.asset` の差分を同じ commit に入れる。
 5. 2〜4 の差分を 1 つの commit にする。もう 1 度 `bin/compile` を動かして差分が出ないことを確かめる。
-6. `Assets/Kmnk/LogStream/` の README の動作確認の版を書き換える。
+6. `Packages/dev.kmnk.log-stream/` の README の動作確認の版を書き換える。
 
 テストと batchmode の実行は、SDK の内部に依る所が 2 つある。SDK を上げてテストが動かなくなったら、ここを見る。
 

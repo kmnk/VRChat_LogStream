@@ -16,7 +16,7 @@ namespace Kmnk.LogStreamDev
     public static class SampleBlueprintId
     {
         // テストが一時的な scene とファイルに差し替える
-        public static string ScenePath = "Assets/Kmnk/LogStream/Samples/LogStream.unity";
+        public static string ScenePath = "Packages/dev.kmnk.log-stream/Samples/LogStream.unity";
         public static string StorePath = "UserSettings/LogStreamDev/SampleBlueprintId.txt";
 
         static PipelineManager _restoreTarget;

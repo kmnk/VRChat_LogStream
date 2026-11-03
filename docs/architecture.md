@@ -6,15 +6,17 @@ LogStream は、VRChat の中で動く UdonSharp のスクリプトと、ワー�
 
 | 場所 | 名前空間 | 中身 |
 | --- | --- | --- |
-| `Assets/Kmnk/LogStream/Runtime/` | `Kmnk.LogStream.Udon` | UdonSharpBehaviour 14 本（うち abstract 3 本）と、そのうち 11 本の `UdonSharpProgramAsset`（`.asset`）、enum 2 本（`LogType`・`PomodoroStatus`）、static クラス `ListenerArray` |
-| `Assets/Kmnk/LogStream/Runtime/Legacy/` | `Kmnk.LogStream` | 2.x で設定を持っていた `MonoBehaviour` 6 本と、その基底 `LegacySettings`。値は持たず、2.x の scene から値を移すための読み出し元と、Inspector の入口として残している |
-| `Assets/Kmnk/LogStream/Editor/` | `Kmnk.LogStream` | Udon の CustomEditor 6 本と基底 `UdonSettingsEditor`、`LegacySettingsEditor`、`LegacySettingsMigrator`、`LogStreamBuildProcessor`、`LogStreamEditorUtility` |
+| `Packages/dev.kmnk.log-stream/Runtime/` | `Kmnk.LogStream.Udon` | UdonSharpBehaviour 14 本（うち abstract 3 本）と、そのうち 11 本の `UdonSharpProgramAsset`（`.asset`）、enum 2 本（`LogType`・`PomodoroStatus`）、static クラス `ListenerArray` |
+| `Packages/dev.kmnk.log-stream/Runtime/Legacy/` | `Kmnk.LogStream` | 2.x で設定を持っていた `MonoBehaviour` 6 本と、その基底 `LegacySettings`。値は持たず、2.x の scene から値を移すための読み出し元と、Inspector の入口として残している |
+| `Packages/dev.kmnk.log-stream/Editor/` | `Kmnk.LogStream` | Udon の CustomEditor 6 本と基底 `UdonSettingsEditor`、`LegacySettingsEditor`、`LegacySettingsMigrator`、`LogStreamBuildProcessor`、`LogStreamEditorUtility` |
 
 2.x から上書きで import した利用者の手元では、2.x からあるファイルは 2.x の場所（`Udon/`・`Scripts/`・`Scripts/Editor/`）のまま更新され、3.0.0 で足したファイルは、Editor のものは `Scripts/Editor/` に、`Runtime/` のものは新しい `Runtime/`・`Runtime/Legacy/` に置かれる（2026-11-02 に 2.2.3 の上に 3.0.0 を batchmode で import して確かめた）。unitypackage の import が GUID で同じアセットかを決めるためで、ファイルは `.meta` ごと動かして GUID を保っている（[release.md](release.md)）。
 
 `Prefabs/` に `LogStream`・`LogStreamCore`・`LogStreamViewer`・`LogInput`・`LogJoinLeave`・`LogTriggerEnterExit`・`LogPomodoro`・`LogSample` の 8 個があり、`Samples/LogStream.unity` がそれらを置いたサンプルの scene である。各 prefab は、親の GameObject に 2.x の設定のクラス、子の `Udon` に UdonSharpBehaviour を持つ。`LogPomodoro` は子の `View` に表示の `LogPomodoroView` も持つ。
 
-LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を参照しない。Core のコピーは、2.x の release と同じ GUID の項目を保つためと、同じ Core を使う他のギミックのために配っている。
+LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を参照しない。Core のコピーはパッケージの外にあり、3.0.0 から配らない。
+
+`Packages/dev.kmnk.log-stream/` は VPM のパッケージで、`package.json`、`Runtime/` の asmdef `Kmnk.LogStream.Runtime` と U# Assembly Definition `Kmnk.LogStream.Runtime.asset`、`Editor/` の asmdef `Kmnk.LogStream.Editor` を持つ。VCC・ALCOM で入れた利用者の手元では、2.x までの `Assets/Kmnk/LogStream/` を `package.json` の `legacyFolders` が消し、同じ GUID のファイルが `Packages/dev.kmnk.log-stream/` に置かれるので、scene の参照はパッケージの側へつながる（`bin/check-install` の `over-v2` が確かめる）。
 
 ## 設定と Inspector
 
@@ -50,7 +52,7 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 2. `Editor/` に `UdonSettingsEditor` の派生の CustomEditor を足し、`DrawSettings` で設定を描く。
 3. prefab を Unity の Editor で作る。親の GameObject の下に `Udon` という子を置き、1 の UdonBehaviour を付ける。新しいギミックには 2.x の設定のクラスは要らない。
 4. `docs/development.md` のテストの表に行を足し、振る舞いのテストを足す。
-5. 利用者向けの `Assets/Kmnk/LogStream/README_ja.md` と `README.md` の「その他の機能の準備と使い方」（Preparing and using other features）に、準備と使い方の節を足す。
+5. 利用者向けの `Packages/dev.kmnk.log-stream/README_ja.md` と `README.md` の「その他の機能の準備と使い方」（Preparing and using other features）に、準備と使い方の節を足す。
 
 ## 既存のギミックに設定や機能を足すとき
 
@@ -61,7 +63,7 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 3. `Runtime/Legacy/LogPomodoro.cs`（2.x の設定のクラス）には足さない。2.x の scene に無い値なので、移す処理（`LegacySettingsMigrator`）も変えない。
 4. `Prefabs/LogPomodoro.prefab` の既定の値や UI を変えるときは、Unity の Editor を通す（[AGENTS.md の「資産ファイル」](../AGENTS.md#資産ファイル)）。
 5. `docs/development.md` のテストの表に行を足し、振る舞いのテストを足す。
-6. 利用者向けの `Assets/Kmnk/LogStream/README_ja.md` と `README.md` の、そのギミックの「準備」「使い方」の節を直す。英語と日本語の両方を直す。
+6. 利用者向けの `Packages/dev.kmnk.log-stream/README_ja.md` と `README.md` の、そのギミックの「準備」「使い方」の節を直す。英語と日本語の両方を直す。
 
 設定を足さずに振る舞いだけを変えるときは、1・5・6 のうち当たるものを行う。同期する値（`[UdonSynced]`）や所有権に触れたときは、ClientSim の 1 人では確かめられないので、利用者に VRChat のクライアントでの確認を頼む。
 

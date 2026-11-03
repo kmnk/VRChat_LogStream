@@ -1,28 +1,16 @@
 # release の作り方
 
-release の unitypackage と zip を作り、GitHub の Release と Booth に上げる手順。作るのは `bin/release` で、上げるのは手で行う。
+3.0.0 から、release は VPM のパッケージ `dev.kmnk.log-stream` として GitHub Actions の workflow で作る。workflow はまだ作っている途中で、できるまでは release を出さない。
 
-## 前提
+## 配るもの
 
-- mac で、[development.md](development.md) の手順で `bin/setup` を済ませている。
-- `gh` で GitHub にログインしている（直前の release を取るため）。
-- 同じプロジェクトを Unity の Editor で開いていない。
+- VPM の zip（`Packages/dev.kmnk.log-stream/` の中身。一番上に `package.json`）。listing（kmnk/vpm-repos）が指し、VCC・ALCOM が入れる
+- unitypackage と、それを `README.md`・`README_ja.md`・`LICENSE.md` と固めた zip。ファイルで入れる人と Booth のため。入れる前に `Assets/Kmnk/LogStream` を消してもらう
 
-## 手順
+## 直前の release と比べる
 
-1. `Assets/Kmnk/LogStream/README.md` と `README_ja.md` の更新履歴（Updates・更新履歴）に版と変更を足し、動作確認（Operation check・動作確認）の版を `bin/compile` と `bin/test` で確かめた Unity と SDK の版にする。commit する。
-2. `bin/release <版>`（例 `bin/release 2.2.4`）を動かす。次を行い、終了コード 0 なら `Build/release/` に 2 つのファイルができる。
-   - `bin/check-core` で、Core のコピーが `core-version.txt` の commit と同じかを確かめる
-   - `Assets/Kmnk` を丸ごと `LogStream_v<版の . を _ にしたもの>.unitypackage` に書き出す
-   - その unitypackage と `README.md`・`README_ja.md`・`LICENSE.md` を `VRChat_LogStream_v<版の . を _ にしたもの>.zip` に固める
-   - GitHub の直前の release の unitypackage を取り、`bin/compare-package` で比べる。直前の release にある項目の GUID が無い（`MISSING`）か、同じ `pathname` で GUID が違う（`GUID`）と、終了コード 1 で止まる。消した項目は既存の利用者の手元に古いファイルとして残り、GUID の違う項目は同じパスでぶつかるからである
-   - 同じ GUID で `pathname` が違う項目は `MOVED` と出すだけで止めない。unitypackage の import は GUID で同じアセットかを決め、既にあるアセットはそのパスのまま中身を入れ替えるので、既存の利用者の手元では元のパスのまま更新される（2026-11-02 に batchmode の import で確かめた。Editor の画面の Import のダイアログでは確かめていない）。ファイルやフォルダを動かすときは、`git mv` で `.meta` ごと動かして GUID を保つ
-3. 終了コード 1 で `GUID` や `MISSING` が出たときは、上げずに原因を調べる。Core の同期で GUID が変わったときは、Core の側で `.meta` を戻すかを利用者が決める。
-4. `git tag v<版>` を付けて push し、GitHub の Release を作って 2 つのファイルを上げる。
-5. Booth に zip を上げる。
+`bin/compare-package <新> <旧>` は、2 つの unitypackage の項目を比べる。直前の release にある項目の GUID が無い（`MISSING`）か、同じ `pathname` で GUID が違う（`GUID`）と終了コード 1 になる。消した項目は既存の利用者の手元に古いファイルとして残り、GUID の違う項目は同じパスでぶつかるからである。同じ GUID で `pathname` が違う項目は `MOVED` と出すだけで止めない。3.0.0 では置き場所が `Packages/dev.kmnk.log-stream/` に変わるので、v2.2.3 の項目はすべて `MOVED` になる。
 
-直前の release を手元のファイルで比べるときは、`PREVIOUS_PACKAGE=<unitypackage のパス> bin/release <版>` とする。
+## 配るものを確かめる
 
-## Windows の Editor から書き出すとき
-
-`bin/` は mac でだけ確かめている。Windows では、Unity の Editor のメニュー Tools > LogStreamDev > Export Release Package で unitypackage を書き出せる。この場合は zip を手で作り、mac か Git Bash で `bin/compare-package <新> <直前の release の unitypackage>` を動かして比べる。
+配るものは `bin/check-install` で、使い捨てのプロジェクトに利用者と同じ入り方で入れて確かめる（[development.md の「配るパッケージを入れて確かめる」](development.md#配るパッケージを入れて確かめる)）。

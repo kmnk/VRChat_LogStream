@@ -224,6 +224,12 @@
         "com.unity.ai.navigation": "1.1.5"
       }
     },
+    "dev.kmnk.log-stream": {
+      "version": "file:dev.kmnk.log-stream",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

@@ -1,0 +1,18 @@
+{
+  "name": "dev.kmnk.log-stream",
+  "displayName": "LogStream",
+  "version": "3.0.0",
+  "unity": "2022.3",
+  "description": "Gimmicks to stream text logs in VRChat worlds (join/leave, messages, pomodoro timer).",
+  "author": {
+    "name": "kmnk",
+    "url": "https://github.com/kmnk"
+  },
+  "license": "MIT",
+  "vpmDependencies": {
+    "com.vrchat.worlds": ">=3.10.6"
+  },
+  "legacyFolders": {
+    "Assets\\Kmnk\\LogStream": "3fbaed8ecff011a429b08778d625aef8"
+  }
+}

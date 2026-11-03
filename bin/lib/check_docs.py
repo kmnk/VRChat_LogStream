@@ -3,7 +3,7 @@
 
 対象は AGENTS.md・README.md・docs/*.md。バッククォートの中と Markdown のリンクを見る。
 
-- パス（/ か拡張子で終わるもの、または最初の部分がルートにある / を含むもの）: リポジトリのルート、文書のディレクトリ、Assets/Kmnk/LogStream/
+- パス（/ か拡張子で終わるもの、または最初の部分がルートにある / を含むもの）: リポジトリのルート、文書のディレクトリ、Packages/dev.kmnk.log-stream/
   からの相対のどれかにあるか、追跡しているファイルのパスの末尾に一致すればよい。.gitignore に当たる
   パス（Logs/・Build/・UserSettings/・SDK のパッケージ）は、手元の状態で変わるので見ない
 - bin/ のコマンド: 最初の語が bin/ の下にあればよい
@@ -23,6 +23,8 @@ IGNORE = {
     'Udon/': '2.x の置き場所',
     'Scripts/': '2.x の置き場所',
     'Scripts/Editor/': '2.x の置き場所',
+    'Assets/Kmnk/LogStream': '2.x までの置き場所。利用者の手元から legacyFolders で消す場所として書く',
+    'Assets/Kmnk/LogStream/': '2.x までの置き場所',
     'UdonSharpBehaviourOverrideEditor': 'VRChat SDK（UdonSharp）の型。SDK は追跡しない',
     'pM.AssignId': 'VRChat SDK のコードの式',
     'GetProjectDefines': 'VRChat SDK（UdonSharp）のメソッド',
@@ -63,7 +65,7 @@ def path_exists(span, doc_dir, root, files, dirs):
     p = span.rstrip('/')
     if ignored(root, span):
         return True
-    for base in ('', doc_dir, os.path.join('Assets', 'Kmnk', 'LogStream')):
+    for base in ('', doc_dir, os.path.join('Packages', 'dev.kmnk.log-stream')):
         if os.path.exists(os.path.join(root, base, p)):
             return True
     if span.endswith('/'):

@@ -1,0 +1,5 @@
+{
+  "name": "Kmnk.LogStream.Runtime",
+  "references": ["UdonSharp.Runtime", "VRC.Udon", "UnityEngine.UI"],
+  "autoReferenced": true
+}

@@ -422,7 +422,7 @@ namespace Kmnk.LogStreamDev.Tests
                 .Select(u => u.GetComponentInChildren<Text>(true).text));
         }
 
-        // LogStream に asmdef が無く参照できない型を名前で探す
+        // LogStreamDev.Tests の asmdef は LogStream の asmdef を参照しないので、型を名前で探す
         static Type EditorType(string fullName) =>
             AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(fullName)).First(t => t != null);
 

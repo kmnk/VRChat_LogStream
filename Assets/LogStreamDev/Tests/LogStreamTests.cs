@@ -22,8 +22,8 @@ namespace Kmnk.LogStreamDev.Tests
     public partial class LogStreamTests
     {
         const string TempDir = "Assets/LogStreamDev/Temp";
-        const string Prefabs = "Assets/Kmnk/LogStream/Prefabs/";
-        const string SampleScene = "Assets/Kmnk/LogStream/Samples/LogStream.unity";
+        const string Prefabs = "Packages/dev.kmnk.log-stream/Prefabs/";
+        const string SampleScene = "Packages/dev.kmnk.log-stream/Samples/LogStream.unity";
         const string VRCWorld = "Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/VRCWorld.prefab";
         const string TestWriter = "Assets/LogStreamDev/TestUdon/LogStreamTestWriter.asset";
 
@@ -240,7 +240,7 @@ namespace Kmnk.LogStreamDev.Tests
         [Test]
         public void Runtime_HasNoUpdate()
         {
-            var withUpdate = Directory.GetFiles("Assets/Kmnk/LogStream/Runtime", "*.cs", SearchOption.AllDirectories)
+            var withUpdate = Directory.GetFiles("Packages/dev.kmnk.log-stream/Runtime", "*.cs", SearchOption.AllDirectories)
                 .Where(f => System.Text.RegularExpressions.Regex.IsMatch(File.ReadAllText(f), @"void\s+(Update|LateUpdate|FixedUpdate)\s*\("))
                 .ToArray();
             Assert.IsEmpty(withUpdate, string.Join(", ", withUpdate));

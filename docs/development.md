@@ -101,6 +101,44 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 2.x の置き場所（`Udon/`・`Scripts/`・`Scripts/Editor/`）や SDK の型のように、意図して今のツリーに無いものを書くときは、`bin/lib/check_docs.py` の `IGNORE` に理由と一緒に足す。説明の中身が古いこと（数や振る舞いの説明）は見つけない。識別子の名前を全ての `.cs` で変える、`bin/check-core` の名前を変える、文書のリンク先を無い名前にする、のどれでも終了コード 1 になることを確かめた。
 
+## 配るパッケージを入れて確かめる
+
+`bin/check-install <VPM の zip か unitypackage> <場合>` は、配るパッケージを利用者と同じ入り方で使い捨てのプロジェクトに入れて確かめる。`bin/test` はこのリポジトリのプロジェクトの中で振る舞いを確かめるもので、利用者のプロジェクトに入れたときの置き場所・GUID・`legacyFolders` は確かめない。
+
+使う場面は、配るパッケージの形（置き場所、`package.json`、asmdef、U# Assembly Definition、program の `.asset`）を変えたときと、release の workflow が作った zip と unitypackage を確かめるとき。
+
+| 場合 | 利用者の入り方 | 入れるもの | 成功と分かる出力 |
+| --- | --- | --- | --- |
+| `fresh` | LogStream の無いプロジェクトに VCC・ALCOM で入れる | VPM の zip | `OK` の 8 行と `成功` |
+| `over-v2` | 2.x を unitypackage で入れた人が VCC・ALCOM で入れる。`legacyFolders` が古い `Assets/Kmnk/LogStream` を消す | VPM の zip | `OK` の 13 行と `成功`。`2.x の設定 6 件が移った` と `LogJoinLeave の Join Log に 2.x の上書きの値が入った` が、2.x の scene が使えることを示す |
+| `over-v2-unitypackage` | 2.x の人が README の案内どおり `Assets/Kmnk/LogStream` を消してから unitypackage を入れる | unitypackage | `over-v2` と同じ 13 行 |
+
+コマンドがすること:
+
+1. `Build/check-install/<場合>-<時刻>/project` に、このリポジトリの `Assets`・`Packages`・`ProjectSettings`・`Library` を `cp -cR` で写す。LogStream と `Assets/LogStreamDev` を除いて、確かめのエディタスクリプト（`bin/lib/check_install/CheckInstall.cs`）を置く。
+2. `over-v2*` では、v2.2.3 の unitypackage と、2.x の 6 つの prefab の全ての設定に上書きを入れた `Assets/LogStreamDev/Fixtures/V2Overrides.unity` を入れる。
+3. zip は、`bin/lib/check_install_listing.py` が作るテスト用の listing を 127.0.0.1 の `http.server` で出し、`vrc-get repo add` と `vrc-get install` で入れる。`vrc-get` は `HOME` を実行のディレクトリの中に向けて動かすので、利用者の VCC・ALCOM の設定は変わらない。
+4. Unity を batchmode で開き、`CheckInstall.Probe.Run` が scene を開いて確かめた値を `Build/check-install/<場合>-<時刻>/result.json` に書く。
+
+動かす前の確認:
+
+- Unity を使うので sandbox の外で単独で動かす。
+- `over-v2*` で v2.2.3 の unitypackage が `Build/check-install/cache/` に無ければ、`gh release download` で取る。`gh` のログインが要る。`CHECK_INSTALL_V2_PACKAGE` で手元のファイルを渡してもよい。
+- `vrc-get` が要る（Homebrew の `vrc-get`）。`vrc-get install` は依存の `com.vrchat.worlds` を確かめるために VRChat の公式の listing を取るので、ネットワークが要る。
+- 使い捨てのプロジェクトは書き出し先（`-buildTarget Win64`）を `bin/compile` と同じにしてある。
+
+落とし穴:
+
+- `fresh` は scene にパッケージの `Samples/LogStream.unity` を使うので、2.x の設定の移し替えは確かめない。
+- 確かめは batchmode で、Editor の画面・Windows・VCC 本体（ソースが非公開）・ClientSim での動きは見ない。
+- Unity がライセンスを取れずに止まると、`UNITY_LICENSING_IPC` に渡す Hub の窓口の名前を出す。その値を付けて動かし直す。
+
+証拠: `Build/check-install/<場合>-<時刻>/` に `Build/check-install/<場合>-<時刻>/unity-*.log`・`Build/check-install/<場合>-<時刻>/vrc-get.log`・`Build/check-install/<場合>-<時刻>/result.json` が残る。報告には、出力の `OK`・`NG` の行と `成功` の行を貼る。
+
+片付け: 終わると使い捨てのプロジェクトと `vrc-get` の設定と listing を消し、証拠は残す。`--keep` を付けるとプロジェクトも残す。`Build/check-install/` は git で追跡しないので、要らなくなったら `rm -rf Build/check-install` で消す。
+
+2026-11-03 に、VPM の形に組み直した試しの版で 3 つの場合がすべて `成功` になることを確かめた。`legacyFolders` を外した zip では、`over-v2` が CS0433 で止まって終了コード 1 になることも確かめた。
+
 ## UdonSharp の生成物
 
 `Assets/SerializedUdonPrograms/` には UdonSharp と Udon がコンパイルした結果が入る。LogStream の `Runtime/*.asset` と `Samples/LogStream.unity` はここのファイルを GUID で指すので、指されているものだけを `.gitignore` の例外にして追跡する。SDK の sample の分は clone のたびに乱数の GUID で作られるので追跡しない。

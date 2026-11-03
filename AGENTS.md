@@ -67,8 +67,9 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 | `bin/create-program-asset <.cs>` | 使う | U# スクリプトの `.asset` を作る | 終了コード 0 | 終了コード 1 |
 | `bin/release <版>` | 使う | release の unitypackage と zip を作り、直前の release と比べる | 終了コード 0 とファイルのパス | 終了コード 1 と違う項目 |
 | `bin/compare-package <新> <旧>` | 使わない | 2 つの unitypackage の項目の比較 | 終了コード 0 | 終了コード 1 と違う項目 |
+| `bin/check-install <zip か unitypackage> <場合>` | 使う | 配るパッケージを使い捨てのプロジェクトに利用者と同じ入り方で入れ、コンパイル・scene の参照・2.x の設定の移し替えを確かめる | 終了コード 0 と `成功` | 終了コード 1 と `NG` の行 |
 
-どのテストがどの振る舞いを確かめるかは [docs/development.md の「テストと振る舞い」](docs/development.md#テストと振る舞い) にある。複数人での同期は ClientSim の 1 人では確かめられないので、変えたときは利用者に VRChat のクライアントでの確認を頼む。
+どのテストがどの振る舞いを確かめるかは [docs/development.md の「テストと振る舞い」](docs/development.md#テストと振る舞い) にある。配るパッケージの形・`package.json`・asmdef・置き場所を変えたときは、`bin/test` の後に `bin/check-install` で確かめる（[docs/development.md の「配るパッケージを入れて確かめる」](docs/development.md#配るパッケージを入れて確かめる)）。複数人での同期は ClientSim の 1 人では確かめられないので、変えたときは利用者に VRChat のクライアントでの確認を頼む。
 
 ## 文書を直す
 

@@ -86,28 +86,7 @@ MIT License
 Copyright (c) 2024 KMNK
 
 ## Updates
-- 2026/11/02 v3.0.0 Rebuilt for UdonSharp (VRChat SDK Worlds 3.10.6). This version has breaking changes
-    - Settings are now held by the child `Udon` object of each prefab. Settings in v2 scenes are moved automatically when the scene is opened or built. You can still select the parent object to edit them
-    - Only the owner of `LogStreamCore` writes logs, and other players send their logs to the owner. Logs are no longer lost when several players post at the same time
-    - Log times and the Pomodoro timer use the network time instead of each device's clock
-    - Master Only of the Pomodoro timer now means only the instance master can operate it (in v2, the player who locked it could)
-    - Event names called from buttons now start with `_` (`_ActivateInput`, `_DeactivateInput`, `_Submit`, `_AppendToInput`, `_Toggle`, `_TogglePomodoro`, `_SkipPomodoro`, `_ResetPomodoro`, `_ToggleOnlyMaster`, `_ToggleAutoContinue`). If you unpacked the prefabs or call these events from your own UI, update the event names
-    - A log message is limited to 256 characters, and the log limit to 200. Pomodoro minutes and the long break interval are at least 1
-    - `Time Format` of `LogStreamCore` now takes effect
-    - Scripts moved to `Runtime` and `Editor`. If you import over v2, files from v2 are updated in their original locations (`Udon`, `Scripts`), and some new files are placed in `Runtime`
-- 2024/06/14 v2.2.3 Add Pomodoro Pause and Resume message
-- 2024/01/08 v2.2.2 Apply Unity and SDK new version changes
-- 2023/10/15 v2.2.1 The button for switching Master Only and Auto Continue on the Pomodoro timer has been changed to an icon
-- 2023/10/09 v2.2.0 Template messages for LogInput assets can now be read from text files
-- 2023/10/08 v2.1.0 Pomodoro Timer Master Only and Auto Continue can now be toggled in-game
-- 2023/05/03 v2.0.0 Refactored the base implementation so that it is no longer backward compatible. Changed log template variables from C# defaults to named ones
-- 2023/04/15 v1.3.2 Master only mode is now displayed on button
-- 2023/03/11 v1.3.1 Send message when resetting Pomodoro. Also, did some refactoring
-- 2023/01/22 v1.3.0 Pomodoro timer function ( LogPomodoro ) added
-- 2023/01/15 v1.2.0 Change to UdonSharp v1.1.0 dependent
-- 2022/11/11 v1.1.0 Play sound effect on update log
-- 2022/07/10 v1.0.1 Modify README
-- 2022/07/10 v1.0.0 Released
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Credit
 - [ICOOON MONO](https://icooon-mono.com/)

@@ -73,7 +73,7 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 
 ## 文書を直す
 
-振る舞い・設定・ファイルの置き場所・コマンドを変えたら、同じ commit の中で、関わる `AGENTS.md`・`docs/`・利用者向けの README（`Packages/dev.kmnk.log-stream/README_ja.md` と `README.md`）を直す。どこを直すかは [docs/architecture.md](docs/architecture.md) の「新しいギミックを足すとき」「既存のギミックに設定や機能を足すとき」にある。直したら `bin/check-docs` を動かす。`bin/check-docs` は名前が消えたことしか見つけないので、説明の中身は自分で読み直す。文書とコードが違うのに気づいたら、コードを正として文書を直すか、利用者に伝える。
+振る舞い・設定・ファイルの置き場所・コマンドを変えたら、同じ commit の中で、関わる `AGENTS.md`・`docs/`・利用者向けの README（`Packages/dev.kmnk.log-stream/README_ja.md` と `README.md`）を直す。どこを直すかは [docs/architecture.md](docs/architecture.md) の「新しいギミックを足すとき」「既存のギミックに設定や機能を足すとき」にある。利用者に見える変更（振る舞い・設定・prefab・イベントの名前・入れ方）を入れる commit では、`Packages/dev.kmnk.log-stream/CHANGELOG.md`（英語）と `CHANGELOG_ja.md`（日本語）の `## [Unreleased]` に、利用者向けの 1 行を同じ commit で足す（[Keep a Changelog](https://keepachangelog.com/en/1.0.0/) の形）。release の前に版を上げる commit で、`[Unreleased]` を `## [<版>] - <日付>` にする。直したら `bin/check-docs` を動かす。`bin/check-docs` は名前が消えたことしか見つけないので、説明の中身は自分で読み直す。文書とコードが違うのに気づいたら、コードを正として文書を直すか、利用者に伝える。
 
 ## VRChat_Core のコピー
 

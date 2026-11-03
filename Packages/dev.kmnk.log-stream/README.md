@@ -2,19 +2,29 @@
 Simple system to stream text logs to be placed in the VRChat world.
 
 ## Required
-- VRChat SDK Worlds (includes UdonSharp)
-- Since v3.0.0, [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core) is no longer used. The bundled `Kmnk/Core` is kept for other gimmicks that use the same Core
+- VRChat SDK Worlds 3.10.6 or later (includes UdonSharp)
+- Since v3.0.0, [kmnk/VRChat_Core](https://github.com/kmnk/VRChat_Core) is no longer used. An `Assets/Kmnk/Core` installed with v2 or earlier stays as it is for other gimmicks that use the same Core
+
+## Install
+### With VCC or ALCOM (recommended)
+1. Open [Add to VCC](vcc://vpm/addRepo?url=https://kmnk.github.io/vpm-repos/index.json), or add `https://kmnk.github.io/vpm-repos/index.json` under Packages in the VCC or ALCOM settings
+2. Add `LogStream` in Manage Project of your world project
+
+You can add it to a project that has v2 or earlier from a unitypackage. The old `Assets/Kmnk/LogStream` is removed automatically, and prefabs in your scenes keep working with the new version.
+
+### With the unitypackage
+1. Get the LogStream unitypackage from [GitHub Releases](https://github.com/kmnk/VRChat_LogStream/releases) or Booth
+2. In a project that has v2 or earlier, delete `Assets/Kmnk/LogStream` in the Project tab first. Importing over it breaks script compilation (you can keep `Assets/Kmnk/Core`)
+3. Import the unitypackage
 
 ## Usage
 The steps to place a board in the world project that displays logs.
 
-0. Prepare LogStream unitypackage from Booth or github repository zip file
-1. Prepare a Unity project with VRChat SDK Worlds (UdonSharp is included in VRChat SDK Worlds 3.4.0 and later)
-2. Import LogStream unitypackage into the same Unity project
-3. Drag and drop `LogStream` prefabs under `Kmnk/LogStream/Prefabs` in the Project tab to the scene and place them wherever you want
+1. Install LogStream as above
+2. Drag and drop the `LogStream` prefab under `Packages/LogStream/Prefabs` in the Project tab to the scene and place it wherever you want
 
 ## Preparing and using other features
-- Basically, just drag and drop any prefab under `Kmnk/LogStream/Prefabs` into your scene
+- Basically, just drag and drop any prefab under `Packages/LogStream/Prefabs` into your scene
 - For a detailed explanation of the adjustment fields, hover the cursor over each value label on the `Inspector` tab and tips will pop up
 
 ### Log Join/Leave to world instances
@@ -74,7 +84,7 @@ The steps to place a board in the world project that displays logs.
     - You cannot have more than one `LogStreamCore` with the same `Id`. Please note that this will not work as intended
 
 ### Others
-- A sample that implements the minimum functionality to stream any log you want is implemented in the `LogSample` prefab and the script `Kmnk/LogStream/Runtime/LogSample.cs` (if you imported over v2, it is at `Kmnk/LogStream/Udon/LogSample.cs`)
+- A sample that implements the minimum functionality to stream any log you want is implemented in the `LogSample` prefab and the script `Packages/LogStream/Runtime/LogSample.cs`. Files in the package are replaced on update, so copy it under `Assets` before you edit it
 - The settings of each prefab are held by its child `Udon` object. Selecting the parent object shows the settings of the child `Udon` object
 - `Only Master` of the Pomodoro timer lets only the instance master operate the timer. It can be toggled in-game with the lock button
 

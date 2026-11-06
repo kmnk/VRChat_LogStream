@@ -52,7 +52,7 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 2. `Editor/` に `UdonSettingsEditor` の派生の CustomEditor を足し、`DrawSettings` で設定を描く。
 3. prefab を Unity の Editor で作る。親の GameObject の下に `Udon` という子を置き、1 の UdonBehaviour を付ける。新しいギミックには 2.x の設定のクラスは要らない。
 4. `docs/development.md` のテストの表に行を足し、振る舞いのテストを足す。
-5. 利用者向けの `Packages/dev.kmnk.log-stream/README_ja.md` と `README.md` の「その他の機能の準備と使い方」（Preparing and using other features）に、準備と使い方の節を足す。
+5. 利用者向けの `Packages/dev.kmnk.log-stream/README_ja.md` と `README.md` の「使い方」（Usage）の表に、プレハブの行を足す。設定の説明は `[Tooltip]` に書き、README には Tooltip に無く設置で迷う事柄（子の `Udon` の collider で場所を決める、など）だけを書く。
 
 ## 既存のギミックに設定や機能を足すとき
 
@@ -63,7 +63,7 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 3. `Runtime/Legacy/LogPomodoro.cs`（2.x の設定のクラス）には足さない。2.x の scene に無い値なので、移す処理（`LegacySettingsMigrator`）も変えない。
 4. `Prefabs/LogPomodoro.prefab` の既定の値や UI を変えるときは、Unity の Editor を通す（[AGENTS.md の「資産ファイル」](../AGENTS.md#資産ファイル)）。
 5. `docs/development.md` のテストの表に行を足し、振る舞いのテストを足す。
-6. 利用者向けの `Packages/dev.kmnk.log-stream/README_ja.md` と `README.md` の、そのギミックの「準備」「使い方」の節を直す。英語と日本語の両方を直す。
+6. 設定の説明は 1 の `[Tooltip]` に書き、README には書かない。設置の手順や Tooltip に無い注意が変わるときだけ、利用者向けの `Packages/dev.kmnk.log-stream/README_ja.md` と `README.md` の「使い方」（Usage）を直す。英語と日本語の両方を直す。
 
 設定を足さずに振る舞いだけを変えるときは、1・5・6 のうち当たるものを行う。同期する値（`[UdonSynced]`）や所有権に触れたときは、ClientSim の 1 人では確かめられないので、利用者に VRChat のクライアントでの確認を頼む。
 

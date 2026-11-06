@@ -26,6 +26,7 @@ namespace Kmnk.LogStreamDev.Tests
         const string SampleScene = "Packages/dev.kmnk.log-stream/Samples/LogStream.unity";
         const string VRCWorld = "Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/VRCWorld.prefab";
         const string TestWriter = "Assets/LogStreamDev/TestUdon/LogStreamTestWriter.asset";
+        const string PomodoroTestListener = "Assets/LogStreamDev/TestUdon/PomodoroTestListener.asset";
 
         // LogType の値（Runtime/LogType.cs）
         const int Message = 1;
@@ -316,8 +317,15 @@ namespace Kmnk.LogStreamDev.Tests
 
         static void AddTestWriter()
         {
-            var writer = new GameObject("TestWriter");
-            writer.AddComponent<UdonBehaviour>().programSource = AssetDatabase.LoadAssetAtPath<AbstractUdonProgramSource>(TestWriter);
+            AddTestUdon("TestWriter", TestWriter);
+        }
+
+        // テスト用の U# スクリプトの program を持つ GameObject を置く
+        static GameObject AddTestUdon(string name, string programPath)
+        {
+            var go = new GameObject(name);
+            go.AddComponent<UdonBehaviour>().programSource = AssetDatabase.LoadAssetAtPath<AbstractUdonProgramSource>(programPath);
+            return go;
         }
 
         static void Write(UdonBehaviour core, int type, string message)

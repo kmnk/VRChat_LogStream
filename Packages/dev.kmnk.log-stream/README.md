@@ -28,10 +28,20 @@ Drag and drop prefabs from `Packages/LogStream/Prefabs` into your scene and they
 | `LogTriggerEnterExit` | Streams people entering and leaving an area to the log | Set the area with `Center` and `Size` of the `Box Collider` on the child `Udon` |
 | `LogPomodoro` | Pomodoro timer | Nothing |
 | `LogStreamViewer` | Displays the same log in another place | Nothing |
+| `PomodoroVoiceZone` | While the Pomodoro timer is in a work period, makes people in an area unable to hear each other (does not stream logs) | Put the child `Udon` of `LogPomodoro` in the `Pomodoro` field of the child `Udon`, and set the area with `Center` and `Size` of the `Box Collider` |
 
 - The settings of each prefab are held by its child `Udon` object. Selecting the parent object also shows the child's settings
 - On the Pomodoro timer, the middle button starts and pauses, the left button resets, and the right button skips to the next. The lock button toggles whether only the instance master can operate it
 - Check `Pickupable` on `LogInput` or `LogStreamViewer` to make it pickupable
+
+### Mute voices during Pomodoro work
+While the `LogPomodoro` timer is running a work period (not paused, on a break, or before it starts), `PomodoroVoiceZone` makes people inside the area unable to hear each other, and people inside and outside unable to hear each other. People who are both outside still hear each other. When the work period stops or someone leaves the area, voices go back to how they were.
+
+- The area is checked at the feet. Extend the bottom of the `Box Collider` slightly below the floor. Add colliders to `Zones` to make the area the union of them (non-convex Mesh Colliders do not work)
+- Uncheck `Mute Completely` to lower voices to `Reduced Voice Gain` instead of muting them
+- Only voices change. Avatar audio is not changed
+- It does not work correctly together with other gimmicks that change how voices are heard (UdonVoiceUtils and others)
+- ClientSim cannot play voices. Check it with two VRChat clients (for example, two players in Build & Test)
 
 ### Place several boards in one world
 1. Place as many `LogStream` as you need

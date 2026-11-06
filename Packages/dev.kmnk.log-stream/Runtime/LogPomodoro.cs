@@ -99,6 +99,25 @@ namespace Kmnk.LogStream.Udon
 
         private PomodoroStatus _prevStatus = PomodoroStatus.NotStarted;
 
+        private UdonSharpBehaviour[] _eventListeners = null;
+
+        // 状態が変わるたびに listener.OnPomodoroStatusChanged を呼ぶよう登録する
+        public void AddEventListener(LogPomodoroEventListener listener)
+        {
+            _eventListeners = ListenerArray.Append(_eventListeners, listener);
+        }
+
+        public PomodoroStatus GetStatus()
+        {
+            return _currentStatus;
+        }
+
+        // 作業のタイマーが動いているか。一時停止・休憩・始まる前・次を待つ間は含めない
+        public bool IsTimerRunning()
+        {
+            return _currentStatus == PomodoroStatus.InPomodoro;
+        }
+
         public void _TogglePomodoro()
         {
             if (!CanOperate()) { return; }
@@ -283,6 +302,16 @@ namespace Kmnk.LogStream.Udon
             {
                 PlaySoundIfTimeUp();
                 _prevStatus = _currentStatus;
+                NotifyStatusChanged();
+            }
+        }
+
+        private void NotifyStatusChanged()
+        {
+            if (_eventListeners == null) { return; }
+            for (var i = 0; i < _eventListeners.Length; i++)
+            {
+                ((LogPomodoroEventListener)_eventListeners[i]).OnPomodoroStatusChanged();
             }
         }
 

@@ -189,6 +189,47 @@ namespace Kmnk.LogStreamDev.Tests
             AssertLatest(core, $"{Tag("START")} {BreakName} #1 : 5 minutes");
         }
 
+        // Pomodoro: 状態が変わるたびに、登録した listener が 1 回呼ばれ、作業のタイマーが動いているかを読める
+        [UnityTest]
+        public IEnumerator Pomodoro_NotifiesListenersOnStatusChange()
+        {
+            var scene = NewSavedScene("PomodoroListener", () =>
+            {
+                AddWorldAndCore(logLimit: 20);
+                Instantiate(Prefabs + "LogPomodoro.prefab");
+                AddTestUdon("PomodoroTestListener", PomodoroTestListener);
+            });
+            return InPlayMode(scene, () =>
+            {
+                var p = FindUdon("LogPomodoro");
+                var listener = FindUdon("PomodoroTestListener");
+                listener.SetProgramVariable("pomodoro", p);
+                listener.SendCustomEvent("Register");
+
+                var expected = new[]
+                {
+                    ("Toggle", InPomodoro, true),
+                    ("Toggle", PausedPomodoro, false),
+                    ("Toggle", InPomodoro, true),
+                    ("Skip", ToBreak, false),
+                    ("Toggle", InBreak, false),
+                    ("Reset", NotStarted, false),
+                };
+                for (var i = 0; i < expected.Length; i++)
+                {
+                    var (action, status, running) = expected[i];
+                    Pomodoro(p, action);
+                    Assert.AreEqual(i + 1, listener.GetProgramVariable("count"), $"{action} の後の通知の回数");
+                    Assert.AreEqual(status, listener.GetProgramVariable("lastStatus"), $"{action} の後に listener が読んだ状態");
+                    Assert.AreEqual(running, listener.GetProgramVariable("lastRunning"), $"{action} の後の IsTimerRunning");
+                }
+
+                // 状態が変わらない操作では呼ばれない
+                Pomodoro(p, "ToggleAutoContinue");
+                Assert.AreEqual(expected.Length, listener.GetProgramVariable("count"), "状態が変わらないのに通知される");
+            });
+        }
+
         // 分数と長い休憩までの回数は 1 以上に丸められる（0 で割らない）
         [UnityTest]
         public IEnumerator Pomodoro_ClampsMinutesAndInterval()

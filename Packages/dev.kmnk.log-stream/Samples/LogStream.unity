@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3066,12 +3066,12 @@ PrefabInstance:
     - target: {fileID: 8925445924524548306, guid: 345b35d5f5f5ebf4eb7cebfc6b408b78,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8925445924524548306, guid: 345b35d5f5f5ebf4eb7cebfc6b408b78,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8925445924524548306, guid: 345b35d5f5f5ebf4eb7cebfc6b408b78,
         type: 3}
@@ -3086,7 +3086,7 @@ PrefabInstance:
     - target: {fileID: 8925445924524548306, guid: 345b35d5f5f5ebf4eb7cebfc6b408b78,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -4
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8787,6 +8787,31 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1523016728658322534, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1523016728658322534, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1523016728658322534, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841229590977565049, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4356297370749904284, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5274390887624395479, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
         type: 3}
       propertyPath: _pomodoro
@@ -8801,7 +8826,7 @@ PrefabInstance:
     - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.7
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
         type: 3}
@@ -8858,6 +8883,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d16a94159dfc48a9ba5918f4d251fb7, type: 3}
+--- !u!1 &927056988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8693283873200594083, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+    type: 3}
+  m_PrefabInstance: {fileID: 927056987}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &959008392
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16990,6 +17021,10 @@ MonoBehaviour:
     ID: 242
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 927056988}
+    ID: 243
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   PlayerPersistence: []
@@ -18242,12 +18277,12 @@ PrefabInstance:
     - target: {fileID: 8925445924524548306, guid: 345b35d5f5f5ebf4eb7cebfc6b408b78,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8925445924524548306, guid: 345b35d5f5f5ebf4eb7cebfc6b408b78,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8925445924524548306, guid: 345b35d5f5f5ebf4eb7cebfc6b408b78,
         type: 3}
@@ -18262,7 +18297,7 @@ PrefabInstance:
     - target: {fileID: 8925445924524548306, guid: 345b35d5f5f5ebf4eb7cebfc6b408b78,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -4
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

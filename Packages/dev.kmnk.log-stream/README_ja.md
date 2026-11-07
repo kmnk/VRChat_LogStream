@@ -28,7 +28,7 @@ v2 までを unitypackage で入れていたプロジェクトでも、そのま
 | `LogTriggerEnterExit` | 指定の場所への出入りをログに流す | 子の `Udon` の `Box Collider` の `Center` と `Size` で場所を決める |
 | `LogPomodoro` | ポモドーロタイマー | 無し |
 | `LogStreamViewer` | 同じログを別の場所にも表示する | 無し |
-| `PomodoroVoiceZone` | ポモドーロの作業中、範囲の中にいる人の声を聞こえなくする（ログは流さない） | 子の `Udon` の `Pomodoro` 欄に `LogPomodoro` の子の `Udon` を入れ、`Box Collider` の `Center` と `Size` で範囲を決める |
+| `PomodoroVoiceZone` | ポモドーロの作業中、範囲の中にいる人の声を聞こえなくする（ログは流さない） | `Pomodoro` 欄に `LogPomodoro` を入れ、`Box Collider` の `Center` と `Size` で範囲を決める |
 
 - 各プレハブの設定は、子の `Udon` オブジェクトが持っています。親のオブジェクトを選択しても、子の設定が表示されます
 - ポモドーロタイマーは、真ん中のボタンでスタートとポーズ、左のボタンでリセット、右のボタンで次に進みます。鍵のボタンで、インスタンスのマスターだけが操作できるかを切り替えます

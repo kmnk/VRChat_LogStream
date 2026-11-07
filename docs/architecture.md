@@ -25,6 +25,7 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 - Udon の CustomEditor（`UdonSettingsEditor` の派生）は、設定を見出しの枠ごとに描き、別のコンポーネントの欄も同じ Inspector に描く。複数を選んだ編集では、全ての選択に書く。設定が変わると `_id` から同じ scene の `LogStreamCore` を探して `_core` に結ぶ。`LogInput` はテンプレートのボタンを作り直す。
 - UdonSharp は、U# の型に付いた CustomEditor を自分の `UdonSharpBehaviourOverrideEditor` に差し替え、その中から呼ぶ。Editor のコードから CustomEditor を作るときは、`Editor.CreateEditor(targets, <CustomEditor の型>)` と型を明示する。型を渡さないと UdonSharp の既定の Inspector が作られる。
 - 外側のコンポーネント（`GimmickRoot`）の Inspector（`GimmickRootEditor`）は、自分の値を出さず、tips を描いた後に、子の同じ名前の Udon の CustomEditor をそのまま描く。作者は 2.x と同じく親を選んで設定できる。tips は型ごとの派生の editor が `DrawTips` を override して書く（`PomodoroVoiceZoneRootEditor` は範囲の決め方と、`Pomodoro` が空のときの警告）。2.x の設定のクラスの Inspector（`LegacySettingsEditor`）は、開いたときに 2.x の値を移す処理だけを足す。
+- 他のギミックの Udon を指す設定の欄は、作者が root を入れられるようにする。`PomodoroVoiceZoneEditor` の `Pomodoro` の欄は GameObject を受け付け、その下の Udon の `LogPomodoro` を `_pomodoro` に入れ、欄には root を出す。Udon は外側の `MonoBehaviour` を参照できないので、値は子の Udon を指す。
 - Unity の Editor の上での小さな処理も外側に置く。`PomodoroVoiceZone` の外側は、`OnDrawGizmos` で子の `BoxCollider` の範囲を、選んでいなくても線で描く。外側は VRChat の whitelist に無い `MonoBehaviour` で、ワールドの中では動かない前提で書く。
 - `LogStreamBuildProcessor`（`IProcessSceneWithReport`）は、scene のビルドのたびに、その scene の中だけで、2.x の設定を移し、`_core` を結び、テンプレートのボタンを作り直す。
 

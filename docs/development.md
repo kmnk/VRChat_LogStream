@@ -58,6 +58,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 | `VoiceZone_ReducesGainWhenNotMutingCompletely` | `Mute Completely` を外すと、Far は変えず gain が `Reduced Voice Gain`（5）になり、戻すと変える前の gain（8）になる | `Mute` で常に Far を 0 にする。gain を取っておいた値でなく 15 に戻す |
 | `VoiceZone_IgnoresNonRunningStates` | 両方が範囲の中でも、`NotStarted`・`PausedPomodoro`・`ToBreak`・`InBreak`・`PausedBreak`・`ToPomodoro` では声の値が変わらない | `LogPomodoro.IsTimerRunning` を `PausedPomodoro` でも true にする |
 | `VoiceZone_PrefabHasTriggerCollider` | `PomodoroVoiceZone.prefab` の子の `Udon` に isTrigger の `BoxCollider` があり、`_zones` がそれを指す。サンプルの scene の `PomodoroVoiceZone` が scene の `LogPomodoro` のどれかに結ばれている | 確かめていない（作った prefab と scene の形を見るテスト） |
+| `VoiceZoneEditor_ResolvesPomodoroFromRoot` | Inspector の `Pomodoro` の欄に `LogPomodoro` の root と子の `Udon` のどちらを入れても、子の Udon の `LogPomodoro` を結ぶ。`LogPomodoro` の無いものは結ばない | `PomodoroVoiceZoneEditor.ResolvePomodoro` で、入れたものの子を探さず、そのものだけを見る |
 | `Prefabs_HaveGimmickRoot` | `LogStream`（束ねたもの）と `LogSample`（書き方の例）を除く 7 個の prefab の親に外側のコンポーネント（`GimmickRoot` の派生）があり、子に同じ名前の UdonSharpBehaviour がある | `PomodoroVoiceZone.prefab` の親に外側のコンポーネントが無かった版（commit 21f9dc6）で落ちる |
 | `Buttons_CallRenamedEvents` | Pomodoro と入力の prefab のボタンを押すと、`_` で始まる名前の event が呼ばれて動く | `Runtime/LogInput.cs` の `_Submit` の名前を変える |
 | `JoinLeave_AddsPlayerName` | 入室・退室の event で、プレイヤーの名前を `{{name}}` に入れたログが足される | `Runtime/LogJoinLeave.cs` の退室で入室の文を使う |

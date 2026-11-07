@@ -127,6 +127,23 @@ namespace Kmnk.LogStreamDev.Tests
             }
         }
 
+        // Inspector の Pomodoro の欄は、LogPomodoro の root と子の Udon のどちらを入れても、子の Udon の LogPomodoro を結ぶ。LogPomodoro の無いものは結ばない
+        [Test]
+        public void VoiceZoneEditor_ResolvesPomodoroFromRoot()
+        {
+            GameObject pomodoro = null, core = null;
+            NewSavedScene("VoiceZoneEditor", () =>
+            {
+                pomodoro = Instantiate(Prefabs + "LogPomodoro.prefab");
+                core = Instantiate(Prefabs + "LogStreamCore.prefab");
+            });
+            var udon = FindByTypeName(pomodoro, "Kmnk.LogStream.Udon.LogPomodoro");
+            var resolve = EditorType("Kmnk.LogStream.PomodoroVoiceZoneEditor").GetMethod("ResolvePomodoro");
+            Assert.AreSame(udon, resolve.Invoke(null, new object[] { pomodoro }), "root を入れても子の Udon に結ばない");
+            Assert.AreSame(udon, resolve.Invoke(null, new object[] { udon.gameObject }), "子の Udon を入れても結ばない");
+            Assert.IsNull(resolve.Invoke(null, new object[] { core }), "LogPomodoro の無いものに結ぶ");
+        }
+
         // ギミックの prefab は、親に外側のコンポーネント（GimmickRoot の派生）を持ち、子孫にそれと同じ名前の UdonSharpBehaviour がある。
         // LogStream（他の prefab を束ねたもの）と LogSample（親に Udon を直に置いた例）は外側を持たない
         [Test]

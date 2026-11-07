@@ -58,6 +58,12 @@ namespace Kmnk.LogStream
             EditorGUILayout.PropertyField(serializedObject.FindProperty(name));
         }
 
+        // 自分で描いた property を、System の折りたたみに重ねて描かないよう記す
+        protected void MarkDrawn(string name)
+        {
+            _drawn.Add(name);
+        }
+
         // 選んだ Udon の親の下にある T の property を、全ての選択についてまとめて描く
         protected void RelatedField<T>(string propertyName, string label, string tooltip) where T : Component
         {

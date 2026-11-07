@@ -28,7 +28,7 @@ Drag and drop prefabs from `Packages/LogStream/Prefabs` into your scene and they
 | `LogTriggerEnterExit` | Streams people entering and leaving an area to the log | Set the area with `Center` and `Size` of the `Box Collider` on the child `Udon` |
 | `LogPomodoro` | Pomodoro timer | Nothing |
 | `LogStreamViewer` | Displays the same log in another place | Nothing |
-| `PomodoroVoiceZone` | While the Pomodoro timer is in a work period, makes people in an area unable to hear each other (does not stream logs) | Put the child `Udon` of `LogPomodoro` in the `Pomodoro` field of the child `Udon`, and set the area with `Center` and `Size` of the `Box Collider` |
+| `PomodoroVoiceZone` | While the Pomodoro timer is in a work period, makes people in an area unable to hear each other (does not stream logs) | Put `LogPomodoro` in the `Pomodoro` field, and set the area with `Center` and `Size` of the `Box Collider` |
 
 - The settings of each prefab are held by its child `Udon` object. Selecting the parent object also shows the child's settings
 - On the Pomodoro timer, the middle button starts and pauses, the left button resets, and the right button skips to the next. The lock button toggles whether only the instance master can operate it

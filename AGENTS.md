@@ -24,7 +24,8 @@ VRChat のワールドに置く、テキストのログを流すギミック集�
 ## 作りの要約
 
 - 設定: 各 prefab の子の `Udon` の UdonSharpBehaviour（`Runtime/`、名前空間 `Kmnk.LogStream.Udon`）が持つ。CustomEditor（`Editor/`、`UdonSettingsEditor` の派生）が設定を描き、複数の選択に書く。
-- 2.x の設定: 親の GameObject の `MonoBehaviour`（`Runtime/Legacy/`、名前空間 `Kmnk.LogStream`）は値を持たず、2.x の scene の値を子の Udon へ 1 度だけ移す読み出し元（`LegacySettingsMigrator`）と、子の Udon の Inspector を描く入口として残している。新しい値を足さない。
+- 外側のコンポーネント: 各 prefab の親の GameObject は、`GimmickRoot`（`Runtime/Root/`、名前空間 `Kmnk.LogStream`）の派生の `MonoBehaviour` を持つ。値は持たず、子の Udon の設定を描く入口・tips・Unity の Editor の上での小さな処理を受け持つ（`Editor/GimmickRootEditor.cs`）。
+- 2.x の設定: 3.0.0 からある prefab の外側（`Runtime/Legacy/`）は `GimmickRoot` の派生の `LegacySettings` の派生で、2.x の scene の値を子の Udon へ 1 度だけ移す読み出し元（`LegacySettingsMigrator`）も兼ねる。新しい値を足さない。
 - 実行: `Udon.LogStreamCore` が型・時刻・名前・本文の 4 本の `[UdonSynced]` 配列を持つ。owner だけが書き、owner でない人のログは `[NetworkCallable]` の event で owner に送る。書く側は `LogWriteBase` の派生、表示は `LogStreamEventListener` の派生の `LogStreamViewer`。
 - 結び方: 各ギミックは `_id` で同じ scene の同じ `_id` の `LogStreamCore` に結ばれる。ビルドのたびに `LogStreamBuildProcessor` が結び直す。
 - 詳しくは [docs/architecture.md](docs/architecture.md)。

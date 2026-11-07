@@ -8779,6 +8779,116 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 907439951}
   m_CullTransparentMesh: 0
+--- !u!1001 &927056987
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1523016728658322534, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1523016728658322534, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1523016728658322534, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841229590977565049, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4356297370749904284, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5274390887624395479, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: _pomodoro
+      value: 
+      objectReference: {fileID: 2051973907}
+    - target: {fileID: 5274390887624395479, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 5274390887624395479, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951870065219632547, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9195425234469671409, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+        type: 3}
+      propertyPath: m_Name
+      value: PomodoroVoiceZone
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9d16a94159dfc48a9ba5918f4d251fb7, type: 3}
+--- !u!1 &927056988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8693283873200594083, guid: 9d16a94159dfc48a9ba5918f4d251fb7,
+    type: 3}
+  m_PrefabInstance: {fileID: 927056987}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &959008392
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16911,6 +17021,10 @@ MonoBehaviour:
     ID: 242
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 927056988}
+    ID: 243
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   PlayerPersistence: []
@@ -17946,6 +18060,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2051973903}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2051973907 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1261234073409962244, guid: 7e0e3001169ad4a42a4daedb67532b91,
+    type: 3}
+  m_PrefabInstance: {fileID: 2051973903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051973905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d4b152bec806a742a0d4153d03be464, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2072459007
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18628,3 +18754,4 @@ SceneRoots:
   - {fileID: 1087489241}
   - {fileID: 692319131}
   - {fileID: 1383627679}
+  - {fileID: 927056987}

@@ -29,6 +29,7 @@ IGNORE = {
     'pM.AssignId': 'VRChat SDK のコードの式',
     'GetProjectDefines': 'VRChat SDK（UdonSharp）のメソッド',
     'serializedSignature': 'VRChat SDK（Udon）の SerializedUdonProgramAsset の field',
+    'TeleportTo': 'VRChat SDK の VRCPlayerApi のメソッド。ClientSim でリモートの player に効かないことを書く',
 }
 
 EXTENSIONS = ('.cs', '.md', '.py', '.sh', '.prefab', '.unity', '.asset', '.asmdef', '.txt', '.json',

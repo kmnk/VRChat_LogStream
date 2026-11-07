@@ -2,7 +2,11 @@
 
 LogStream の変更を、新しい版から順に書きます。書き方は [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に合わせています。まだ release していない変更は `[Unreleased]` にあります。
 
-## [Unreleased]
+## [3.1.0] - 2026-11-08
+
+### 追加
+
+- ポモドーロの作業中に、範囲の中にいる人の声を聞こえなくする（または小さくする） `PomodoroVoiceZone` プレハブを足しました
 
 ## [3.0.0] - 2026-11-03
 

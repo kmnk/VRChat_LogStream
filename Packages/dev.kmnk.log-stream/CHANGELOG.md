@@ -2,7 +2,11 @@
 
 All notable changes to LogStream are recorded here, newest first. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Changes that are not released yet are under `[Unreleased]`.
 
-## [Unreleased]
+## [3.1.0] - 2026-11-08
+
+### Added
+
+- Added the `PomodoroVoiceZone` prefab, which mutes (or lowers) the voices of people in an area while the Pomodoro timer is in a work period
 
 ## [3.0.0] - 2026-11-03
 

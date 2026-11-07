@@ -34,7 +34,7 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 
 ## テストと振る舞い
 
-テストは `Assets/LogStreamDev/Tests/LogStreamTests.cs` と `LogStreamTests.Gimmicks.cs` にあり、`bin/test` が Unity Test Framework の EditMode で動かす。テストの asmdef（`LogStreamDev.Tests`）は LogStream の asmdef を参照しないので、型は名前で探し、Udon の値は `UdonBehaviour` の変数として読む。実行の層のテストは、テストの中で Play Mode に入り、ClientSim の 1 人のプレイヤーで動かす。ログはテスト用の U# スクリプト `Assets/LogStreamDev/TestUdon/LogStreamTestWriter.cs` で足す。
+テストは `Assets/LogStreamDev/Tests/LogStreamTests.cs`・`LogStreamTests.Gimmicks.cs`・`LogStreamTests.VoiceZone.cs` にあり、`bin/test` が Unity Test Framework の EditMode で動かす。テストの asmdef（`LogStreamDev.Tests`）は LogStream の asmdef を参照しないので、型は名前で探し、Udon の値は `UdonBehaviour` の変数として読む。実行の層のテストは、テストの中で Play Mode に入り、ClientSim の 1 人のプレイヤーで動かす。ログはテスト用の U# スクリプト `Assets/LogStreamDev/TestUdon/LogStreamTestWriter.cs` で足し、`LogPomodoro` の通知は `Assets/LogStreamDev/TestUdon/PomodoroTestListener.cs` で数える。声のテストは、`ClientSimMain.SpawnRemotePlayer` で出したリモートの player の声の値（ClientSim が player ごとに持つ）を読む。ClientSim ではリモートの player に `TeleportTo` が効かないので、リモートの GameObject の transform を動かし、範囲の collider の方を動かして中と外を作る。
 
 | テスト | 確かめる振る舞い | 落ちることを確かめた変更 |
 | --- | --- | --- |
@@ -53,6 +53,13 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 | `BuildProcessor_LinksWithinProcessedScene` | 2 つの scene を開いた状態で、どちらをビルドの処理に通しても、その scene の `LogStreamCore` に結ぶ | `LogStreamEditorUtility.GetCore` で読み込まれた全ての object から探す |
 | `Pomodoro_TransitionsAndMessages` | 開始・一時停止・再開・時間切れ・スキップ・リセット・自動で続けることで状態と回数が移り、決まった文面のログが足される。4 回目の後の休憩が長い休憩になる | `Runtime/LogPomodoro.cs` の休憩の終わりのメッセージの `- 1` を外す |
 | `Pomodoro_ClampsMinutesAndInterval` | 分数と長い休憩までの回数に 0 を入れても 1 に丸められ、0 で割らない | `Runtime/LogPomodoro.cs` の `Start` の分数を丸める行を外す |
+| `Pomodoro_NotifiesListenersOnStatusChange` | 開始・一時停止・再開・スキップ・休憩の開始・リセットのたびに、登録した listener が 1 回呼ばれ、`GetStatus` と `IsTimerRunning`（`InPomodoro` の間だけ true）を読める。状態が変わらない操作では呼ばれない | `Runtime/LogPomodoro.cs` の `OnSyncedFieldsChanged` の `NotifyStatusChanged()` を外す |
+| `VoiceZone_MutesWhileRunning` | 作業中に、ローカルだけ・リモートだけ・両方が範囲の中のとき、リモートの声の Near・Far・Volumetric Radius が 0 になる。どちらも外のときと一時停止の後は、変える前に入れておいた値（1・10・0.5）に戻る | `Runtime/PomodoroVoiceZone.cs` の判定の or を and にする。Far を取っておいた値でなく 25 に戻す |
+| `VoiceZone_ReducesGainWhenNotMutingCompletely` | `Mute Completely` を外すと、Far は変えず gain が `Reduced Voice Gain`（5）になり、戻すと変える前の gain（8）になる | `Mute` で常に Far を 0 にする。gain を取っておいた値でなく 15 に戻す |
+| `VoiceZone_IgnoresNonRunningStates` | 両方が範囲の中でも、`NotStarted`・`PausedPomodoro`・`ToBreak`・`InBreak`・`PausedBreak`・`ToPomodoro` では声の値が変わらない | `LogPomodoro.IsTimerRunning` を `PausedPomodoro` でも true にする |
+| `VoiceZone_PrefabHasTriggerCollider` | `PomodoroVoiceZone.prefab` の子の `Udon` に isTrigger の `BoxCollider` があり、`_zones` がそれを指す。サンプルの scene の `PomodoroVoiceZone` が scene の `LogPomodoro` のどれかに結ばれている | 確かめていない（作った prefab と scene の形を見るテスト） |
+| `VoiceZoneEditor_ResolvesPomodoroFromRoot` | Inspector の `Pomodoro` の欄に `LogPomodoro` の root と子の `Udon` のどちらを入れても、子の Udon の `LogPomodoro` を結ぶ。`LogPomodoro` の無いものは結ばない | `PomodoroVoiceZoneEditor.ResolvePomodoro` で、入れたものの子を探さず、そのものだけを見る |
+| `Prefabs_HaveGimmickRoot` | `LogStream`（束ねたもの）と `LogSample`（書き方の例）を除く 7 個の prefab の親に外側のコンポーネント（`GimmickRoot` の派生）があり、子に同じ名前の UdonSharpBehaviour がある | `PomodoroVoiceZone.prefab` の親に外側のコンポーネントが無かった版（commit 21f9dc6）で落ちる |
 | `Buttons_CallRenamedEvents` | Pomodoro と入力の prefab のボタンを押すと、`_` で始まる名前の event が呼ばれて動く | `Runtime/LogInput.cs` の `_Submit` の名前を変える |
 | `JoinLeave_AddsPlayerName` | 入室・退室の event で、プレイヤーの名前を `{{name}}` に入れたログが足される | `Runtime/LogJoinLeave.cs` の退室で入室の文を使う |
 | `TriggerEnterExit_AddsPlayerName` | Trigger の enter・exit の event で、同上 | `Runtime/LogTriggerEnterExit.cs` の exit で enter の文を使う |
@@ -65,10 +72,13 @@ Claude Code では、Unity を使うコマンドは sandbox の中では Unity �
 - 複数人での同期（`[UdonSynced]`・所有権）。ClientSim では、owner でない人の event が別の端末の owner に届いて同期されることまでは確かめられないので、VRChat のクライアントで確かめる。
 - 「マスターのみ」の判定。ClientSim のローカルのプレイヤーは常にマスターなので、マスターでない人の操作が効かないことは VRChat のクライアントで確かめる。
 - ネットワークの時刻（`Networking.GetNetworkDateTime()`）で、端末の時計のずれが打ち消されること。
+- `PomodoroVoiceZone` で実際に声が聞こえなくなること、2 つの端末で判定がそろうこと、後から入った人でも同じになること。ClientSim は音を鳴らさず、動く player は 1 人なので、VRChat のクライアント 2 つで確かめる。
 
 `Assets/LogStreamDev/Fixtures/V2Overrides.unity` は、2.x の prefab を置き、設定のクラスの全ての値に既定と違う上書きを入れた scene で、`Assets/LogStreamDev/Editor/V2Fixture.cs` で作った。2.x の prefab から作ったものなので、作り直さない。
 
 `Assets/LogStreamDev/Editor/V3Assets.cs` は、3.0.0 で配る prefab と `Samples/LogStream.unity` を Unity の Editor の API で書き換えたスクリプトで、2.x の設定の値を子の Udon に揃え（`_migrated` は false のまま）、Pomodoro の表示を `View` の子の `LogPomodoroView` に分け、UI の event の名前を `_` で始まる名前にし、入力欄の文字数の上限を 256 にした。何度動かしても同じ結果になる。動かすときは `bash -c 'source bin/lib/unity.sh; run_unity "$root/Logs/v3assets.log" -quit -executeMethod Kmnk.LogStreamDev.V3Assets.Apply'` とする。
+
+`Assets/LogStreamDev/Editor/VoiceZoneAssets.cs` は、`Prefabs/PomodoroVoiceZone.prefab` を作り、`Samples/LogStream.unity` に置いて scene の最初の `LogPomodoro` に結ぶスクリプトで、既にあるものは作り直さない。動かすときは `bash -c 'source bin/lib/unity.sh; run_unity "$root/Logs/voice-zone-assets.log" -quit -executeMethod Kmnk.LogStreamDev.VoiceZoneAssets.Apply'` とする。
 
 テストを足すときは、この表に行を足し、変更を外すとテストが落ちることを確かめる。
 

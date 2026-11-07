@@ -1,9 +1,9 @@
 {
   "name": "dev.kmnk.log-stream",
   "displayName": "LogStream",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "unity": "2022.3",
-  "description": "Gimmicks to stream text logs in VRChat worlds (join/leave, messages, pomodoro timer).",
+  "description": "Gimmicks to stream text logs in VRChat worlds (join/leave, messages, pomodoro timer), and a zone that mutes voices during pomodoro work.",
   "author": {
     "name": "kmnk",
     "url": "https://github.com/kmnk"

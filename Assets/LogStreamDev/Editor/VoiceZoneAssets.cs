@@ -9,13 +9,14 @@ using Object = UnityEngine.Object;
 namespace Kmnk.LogStreamDev
 {
     // PomodoroVoiceZone の prefab を作り、sample の scene に置いて scene の LogPomodoro に結ぶ。資産ファイルをテキストで書き換えないため。
-    // 既にあるものは作り直さないので、何度動かしても同じ結果になる。
+    // 既にあるものは作り直さず、既にある prefab の親に外側のコンポーネントが無ければ足すので、何度動かしても同じ結果になる。
     // 動かし方: bash -c 'source bin/lib/unity.sh; run_unity "$root/Logs/voice-zone-assets.log" -quit -executeMethod Kmnk.LogStreamDev.VoiceZoneAssets.Apply'
     public static class VoiceZoneAssets
     {
         public const string PrefabPath = "Packages/dev.kmnk.log-stream/Prefabs/PomodoroVoiceZone.prefab";
         const string SampleScene = "Packages/dev.kmnk.log-stream/Samples/LogStream.unity";
         const string ZoneType = "Kmnk.LogStream.Udon.PomodoroVoiceZone";
+        const string RootType = "Kmnk.LogStream.PomodoroVoiceZone";
 
         public static void Apply()
         {
@@ -26,6 +27,7 @@ namespace Kmnk.LogStreamDev
                     CreatePrefab();
                     Debug.Log("[LogStreamDev] created " + PrefabPath);
                 }
+                if (AddRoot()) { Debug.Log("[LogStreamDev] added the root component to " + PrefabPath); }
                 if (AddToSample()) { Debug.Log("[LogStreamDev] updated " + SampleScene); }
                 AssetDatabase.SaveAssets();
                 EditorApplication.Exit(0);
@@ -57,6 +59,24 @@ namespace Kmnk.LogStreamDev
             so.ApplyModifiedPropertiesWithoutUndo();
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);
+        }
+
+        // 親の GameObject に外側のコンポーネントが無ければ足す。足したら true
+        static bool AddRoot()
+        {
+            var contents = PrefabUtility.LoadPrefabContents(PrefabPath);
+            try
+            {
+                var type = Type(RootType);
+                if (contents.GetComponent(type) != null) { return false; }
+                contents.AddComponent(type);
+                PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
+                return true;
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
         }
 
         // sample の scene に無ければ置く。LogPomodoro の水平の位置と、spawn の高さに置く

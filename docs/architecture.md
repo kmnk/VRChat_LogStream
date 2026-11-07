@@ -7,12 +7,13 @@ LogStream は、VRChat の中で動く UdonSharp のスクリプトと、ワー�
 | 場所 | 名前空間 | 中身 |
 | --- | --- | --- |
 | `Packages/dev.kmnk.log-stream/Runtime/` | `Kmnk.LogStream.Udon` | UdonSharpBehaviour 16 本（うち abstract 4 本）と、そのうち 12 本の `UdonSharpProgramAsset`（`.asset`）、enum 2 本（`LogType`・`PomodoroStatus`）、static クラス `ListenerArray` |
-| `Packages/dev.kmnk.log-stream/Runtime/Legacy/` | `Kmnk.LogStream` | 2.x で設定を持っていた `MonoBehaviour` 6 本と、その基底 `LegacySettings`。値は持たず、2.x の scene から値を移すための読み出し元と、Inspector の入口として残している |
-| `Packages/dev.kmnk.log-stream/Editor/` | `Kmnk.LogStream` | Udon の CustomEditor 7 本と基底 `UdonSettingsEditor`、`LegacySettingsEditor`、`LegacySettingsMigrator`、`LogStreamBuildProcessor`、`LogStreamEditorUtility` |
+| `Packages/dev.kmnk.log-stream/Runtime/Root/` | `Kmnk.LogStream` | prefab の親に置く外側のコンポーネントの基底 `GimmickRoot` と、3.0.0 の後に足したギミックの外側（`PomodoroVoiceZone`）。値は持たない |
+| `Packages/dev.kmnk.log-stream/Runtime/Legacy/` | `Kmnk.LogStream` | 2.x で設定を持っていた `MonoBehaviour` 6 本と、その基底 `LegacySettings`（`GimmickRoot` の派生）。値は持たず、3.0.0 からある prefab の外側と、2.x の scene から値を移すための読み出し元を兼ねる |
+| `Packages/dev.kmnk.log-stream/Editor/` | `Kmnk.LogStream` | Udon の CustomEditor 7 本と基底 `UdonSettingsEditor`、外側の Inspector の `GimmickRootEditor` とその派生の `LegacySettingsEditor`・`PomodoroVoiceZoneRootEditor`、`LegacySettingsMigrator`、`LogStreamBuildProcessor`、`LogStreamEditorUtility` |
 
 2.x から上書きで import した利用者の手元では、2.x からあるファイルは 2.x の場所（`Udon/`・`Scripts/`・`Scripts/Editor/`）のまま更新され、3.0.0 で足したファイルは、Editor のものは `Scripts/Editor/` に、`Runtime/` のものは新しい `Runtime/`・`Runtime/Legacy/` に置かれる（2026-11-02 に 2.2.3 の上に 3.0.0 を batchmode で import して確かめた）。unitypackage の import が GUID で同じアセットかを決めるためで、ファイルは `.meta` ごと動かして GUID を保っている（[release.md](release.md)）。
 
-`Prefabs/` に `LogStream`・`LogStreamCore`・`LogStreamViewer`・`LogInput`・`LogJoinLeave`・`LogTriggerEnterExit`・`LogPomodoro`・`LogSample`・`PomodoroVoiceZone` の 9 個があり、`Samples/LogStream.unity` がそれらを置いたサンプルの scene である。各 prefab は、親の GameObject に 2.x の設定のクラス、子の `Udon` に UdonSharpBehaviour を持つ。後から足した `PomodoroVoiceZone` は 2.x の設定のクラスを持たない。`LogPomodoro` は子の `View` に表示の `LogPomodoroView` も持つ。
+`Prefabs/` に `LogStream`・`LogStreamCore`・`LogStreamViewer`・`LogInput`・`LogJoinLeave`・`LogTriggerEnterExit`・`LogPomodoro`・`LogSample`・`PomodoroVoiceZone` の 9 個があり、`Samples/LogStream.unity` がそれらを置いたサンプルの scene である。各ギミックの prefab は、親の GameObject に外側のコンポーネント（`GimmickRoot` の派生）、子の `Udon` に同じ名前の UdonSharpBehaviour を持つ。3.0.0 からある 6 個の外側は 2.x の設定のクラス（`LegacySettings` の派生）で、後から足した `PomodoroVoiceZone` の外側は `GimmickRoot` を直に継ぐ。`LogStream` は他の prefab を束ねたもの、`LogSample` は親に Udon を直に置いた書き方の例で、どちらも外側を持たない。`LogPomodoro` は子の `View` に表示の `LogPomodoroView` も持つ。
 
 LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を参照しない。Core のコピーはパッケージの外にあり、3.0.0 から配らない。
 
@@ -23,7 +24,8 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 - 設定の値は、子の `Udon` の UdonSharpBehaviour の `[SerializeField]` の field が持つ。音のファイル・音量・届く範囲は子の `AudioSource` と `VRCSpatialAudioSource`、持ち運びの可否は `VRCPickup` が直に持つ。
 - Udon の CustomEditor（`UdonSettingsEditor` の派生）は、設定を見出しの枠ごとに描き、別のコンポーネントの欄も同じ Inspector に描く。複数を選んだ編集では、全ての選択に書く。設定が変わると `_id` から同じ scene の `LogStreamCore` を探して `_core` に結ぶ。`LogInput` はテンプレートのボタンを作り直す。
 - UdonSharp は、U# の型に付いた CustomEditor を自分の `UdonSharpBehaviourOverrideEditor` に差し替え、その中から呼ぶ。Editor のコードから CustomEditor を作るときは、`Editor.CreateEditor(targets, <CustomEditor の型>)` と型を明示する。型を渡さないと UdonSharp の既定の Inspector が作られる。
-- 親の 2.x の設定のクラスの Inspector（`LegacySettingsEditor`）は、自分の値を出さず、子の Udon の CustomEditor をそのまま描く。作者は 2.x と同じく親を選んで設定できる。
+- 外側のコンポーネント（`GimmickRoot`）の Inspector（`GimmickRootEditor`）は、自分の値を出さず、tips を描いた後に、子の同じ名前の Udon の CustomEditor をそのまま描く。作者は 2.x と同じく親を選んで設定できる。tips は型ごとの派生の editor が `DrawTips` を override して書く（`PomodoroVoiceZoneRootEditor` は範囲の決め方と、`Pomodoro` が空のときの警告）。2.x の設定のクラスの Inspector（`LegacySettingsEditor`）は、開いたときに 2.x の値を移す処理だけを足す。
+- Unity の Editor の上での小さな処理も外側に置く。`PomodoroVoiceZone` の外側は、`OnDrawGizmos` で子の `BoxCollider` の範囲を、選んでいなくても線で描く。外側は VRChat の whitelist に無い `MonoBehaviour` で、ワールドの中では動かない前提で書く。
 - `LogStreamBuildProcessor`（`IProcessSceneWithReport`）は、scene のビルドのたびに、その scene の中だけで、2.x の設定を移し、`_core` を結び、テンプレートのボタンを作り直す。
 
 ## 2.x の設定を移す
@@ -32,7 +34,7 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 
 走るのは、scene を開いた時、Editor の起動とスクリプトの再読み込みの後、ビルドの時、親の Inspector を開いた時である。配る prefab では、2.x の設定のクラスの値を Udon の値と同じにして `_migrated` を false のままにしてあるので、新しく置いたインスタンスでも 1 度走るが、同じ値を写すだけになる。prefab の値は `Assets/LogStreamDev/Editor/V3Assets.cs` で揃えた。
 
-2.x の設定のクラスを prefab から外さないのは、外すと利用者の scene のインスタンスが持つ値の上書きを移す前に読めなくなるからである。外すのは、2.x の scene が残らないと言える次の major の版にする。
+2.x の設定のクラスを prefab から外さないのは、外すと利用者の scene のインスタンスが持つ値の上書きを移す前に読めなくなるからである。2.x の scene が残らないと言える次の major の版で外すのは、値を移す処理（`LegacySettingsMigrator` と 2.x の field）だけで、外側のコンポーネントは残す。
 
 ## 実行の層
 
@@ -48,11 +50,11 @@ LogStream のコードは `Assets/Kmnk/Core/`（VRChat_Core のコピー）を�
 
 ## 新しいギミックを足すとき
 
-次の 5 か所に手を入れる。
+次の 5 か所に手を入れる（3 は外側のコンポーネントと prefab）。
 
 1. `Runtime/` に `LogWriteBase` の派生の U# スクリプトを足し（ログを書かないギミックは別の基底でよい。`PomodoroVoiceZone` は `LogPomodoroEventListener` の派生）、`bin/create-program-asset` で `.asset` を作る。設定は `[SerializeField]` の field に、日本語の `[Tooltip]` を付けて持つ。UI から呼ぶメソッドの名前は `_` で始める。
 2. `Editor/` に `UdonSettingsEditor` の派生の CustomEditor を足し、`DrawSettings` で設定を描く。`_id` と `_core` を持たないギミックは、`ApplyRelated` を何もしない形で override する。
-3. prefab を Unity の Editor で作る。親の GameObject の下に `Udon` という子を置き、1 の UdonBehaviour を付ける。新しいギミックには 2.x の設定のクラスは要らない。
+3. `Runtime/Root/` に、1 と同じ名前の `GimmickRoot` の派生（名前空間 `Kmnk.LogStream`）を足す。tips が要るときは `Editor/` に `GimmickRootEditor` の派生を足して `DrawTips` を書く。prefab を Unity の Editor で作る。親の GameObject にこの外側のコンポーネントを付け、その下に `Udon` という子を置いて 1 の UdonBehaviour を付ける。新しいギミックには 2.x の設定のクラス（`LegacySettings`）は要らない。
 4. `docs/development.md` のテストの表に行を足し、振る舞いのテストを足す。
 5. 利用者向けの `Packages/dev.kmnk.log-stream/README_ja.md` と `README.md` の「使い方」（Usage）の表に、プレハブの行を足す。設定の説明は `[Tooltip]` に書き、README には Tooltip に無く設置で迷う事柄（子の `Udon` の collider で場所を決める、など）だけを書く。
 

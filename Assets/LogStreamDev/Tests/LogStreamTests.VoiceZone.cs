@@ -127,6 +127,27 @@ namespace Kmnk.LogStreamDev.Tests
             }
         }
 
+        // ギミックの prefab は、親に外側のコンポーネント（GimmickRoot の派生）を持ち、子孫にそれと同じ名前の UdonSharpBehaviour がある。
+        // LogStream（他の prefab を束ねたもの）と LogSample（親に Udon を直に置いた例）は外側を持たない
+        [Test]
+        public void Prefabs_HaveGimmickRoot()
+        {
+            var rootType = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("Kmnk.LogStream.GimmickRoot")).First(t => t != null);
+            var paths = AssetDatabase.FindAssets("t:Prefab", new[] { Prefabs.TrimEnd('/') })
+                .Select(AssetDatabase.GUIDToAssetPath)
+                .Where(p => !p.EndsWith("/LogStream.prefab") && !p.EndsWith("/LogSample.prefab"))
+                .ToArray();
+            Assert.AreEqual(7, paths.Length, "ギミックの prefab の数");
+            foreach (var path in paths)
+            {
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                var root = prefab.GetComponent(rootType);
+                Assert.IsNotNull(root, $"{path} の親に外側のコンポーネントが無い");
+                Assert.IsTrue(prefab.GetComponentsInChildren<UdonSharp.UdonSharpBehaviour>(true).Any(u => u.GetType().Name == root.GetType().Name),
+                    $"{path} の子に {root.GetType().Name} の Udon が無い");
+            }
+        }
+
         // prefab の Udon に PomodoroVoiceZone と isTrigger の BoxCollider があり、範囲がそれを指す。sample の scene では scene の LogPomodoro のどれかに結ばれている
         [Test]
         public void VoiceZone_PrefabHasTriggerCollider()

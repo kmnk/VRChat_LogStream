@@ -2,7 +2,7 @@
 
 LogStream の変更を、新しい版から順に書きます。書き方は [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に合わせています。まだ release していない変更は `[Unreleased]` にあります。
 
-## [Unreleased]
+## [3.1.0] - 2026-11-08
 
 ### 追加
 
